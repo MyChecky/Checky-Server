@@ -22,7 +22,7 @@ public class CheckyApplicationTests {
 
     @Before
     public void setUp() throws Exception{
-        mvc = MockMvcBuilders.standaloneSetup(new homepageController()).build();
+        //mvc = MockMvcBuilders.standaloneSetup(new homepageController()).build();
     }
 
     @Test
