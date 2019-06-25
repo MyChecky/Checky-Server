@@ -4,9 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.whu.checky.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
@@ -15,23 +13,24 @@ import java.util.UUID;
 @RestController
 public class WechatController {
 
-    private String wxspAppid="";
-    private String wxspSecret="";
+    private String wxspAppid="wx4b2f117b30cebf29";
+    private String wxspSecret="0d5252f3d3f436db67909d50f2dbefd9";
 
     @Autowired
     ObjectMapper mapper;
 
     @PostMapping("/login")
-    public User login(@RequestParam String code) throws IOException {
+    @ResponseBody
+    public User login(@RequestBody String code) throws IOException {
         RestTemplate restTemplate = new RestTemplate();// 发送request请求
-        String params = "appid=" + wxspAppid + "&secret=" + wxspSecret + "&js_code=" +code;//参数
+        String params = "appid=" + wxspAppid + "&secret=" + wxspSecret + "&js_code=" +code+"&grant_type=authorization_code";//参数
         String url = "https://api.weixin.qq.com/sns/jscode2session?"+params;// 微信接口 用于查询oponid
         String response = restTemplate.getForObject(url,String.class);
 
 
 
         JsonNode node = this.mapper.readTree(response);
-        String openid = node.get("opendid").asText();
+        String openid = node.get("openid").asText();
         String sessionKey = node.get("session_key").asText();
 
 

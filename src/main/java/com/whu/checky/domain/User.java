@@ -25,8 +25,16 @@ public class User {
 
     private String sessionID;
 
+    public String getSessionID() {
+        return sessionID;
+    }
+
+    //    private String openid;
+//
     public void setSessionID(String id){
         sessionID=id;
     }
+
+
 
 }
