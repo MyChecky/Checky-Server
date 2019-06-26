@@ -1,4 +1,4 @@
 package com.whu.checky.domain;
 
-public class TaskType {
+public class Record {
 }

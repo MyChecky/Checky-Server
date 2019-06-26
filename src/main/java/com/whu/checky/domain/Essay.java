@@ -1,4 +1,4 @@
 package com.whu.checky.domain;
 
-public class Check {
+public class Essay {
 }
