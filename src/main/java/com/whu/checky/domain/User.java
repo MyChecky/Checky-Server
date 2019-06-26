@@ -6,22 +6,13 @@ import java.sql.Date;
 
 public class User {
     //用户id
-//    @Id
-//    @GeneratedValue
     private String userId;
 //    //用户微信名
-//    @Column(nullable = false)
     private String nickName;
 //    //用户微信头像url
-//    @Column(nullable = false)
     private String userAvatar;
 //    //用户性别
-//    @Column(nullable = false)
     private Integer gender;
-//    //用户使用小程序的时间
-//    @Column(nullable = false)
-//    private Date signindate;
-//    //地理位置
 
     private String sessionID;
 
