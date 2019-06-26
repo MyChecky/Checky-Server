@@ -9,4 +9,5 @@ import java.util.List;
 @Mapper
 public interface ReportMapper extends BaseMapper<Report> {
     List<Report> getReportList();
+
 }

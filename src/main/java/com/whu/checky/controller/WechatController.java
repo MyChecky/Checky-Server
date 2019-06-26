@@ -1,5 +1,7 @@
 package com.whu.checky.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.whu.checky.domain.User;
@@ -21,7 +23,10 @@ public class WechatController {
 
     @PostMapping("/login")
     @ResponseBody
-    public User login(@RequestBody String code) throws IOException {
+    public User login(@RequestBody String body) throws IOException {
+        JSONObject object= JSONObject.parseObject(body);
+        String code=(String)object.get("code");
+        JSONObject userinfo= (JSONObject) object.get("userInfo");
         RestTemplate restTemplate = new RestTemplate();// 发送request请求
         String params = "appid=" + wxspAppid + "&secret=" + wxspSecret + "&js_code=" +code+"&grant_type=authorization_code";//参数
         String url = "https://api.weixin.qq.com/sns/jscode2session?"+params;// 微信接口 用于查询oponid
@@ -43,6 +48,8 @@ public class WechatController {
 
         // 注册用户，将查询到的oponid作为id
         User user = new User();
+        user.setUserId(openid);
+        paserJson2User(userinfo,user);
         String skey = UUID.randomUUID().toString();
         user.setSessionID(skey);
 //        user.setUid(openid);
@@ -61,6 +68,14 @@ public class WechatController {
 //            }
 //        }
         return user;
+    }
+
+
+
+    public void paserJson2User(JSONObject userinfo,User user){
+        user.setNickName((String) userinfo.get("nickName"));
+        user.setGender((Integer) userinfo.get("gender"));
+        user.setUserAvatar((String) userinfo.get("avatarUrl"));
     }
 
 
