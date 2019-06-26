@@ -46,16 +46,24 @@ public class WechatController {
         user.setUserId(openid);
         paserJson2User(userinfo,user);
         String skey = UUID.randomUUID().toString();
-        user.setSessionID(skey);
+        user.setSessionId(skey);
+        User check = userService.queryUser(user);
+        boolean flag = false;
+        if(check==null){
+            flag = userService.register(user);
+        }else{
+            flag = userService.updateSessionID(check,sessionKey);
+        }
 
-        return user;
+        if(flag) return user;
+        else return null;
     }
 
 
 
-    public void paserJson2User(JSONObject userinfo,User user){
-        user.setNickName((String) userinfo.get("nickName"));
-        user.setGender((Integer) userinfo.get("gender"));
+    private void paserJson2User(JSONObject userinfo,User user){
+        user.setUserName((String) userinfo.get("nickName"));
+        user.setUserGender((Integer) userinfo.get("gender"));
         user.setUserAvatar((String) userinfo.get("avatarUrl"));
     }
 
