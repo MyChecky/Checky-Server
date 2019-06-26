@@ -4,9 +4,9 @@ server:
 Spring:
   datasource:
     #url: jdbc:mysql://127.0.0.1:3306/test?useUnicode=true&characterEncoding=utf-8
-    url: jdbc:log4jdbc:mysql://127.0.0.1:3306/test?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC
-    username: root
-    password: 123456
+    url: jdbc:log4jdbc:mysql://120.78.150.152:3306/checky?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC
+    username: checky
+    password: asdfgh
     #driver-class-name: com.mysql.jdbc.Driver
     driver-class-name: net.sf.log4jdbc.DriverSpy
 
