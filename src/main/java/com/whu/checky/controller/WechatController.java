@@ -5,12 +5,14 @@ import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.whu.checky.domain.User;
+import com.whu.checky.service.RedisService;
 import com.whu.checky.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.UUID;
 
 @RestController
@@ -26,8 +28,11 @@ public class WechatController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private RedisService redisService;
+
     @PostMapping("/login")
-    public User login(@RequestBody String body) throws IOException {
+    public HashMap<String,String> login(@RequestBody String body) throws IOException {
         JSONObject object= JSONObject.parseObject(body);
         String code=(String)object.get("code");
         JSONObject userinfo= (JSONObject) object.get("userInfo");
@@ -42,21 +47,31 @@ public class WechatController {
         String openid = node.get("openid").asText();
         String sessionKey = node.get("session_key").asText();
 
+        JSONObject location = (JSONObject) object.get("location");
+        double latitude = Double.parseDouble(location.get("latitude").toString());
+        double longitude = Double.parseDouble(location.get("longitude").toString());
+
         User user = new User();
         user.setUserId(openid);
         paserJson2User(userinfo,user);
         String skey = UUID.randomUUID().toString();
         user.setSessionId(skey);
-        User check = userService.queryUser(user);
-        boolean flag = false;
+        User check = userService.queryUser(openid);
+        user.setLatitude(latitude);
+        user.setLongtitude(longitude);
+//        boolean flag = false;
         if(check==null){
-            flag = userService.register(user);
+            userService.register(user);
+            check = user;
         }else{
-            flag = userService.updateSessionID(check,sessionKey);
+            updateFromWeixin(check,user);
+            userService.updateUser(check);
         }
+        redisService.saveSessionId(check.getSessionId(),check.getUserId());
 
-        if(flag) return user;
-        else return null;
+        HashMap<String,String> ret = new HashMap<>();
+        ret.put("states",sessionKey);
+        return ret;
     }
 
 
@@ -67,6 +82,15 @@ public class WechatController {
         user.setUserAvatar((String) userinfo.get("avatarUrl"));
     }
 
+
+    private void updateFromWeixin (User check, User user){
+        check.setUserName(user.getUserName());
+        check.setUserGender(user.getUserGender());
+        check.setUserAvatar(user.getUserAvatar());
+        check.setLongtitude(user.getLongtitude());
+        check.setLatitude(user.getLatitude());
+        check.setSessionId(user.getSessionId());
+    }
 
 
 }

@@ -19,14 +19,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean updateSessionID(User user,String id) {
-        user.setSessionId(id);
+    public void updateUser(User user) {
+//        user.setSessionId(id);
         mapper.updateById(user);
-        return true;
+//        return true;
     }
 
     @Override
-    public User queryUser(User user) {
+    public User queryUser(String user) {
         return mapper.selectById(user);
     }
 
