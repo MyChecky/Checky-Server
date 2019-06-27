@@ -6,11 +6,11 @@ import java.util.List;
 
 public interface UserService {
     //第一次登录
-     void register();
+    boolean register(User user);
      //再次登录
-    void update();
+    boolean updateSessionID(User user,String id);
     //查询用户
-    void queryUser();
+    User queryUser(User user);
     //删除用户
     void deleteUser();
 

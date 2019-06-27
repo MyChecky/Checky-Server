@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.whu.checky.domain.User;
+import com.whu.checky.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -13,16 +14,19 @@ import java.io.IOException;
 import java.util.UUID;
 
 @RestController
+@RequestMapping("/wechat")
 public class WechatController {
 
     private String wxspAppid="wx4b2f117b30cebf29";
     private String wxspSecret="0d5252f3d3f436db67909d50f2dbefd9";
 
     @Autowired
-    ObjectMapper mapper;
+    private ObjectMapper mapper;
+
+    @Autowired
+    private UserService userService;
 
     @PostMapping("/login")
-    @ResponseBody
     public User login(@RequestBody String body) throws IOException {
         JSONObject object= JSONObject.parseObject(body);
         String code=(String)object.get("code");
@@ -38,43 +42,28 @@ public class WechatController {
         String openid = node.get("openid").asText();
         String sessionKey = node.get("session_key").asText();
 
-
-//        logger.info("response:"+response);
-//        WeixinRespense weixinRespense = objectMapper.readValue(response,WeixinRespense.class); // 逆序列化 ，将字符串中的有效信息取出
-//        String session_key = weixinRespense.getSession_key();//如果解密encryptData获取unionId，会用的到
-//        openid= weixinRespense.getOpenid();//微信小程序 用户唯一标识
-//        logger.info("session_key:"+session_key);
-//        logger.info("openid:"+openid);
-
-        // 注册用户，将查询到的oponid作为id
         User user = new User();
         user.setUserId(openid);
         paserJson2User(userinfo,user);
         String skey = UUID.randomUUID().toString();
-        user.setSessionID(skey);
-//        user.setUid(openid);
-//        user.setBalence(Float.valueOf(0));
-//        if (userService.existbyid(openid))
-//        {
-//            return userService.getUserById(openid);
-//        }
-//        else {
-//            if (userService.signupUser(user) == 1)
-//            {
-//                return userService.getUserById(openid);
-//            }
-//            else {
-//                return null;
-//            }
-//        }
-        return user;
+        user.setSessionId(skey);
+        User check = userService.queryUser(user);
+        boolean flag = false;
+        if(check==null){
+            flag = userService.register(user);
+        }else{
+            flag = userService.updateSessionID(check,sessionKey);
+        }
+
+        if(flag) return user;
+        else return null;
     }
 
 
 
-    public void paserJson2User(JSONObject userinfo,User user){
-        user.setNickName((String) userinfo.get("nickName"));
-        user.setGender((Integer) userinfo.get("gender"));
+    private void paserJson2User(JSONObject userinfo,User user){
+        user.setUserName((String) userinfo.get("nickName"));
+        user.setUserGender((Integer) userinfo.get("gender"));
         user.setUserAvatar((String) userinfo.get("avatarUrl"));
     }
 
