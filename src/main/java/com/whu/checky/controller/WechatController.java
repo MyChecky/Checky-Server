@@ -73,7 +73,7 @@ public class WechatController {
 
 
     public void paserJson2User(JSONObject userinfo,User user){
-        user.setNickName((String) userinfo.get("nickName"));
+        user.setUserId((String) userinfo.get("nickName"));
         user.setGender((Integer) userinfo.get("gender"));
         user.setUserAvatar((String) userinfo.get("avatarUrl"));
     }
