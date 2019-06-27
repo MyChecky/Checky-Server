@@ -1,6 +1,9 @@
 package com.whu.checky.domain;
 
+import com.baomidou.mybatisplus.annotations.TableId;
+
 public class Task {
+    @TableId
     private String taskId;
 
     private String userId;
@@ -26,7 +29,7 @@ public class Task {
     /**
      * 任务押金
      */
-    private String taskMoney;
+    private Double taskMoney;
     /**
      * 监督者人数
      */
@@ -109,11 +112,11 @@ public class Task {
         this.taskState = taskState;
     }
 
-    public String getTaskMoney() {
+    public Double getTaskMoney() {
         return taskMoney;
     }
 
-    public void setTaskMoney(String taskMoney) {
+    public void setTaskMoney(Double taskMoney) {
         this.taskMoney = taskMoney;
     }
 

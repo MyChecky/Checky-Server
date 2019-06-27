@@ -1,10 +1,14 @@
 package com.whu.checky.domain;
 
+import com.baomidou.mybatisplus.annotations.TableId;
+
 /**
  * 表示监督关系的记录
  */
 public class TaskSupervisor {
+    @TableId
     private String taskId;
+    @TableId
     private String supervisorId;
     /**
      * 开始监督的时间

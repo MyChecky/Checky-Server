@@ -1,6 +1,9 @@
 package com.whu.checky.domain;
 
+import com.baomidou.mybatisplus.annotations.TableId;
+
 public class TaskType {
+    @TableId
     private String typeId;
 
     private String typeContent;
