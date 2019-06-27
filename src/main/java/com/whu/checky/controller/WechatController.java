@@ -66,7 +66,4 @@ public class WechatController {
         user.setUserGender((Integer) userinfo.get("gender"));
         user.setUserAvatar((String) userinfo.get("avatarUrl"));
     }
-
-
-
 }
