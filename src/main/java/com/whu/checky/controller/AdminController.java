@@ -17,7 +17,7 @@ public class AdminController {
     @Autowired
     private AdministratorService administratorService;
 
-    @PostMapping("/Admin/register")
+    @PostMapping("/admin/register")
     public String register(@RequestBody String body){
         String message = "success";
 
@@ -26,11 +26,12 @@ public class AdminController {
 
         //处理登录
         try{
-            administratorService.register(administrator);
+            int result = administratorService.register(administrator);
+            if(result == 1)
+                message = "duplicatename";
         }
         catch (Exception ex){
-            if(ex.getMessage().equals("已存在的用户名"))
-                message = "duplicatename";
+            ex.printStackTrace();
         }
 
         //
@@ -45,13 +46,14 @@ public class AdminController {
 
         //处理登录
         try{
-            administratorService.login(administrator);
+            int result = administratorService.login(administrator);
+            if(result == 1)
+                message = "missusername";
+            if(result == 2)
+                message = "wrongpassword";
         }
         catch (Exception ex){
-            if(ex.getMessage().equals("不存在的用户名"))
-                message = "missusername";
-            if(ex.getMessage().equals("密码错误"))
-                message = "wrongpassword";
+            ex.printStackTrace();
         }
 
         //
