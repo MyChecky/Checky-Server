@@ -2,13 +2,18 @@ package com.whu.checky.domain;
 
 
 
-import java.sql.Date;
+import com.baomidou.mybatisplus.annotations.TableId;
 
-public class User {
+import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+public class User implements Serializable{
     /**
      * 用户id
      * GeneratedValue
      */
+    @TableId
     private String userId;
     /**
      * 用户名
@@ -21,11 +26,11 @@ public class User {
     /**
      * 用户性别
      */
-    private Integer gender;
+    private Integer userGender;
     /**
      * 用户余额
      */
-    private Double money;
+    private Double userMoney;
     /**
      * 用户发布的任务数
      */
@@ -46,17 +51,29 @@ public class User {
      * 用户是否需要推送通知
      * 0：不需要 1：需要
      */
-    private Integer wantPush;
+    private Integer wantpush;
     /**
      * 经度
      */
-    private String longtitude;
+    private double longtitude=0.0;
     /**
      * 纬度
      */
-    private String latitude;
+    private double latitude=0.0;
 
-    private String sessionID;
+    private String sessionId;
+
+
+
+    private String userTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+
+    public String getUserTime() {
+        return userTime;
+    }
+
+    public void setUserTime(String userTime) {
+        this.userTime = userTime;
+    }
 
     public String getUserId() {
         return userId;
@@ -82,21 +99,6 @@ public class User {
         this.userAvatar = userAvatar;
     }
 
-    public Integer getGender() {
-        return gender;
-    }
-
-    public void setGender(Integer gender) {
-        this.gender = gender;
-    }
-
-    public Double getMoney() {
-        return money;
-    }
-
-    public void setMoney(Double money) {
-        this.money = money;
-    }
 
     public Integer getTaskNum() {
         return taskNum;
@@ -130,38 +132,51 @@ public class User {
         this.superviseNumMin = superviseNumMin;
     }
 
-    public Integer getWantPush() {
-        return wantPush;
+    public Integer getWantpush() {
+        return wantpush;
     }
 
-    public void setWantPush(Integer wantPush) {
-        this.wantPush = wantPush;
+    public void setWantpush(Integer wantpush) {
+        this.wantpush = wantpush;
     }
 
-    public String getLongtitude() {
+    public Double getLongtitude() {
         return longtitude;
     }
 
-    public void setLongtitude(String longtitude) {
+    public void setLongtitude(Double longtitude) {
         this.longtitude = longtitude;
     }
 
-    public String getLatitude() {
+    public Double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(String latitude) {
+    public void setLatitude(Double latitude) {
         this.latitude = latitude;
     }
 
-    public String getSessionID() {
-        return sessionID;
+    public Integer getUserGender() {
+        return userGender;
     }
 
-    public void setSessionID(String id){
-        sessionID=id;
+    public void setUserGender(Integer userGender) {
+        this.userGender = userGender;
     }
 
+    public Double getUserMoney() {
+        return userMoney;
+    }
 
+    public void setUserMoney(Double userMoney) {
+        this.userMoney = userMoney;
+    }
 
+    public String getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
+    }
 }

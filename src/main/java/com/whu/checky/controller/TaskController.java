@@ -1,6 +1,7 @@
 package com.whu.checky.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.whu.checky.domain.Task;
 import com.whu.checky.service.TaskService;
@@ -9,30 +10,69 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController("/Task")
+import java.util.List;
+
+@RestController
+@RequestMapping("/task")
 public class TaskController {
 
     @Autowired
     private TaskService taskService;
     //新建打卡
-    @RequestMapping("add")
-    public void addTask(@RequestBody String jsonstr){
+    @RequestMapping("/addTask")
+    public String addTask(@RequestBody String jsonstr){
         Task task= JSON.parseObject(jsonstr,new TypeReference<Task>(){});
         int result=taskService.addTask(task);
         if(result==0){
             //添加失败
-
+            return "addTaskFail";
         }else {
             //添加成功
-
+            return "addTaskSuccess";
         }
 
     }
 
-    void queryTasks(){
-
+    //查询属于某个用户的tasks
+    @RequestMapping("/queryUserTasks")
+    public List<Task> queryUserTasks(@RequestBody String jsonstr){
+        String userid= (String) JSON.parse(jsonstr);
+        return taskService.queryUserTasks(userid);
     }
 
-    void finishTask(){}
+    //列举出所有的Tasks
+    @RequestMapping("/listTasks")
+    public List<Task> listTasks(){
+        return taskService.listTasks();
+    }
+
+    //查询某个task
+    @RequestMapping("/queryTask")
+    public Task queryTask(@RequestBody String jsonstr){
+        String taskid= (String) JSON.parse(jsonstr);
+        Task res=taskService.queryTask(taskid);
+        if(res==null){
+            return null;
+        }else {
+            return res;
+        }
+    }
+
+    //Task结束，结算状态
+    @RequestMapping("/finishTask")
+    public String finishTask(@RequestBody String jsonstr){
+        JSONObject object= (JSONObject) JSON.parse(jsonstr);
+        String taskId= (String) object.get("taskId");
+        Task task=taskService.queryTask(taskId);
+        if(task!=null) {
+            String state = (String) object.get("state");
+            task.setTaskState(state);
+            taskService.updataTask(task);
+            return "updateTaskStateSuccess";
+        }else {
+            return "updateTaskStateFail";
+        }
+
+    }
 
 }
