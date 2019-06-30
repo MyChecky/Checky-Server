@@ -1,9 +1,11 @@
 package com.whu.checky.mapper;
 
 import com.baomidou.mybatisplus.mapper.BaseMapper;
-import com.whu.checky.domain.Record;
+import com.whu.checky.domain.Check;
 import org.apache.ibatis.annotations.Mapper;
+import org.springframework.stereotype.Component;
 
 @Mapper
-public interface CheckMapper extends BaseMapper<Record> {
+@Component(value = "CheckMapper")
+public interface CheckMapper extends BaseMapper<Check> {
 }
