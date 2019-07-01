@@ -1,12 +1,16 @@
 package com.whu.checky.service;
 
+import com.whu.checky.domain.Appeal;
+
+import java.util.List;
+
 public interface AppealService {
     //添加申诉
-    void addAppeal();
+    boolean addAppeal(Appeal appeal);
     //撤销申诉
-    void deleteAppeal();
+    boolean deleteAppeal(String appealId);
     //对申诉处理
     void updateAppeal();
     //查询申诉
-    void queryAppeal();
+    List<Appeal> queryAppealFromUser(String userId);
 }

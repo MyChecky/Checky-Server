@@ -44,7 +44,7 @@ public class CheckControllerTest {
         System.out.println("before--------------------post");
         System.out.println(json);
 
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post("/Checky/check/addCheck")
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post("/check/addCheck")
                 .contentType("application/json;charset=UTF-8")
                 .content(json)
                 .accept(MediaType.APPLICATION_JSON))
