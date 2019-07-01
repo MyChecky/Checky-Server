@@ -10,12 +10,12 @@ public interface CheckService {
     //上传文件
     void uploadFile();
     //查询打卡
-    List<Check> queryCheck(String checkId);
+    List<Check> queryCheck(String column, String checkId);
 
     void getCheckHistory();
 
     void updateCheck(Check check);
 
-    void deleteCheck(Check check);
+    void deleteCheck(String checkId);
 
 }

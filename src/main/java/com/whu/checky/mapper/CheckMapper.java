@@ -8,4 +8,5 @@ import org.springframework.stereotype.Component;
 @Mapper
 @Component(value = "CheckMapper")
 public interface CheckMapper extends BaseMapper<Check> {
+    public void insertNewCheck(Check check);
 }
