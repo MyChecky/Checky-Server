@@ -18,7 +18,8 @@ public class CheckServiceImpl implements CheckService {
 
     @Override
     public void addCheck(Check check) {
-        mapper.insert(check);
+        mapper.insertNewCheck(check);
+        //mapper.insert(check);
     }
 
     @Override
@@ -27,8 +28,8 @@ public class CheckServiceImpl implements CheckService {
     }
 
     @Override
-    public List<Check> queryCheck(String checkId) {
-        return mapper.selectList(new EntityWrapper<Check>().eq("user_id",checkId));
+    public List<Check> queryCheck(String column, String checkId) {
+        return mapper.selectList(new EntityWrapper<Check>().eq(column,checkId));
     }
 
     @Override
@@ -42,7 +43,7 @@ public class CheckServiceImpl implements CheckService {
     }
 
     @Override
-    public void deleteCheck(Check check) {
-        mapper.deleteById(check);
+    public void deleteCheck(String checkId) {
+        mapper.delete(new EntityWrapper<Check>().eq("check_id",checkId));
     }
 }
