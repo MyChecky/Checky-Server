@@ -9,17 +9,19 @@ import com.whu.checky.service.CheckService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.UUID;
 
 @RestController
+@RequestMapping("/check")
 public class CheckController {
     @Autowired
     private CheckService checkService;
 
-    @PostMapping("/Checky/check/addCheck")
+    @PostMapping("/addCheck")
     public String addCheck(@RequestBody String body){
 
         Check check = paserJson2User(body);
@@ -34,7 +36,7 @@ public class CheckController {
         return "success";
     }
 
-    @PostMapping("/Checky/check/queryCheck")
+    @PostMapping("/queryCheck")
     public Check queryCheck(@RequestBody String body){
         String checkId= (String) JSON.parse(body);
         List<Check> list = checkService.queryCheck(checkId);

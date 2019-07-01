@@ -64,6 +64,7 @@ public class WechatController {
             userService.register(user);
             check = user;
         }else{
+            redisService.delSessionId(check.getSessionId());
             updateFromWeixin(check,user);
             userService.updateUser(check);
         }
