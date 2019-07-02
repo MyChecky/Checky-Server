@@ -12,9 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class AdminController {
     @Autowired
-    private AdministratorMapper mapper;
-
-    @Autowired
     private AdministratorService administratorService;
 
     @PostMapping("/admin/register")

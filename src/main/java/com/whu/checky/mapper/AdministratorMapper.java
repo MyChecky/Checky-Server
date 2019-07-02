@@ -12,7 +12,5 @@ import org.springframework.stereotype.Component;
 @Mapper
 @Component(value = "AdminMapper")
 public interface AdministratorMapper extends BaseMapper<Administrator> {
-    Administrator selectByName(@Param("userName") String userName);
-
     String selectMaxId();
 }
