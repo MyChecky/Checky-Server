@@ -1,8 +1,12 @@
 package com.whu.checky.domain;
 
+import com.baomidou.mybatisplus.annotations.TableId;
+
 import java.io.Serializable;
 
 public class Administrator implements Serializable {
+
+    @TableId
     private String userId;
 
     private String userName;

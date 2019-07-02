@@ -1,15 +1,22 @@
 package com.whu.checky.controller;
 
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.whu.checky.config.UploadConfig;
 import com.whu.checky.domain.Check;
 import com.whu.checky.service.CheckService;
+import com.whu.checky.util.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -106,5 +113,45 @@ public class CheckController {
         check.setSuperviseNum(object.getInteger("superviseNum"));
 
         return check;
+    }
+
+
+    @Autowired
+    UploadConfig uploadConfig;
+
+
+//    //    @Value("${web.upload.path}")
+//    private String uploadPath="D:/img";
+
+//    @Value("${media.save.urlprefix}")
+//    private String urlprefix;
+
+    @PostMapping("/file/upload")
+    public HashMap<String,String> uploadFile(HttpServletRequest request, @RequestParam("file")MultipartFile[] files){
+
+        HashMap<String,String> response = new HashMap<>();
+
+        if(files!=null && files.length>=1) {
+
+            try {
+                for(MultipartFile file:files){
+                    String contentType = file.getContentType();
+                    String fileName = file.getOriginalFilename();
+                    /*System.out.println("fileName-->" + fileName);
+                    System.out.println("getContentType-->" + contentType);*/
+//                    String filePath = request.getSession().getServletContext().getRealPath("/");
+                    String filePath = uploadConfig.getUploadPath();
+                    System.out.println(filePath+fileName);
+                    response.put("path",filePath+fileName);
+                    FileUtil.uploadFile(file.getBytes(), filePath, fileName);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+        return response;
+
+
     }
 }
