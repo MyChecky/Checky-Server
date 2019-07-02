@@ -1,5 +1,8 @@
 server:
   port: 8080
+  #测试阶段先不使用
+  #servlet:
+  #  context-path: /checky
 
 Spring:
   datasource:
@@ -9,6 +12,9 @@ Spring:
     password: asdfgh
     #driver-class-name: com.mysql.jdbc.Driver
     driver-class-name: net.sf.log4jdbc.DriverSpy
+    hikari:
+      max-lifetime: 1765000
+      maximum-pool-size: 15
 
 
 mybatis-plus:
@@ -19,6 +25,7 @@ mybatis-plus:
 #logging:
 #  level:
 #    com.whu.checky.mapper: debug
+
 spring:
     redis:
         database: 0      # Redis数据库索引（默认为0）
