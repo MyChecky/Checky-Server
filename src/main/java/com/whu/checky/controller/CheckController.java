@@ -143,16 +143,18 @@ public class CheckController {
 
             try {
                 for(MultipartFile file:files){
-                    String contentType = file.getContentType();
+//                    String contentType = file.getContentType();
 //                    String fileName = file.getOriginalFilename();
-                    String fileName = UUID.randomUUID().toString()+FileUtil.getFileTypePostFix(file.getOriginalFilename());
+                    String type = FileUtil.getFileTypePostFix(file.getOriginalFilename());
+                    String fileName = UUID.randomUUID().toString() + type;
+
 //                    String filePath = request.getSession().getServletContext().getRealPath("/");
-                    String filePath = uploadConfig.getUploadPath();
+                    String filePath = uploadConfig.getUploadPath() + type.substring(1) + "/";
 //                    System.out.println(filePath+fileName);
 
                     FileUtil.uploadFile(file.getBytes(), filePath, fileName);
                     Record record = new Record();
-                    record.setFileAddr(filePath+fileName);
+                    record.setFileAddr("resources/"+ type.substring(1) + "/"+fileName);
                     record.setRecordType(file.getContentType());
                     record.setCheckId(request.getParameter("checkId"));
                     fileService.saveFile2Database(record);

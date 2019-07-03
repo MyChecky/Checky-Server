@@ -17,4 +17,14 @@ public class UploadConfig {
     public void setUploadPath(String uploadPath) {
         this.uploadPath = uploadPath;
     }
+
+    private String staticPath;
+
+    public String getStaticPath() {
+        return staticPath;
+    }
+
+    public void setStaticPath(String staticPath) {
+        this.staticPath = staticPath;
+    }
 }

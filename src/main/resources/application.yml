@@ -18,6 +18,7 @@ mybatis-plus:
 
 xcloud:
   uploadPath: D:/wx/img/
+  staticPath: /resources/**
 
 
 #logging:
