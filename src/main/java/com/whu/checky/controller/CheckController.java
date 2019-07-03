@@ -5,7 +5,9 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.whu.checky.config.UploadConfig;
 import com.whu.checky.domain.Check;
+import com.whu.checky.domain.Record;
 import com.whu.checky.service.CheckService;
+import com.whu.checky.service.FileService;
 import com.whu.checky.util.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,8 +25,15 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/check")
 public class CheckController {
+
     @Autowired
     private CheckService checkService;
+
+    @Autowired
+    private UploadConfig uploadConfig;
+
+    @Autowired
+    private FileService fileService;
 
     @PostMapping("/addCheck")
     public String addCheck(@RequestBody String body){
@@ -116,8 +125,7 @@ public class CheckController {
     }
 
 
-    @Autowired
-    UploadConfig uploadConfig;
+
 
 
 //    //    @Value("${web.upload.path}")
@@ -136,17 +144,24 @@ public class CheckController {
             try {
                 for(MultipartFile file:files){
                     String contentType = file.getContentType();
-                    String fileName = file.getOriginalFilename();
-                    /*System.out.println("fileName-->" + fileName);
-                    System.out.println("getContentType-->" + contentType);*/
+//                    String fileName = file.getOriginalFilename();
+                    String fileName = UUID.randomUUID().toString()+FileUtil.getFileTypePostFix(file.getOriginalFilename());
 //                    String filePath = request.getSession().getServletContext().getRealPath("/");
                     String filePath = uploadConfig.getUploadPath();
-                    System.out.println(filePath+fileName);
-                    response.put("path",filePath+fileName);
+//                    System.out.println(filePath+fileName);
+
                     FileUtil.uploadFile(file.getBytes(), filePath, fileName);
+                    Record record = new Record();
+                    record.setFileAddr(filePath+fileName);
+                    record.setRecordType(file.getContentType());
+                    record.setCheckId(request.getParameter("checkId"));
+                    fileService.saveFile2Database(record);
+//                    response.put("recordId",recordId);
+                    response.put("state","ok");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+                response.put("state","fail");
             }
 
         }
