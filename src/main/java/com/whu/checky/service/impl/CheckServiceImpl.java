@@ -46,4 +46,16 @@ public class CheckServiceImpl implements CheckService {
     public void deleteCheck(String checkId) {
         mapper.delete(new EntityWrapper<Check>().eq("check_id",checkId));
     }
+
+    @Override
+    public Check getCheckByTask(String taskId,String date) {
+        List<Check> list = mapper.selectList(new EntityWrapper<Check>()
+                .like("check_time",date)
+                .eq("task_id",taskId)
+        );
+        if(list.size()==1) return list.get(0);
+        else return null;
+    }
+
+
 }

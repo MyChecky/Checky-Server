@@ -18,4 +18,6 @@ public interface CheckService {
 
     void deleteCheck(String checkId);
 
+    Check getCheckByTask(String taskId,String date);
+
 }

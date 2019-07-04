@@ -6,8 +6,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.whu.checky.config.UploadConfig;
 import com.whu.checky.domain.Check;
 import com.whu.checky.domain.Record;
+import com.whu.checky.domain.Task;
 import com.whu.checky.service.CheckService;
 import com.whu.checky.service.FileService;
+import com.whu.checky.service.TaskService;
 import com.whu.checky.util.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -35,19 +38,25 @@ public class CheckController {
     @Autowired
     private FileService fileService;
 
+    @Autowired
+    private TaskService taskService;
+
     @PostMapping("/addCheck")
-    public String addCheck(@RequestBody String body){
+    public HashMap<String,String> addCheck(@RequestBody String body){
         JSONObject object = JSONObject.parseObject(body);
         Check check = paserJson2NewCheck(object);
-
+        HashMap<String,String> ans =  new HashMap<>();
         try{
             checkService.addCheck(check);
+            ans.put("checkId",check.getCheckId());
         }
         catch (Exception ex){
             ex.printStackTrace();
-            return "fail";
+            ans.put("state","fail");
+//            return "fail";
         }
-        return "success";
+        ans.put("state","success");
+        return ans;
     }
 
     @PostMapping("/queryCheck")
@@ -60,13 +69,50 @@ public class CheckController {
             return null;
     }
 
-    @PostMapping("/Checky/check/listCheck")
+    @PostMapping("/listCheck")
     public List<Check> listCheck(@RequestBody String body){
         String userId = (String) JSON.parse(body);
         return checkService.queryCheck("user_id", userId);
     }
 
-    @PostMapping("/Checky/check/updateCheck")
+    @PostMapping("/listDayCheck")
+    public HashMap<String,Object> getDayList(@RequestBody String body){
+        HashMap<String,Object> ans = new HashMap<>();
+        JSONObject data = JSON.parseObject(body);
+        String date = data.getString("date");
+        List<Task> taksList = taskService.queryUserTasks(data.getString("userId"),date);
+
+        List<Object> passChecks = new ArrayList<>();
+        List<Object> failChecks = new ArrayList<>();
+        List<Object> unKnownChecks = new ArrayList<>();
+
+        for(Task t:taksList){
+            Check check = checkService.getCheckByTask(t.getTaskId(),date);
+            List<Object> temp = new ArrayList<>();
+            temp.add(t);
+            if(check!=null) { //该任务当天没有打卡
+                temp.add(check);
+                if(check.getCheckState().equals("success")){
+                    passChecks.add(temp);
+                }else if(check.getCheckState().equals("fail")){
+                    failChecks.add(temp);
+                }else if(check.getCheckState().equals("unknown")){
+                    unKnownChecks.add(temp);
+                }
+            }
+        }
+
+        ans.put("state","ok");
+        ans.put("success",passChecks);
+        ans.put("fail",failChecks);
+        ans.put("unknown",unKnownChecks);
+
+
+
+        return ans;
+    }
+
+    @PostMapping("/updateCheck")
     public String updateCheck(@RequestBody String body){
         JSONObject object = JSONObject.parseObject(body);
         Check check = paserJasonUpdateUser(object);
@@ -82,7 +128,7 @@ public class CheckController {
         return "success";
     }
 
-    @PostMapping("/Checky/check/deleteCheck")
+    @PostMapping("/deleteCheck")
     public String deleteCheck(@RequestBody String body){
         String checkId = (String) JSON.parse(body);
 
