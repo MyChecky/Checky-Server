@@ -22,11 +22,21 @@ mybatis-plus:
   type-aliases-package: com.whu.checky.domain
 
 
+xcloud:
+  uploadPath: D:/wx/img/
+  staticPath: /resources/**
+
+
 #logging:
 #  level:
 #    com.whu.checky.mapper: debug
 
 spring:
+    servlet:
+        multipart:
+            enabled: true
+            max-file-size: 20MB
+            max-request-size: 200MB
     redis:
         database: 0      # Redis数据库索引（默认为0）
         host: 120.78.150.152  # Redis服务器地址

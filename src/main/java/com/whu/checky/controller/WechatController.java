@@ -71,7 +71,10 @@ public class WechatController {
         redisService.saveSessionId(check.getSessionId(),check.getUserId());
 
         HashMap<String,String> ret = new HashMap<>();
-        ret.put("states",sessionKey);
+//        ret.put("states",sessionKey);
+        ret.put("states",openid);
+        ret.put("sessionKey",sessionKey);
+//        ret.put("openId",openid);
         return ret;
     }
 
