@@ -46,8 +46,13 @@ public class CheckController {
         JSONObject object = JSONObject.parseObject(body);
         Check check = paserJson2NewCheck(object);
         HashMap<String,String> ans =  new HashMap<>();
+        String content = object.getString("content");
         try{
             checkService.addCheck(check);
+            Record record = new Record();
+            record.setCheckId(check.getCheckId());
+            record.setRecordContent(content);
+            fileService.saveFile2Database(record);
             ans.put("checkId",check.getCheckId());
         }
         catch (Exception ex){
@@ -145,6 +150,7 @@ public class CheckController {
 
     private Check paserJson2NewCheck(JSONObject object){
         //解析json获取登录信息
+        object = object.getJSONObject("checkInfo");
         String userId = object.getString("userId");
         String taskId = object.getString("taskId");
         String checkTime = object.getString("checkTime");
@@ -189,18 +195,18 @@ public class CheckController {
 
             try {
                 for(MultipartFile file:files){
-//                    String contentType = file.getContentType();
+                    String contentType = request.getParameter("type");
 //                    String fileName = file.getOriginalFilename();
                     String type = FileUtil.getFileTypePostFix(file.getOriginalFilename());
                     String fileName = UUID.randomUUID().toString() + type;
 
 //                    String filePath = request.getSession().getServletContext().getRealPath("/");
-                    String filePath = uploadConfig.getUploadPath() + type.substring(1) + "/";
+                    String filePath = uploadConfig.getUploadPath() + contentType + "/";
 //                    System.out.println(filePath+fileName);
 
                     FileUtil.uploadFile(file.getBytes(), filePath, fileName);
                     Record record = new Record();
-                    record.setFileAddr("resources/"+ type.substring(1) + "/"+fileName);
+                    record.setFileAddr("resources/"+ contentType + "/"+fileName);
                     record.setRecordType(file.getContentType());
                     record.setCheckId(request.getParameter("checkId"));
                     fileService.saveFile2Database(record);
