@@ -37,7 +37,17 @@ public class TaskController {
     @RequestMapping("/queryUserTasks")
     public List<Task> queryUserTasks(@RequestBody String jsonstr){
         String userid= (String) JSON.parse(jsonstr);
-        return taskService.queryUserTasks(userid);
+        return taskService.queryUserTasks(userid,null);
+    }
+
+
+    //查询属于某个用户的tasks
+    @RequestMapping("/queryDayUserTasks")
+    public List<Task> queryDayUserTasks(@RequestBody String jsonstr){
+        JSONObject object= (JSONObject) JSON.parse(jsonstr);
+        String date= (String) object.get("taskId");
+        String userid= (String) object.get("userid");
+        return taskService.queryUserTasks(userid,date);
     }
 
     //列举出所有的Tasks

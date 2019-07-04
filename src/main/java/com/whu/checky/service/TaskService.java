@@ -9,7 +9,7 @@ public interface TaskService {
     Integer addTask(Task task);
     Integer delTask(String taskid);
     Integer updataTask(Task task);
-    List<Task> queryUserTasks(String userid);
+    List<Task> queryUserTasks(String userid,String date);
     List<Task> listTasks();
     Task queryTask(String taskid);
 //    //打卡日历
