@@ -1,5 +1,5 @@
-/*CREATE DATABASE `checky` /*!40100 DEFAULT CHARACTER SET utf8 */;
-
+/*!40100 DEFAULT CHARACTER SET utf8 */;
+CREATE DATABASE `checky`
 
 CREATE table checky.user(
 user_id varchar(36) not null unique,
@@ -31,6 +31,7 @@ suggestion_id varchar(36) not null unique,
 user_id varchar(36) not null,
 suggestion_content varchar(50) not null,
 suggestion_time varchar(19) not null,
+suggestion_state varchar(10) check (suggestion_state = 'waiting' or 'processed')
 constraint `pk_type` primary key(suggestion_id),
 constraint `fk_suggestion_to_user` foreign key(user_id) references checky.user(user_id) on update cascade
 );
