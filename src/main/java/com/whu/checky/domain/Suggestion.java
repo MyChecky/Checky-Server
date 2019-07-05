@@ -14,6 +14,16 @@ public class Suggestion {
 
     private String suggestionContent;
 
+    public String getSuggestionState() {
+        return suggestionState;
+    }
+
+    public void setSuggestionState(String suggestionState) {
+        this.suggestionState = suggestionState;
+    }
+
+    private String suggestionState;
+
     public String getSuggestionId() {
         return suggestionId;
     }
