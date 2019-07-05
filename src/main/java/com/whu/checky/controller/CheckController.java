@@ -52,6 +52,7 @@ public class CheckController {
             Record record = new Record();
             record.setCheckId(check.getCheckId());
             record.setRecordContent(content);
+            record.setRecordType("text");
             fileService.saveFile2Database(record);
             ans.put("checkId",check.getCheckId());
         }
@@ -87,29 +88,43 @@ public class CheckController {
         String date = data.getString("date");
         List<Task> taksList = taskService.queryUserTasks(data.getString("userId"),date);
 
-        List<Object> passChecks = new ArrayList<>();
-        List<Object> failChecks = new ArrayList<>();
-        List<Object> unKnownChecks = new ArrayList<>();
+        List<DayCheckAndTask> toChecks = new ArrayList<>();
+        List<DayCheckAndTask> AlreadyChecks = new ArrayList<>();
+        List<DayCheckAndTask> unKnownChecks = new ArrayList<>();
 
         for(Task t:taksList){
             Check check = checkService.getCheckByTask(t.getTaskId(),date);
-            List<Object> temp = new ArrayList<>();
-            temp.add(t);
-            if(check!=null) { //该任务当天没有打卡
-                temp.add(check);
-                if(check.getCheckState().equals("success")){
-                    passChecks.add(temp);
-                }else if(check.getCheckState().equals("fail")){
-                    failChecks.add(temp);
-                }else if(check.getCheckState().equals("unknown")){
-                    unKnownChecks.add(temp);
-                }
+//            List<Object> temp = new ArrayList<>();
+//            temp.add(t);
+//            if(check!=null) { //该任务当天没有打卡
+//                temp.add(check);
+//                if(check.getCheckState().equals("success")){
+//                    passChecks.add(temp);
+//                }else if(check.getCheckState().equals("fail")){
+//                    failChecks.add(temp);
+//                }else if(check.getCheckState().equals("unknown")){
+//                    unKnownChecks.add(temp);
+//                }
+//            }
+            //taskid,
+            DayCheckAndTask ret = new DayCheckAndTask();
+            ret.setTaskId(t.getTaskId());
+            ret.setTaskTitle(t.getTaskTittle());
+            ret.setTaskContent(t.getTaskContent());
+
+            if(check==null){
+                toChecks.add(ret);
+            }else {
+                ret.setCheckId(check.getCheckId());
+                ret.setCheckState(check.getCheckState());
+                if(check.getCheckState().equals("unknown")) unKnownChecks.add(ret);
+                else AlreadyChecks.add(ret);
             }
         }
 
         ans.put("state","ok");
-        ans.put("success",passChecks);
-        ans.put("fail",failChecks);
+        ans.put("toCheck",toChecks);
+        ans.put("checked",AlreadyChecks);
         ans.put("unknown",unKnownChecks);
 
 
@@ -222,5 +237,59 @@ public class CheckController {
         return response;
 
 
+    }
+}
+
+
+class DayCheckAndTask{
+    private String taskId;
+
+    private String taskTitle;
+
+    private String taskContent;
+
+    private String checkId;
+
+    private String checkState;
+
+    public String getTaskId() {
+        return taskId;
+    }
+
+    public String getCheckState() {
+        return checkState;
+    }
+
+    public void setCheckState(String checkState) {
+        this.checkState = checkState;
+    }
+
+    public void setTaskId(String taskId) {
+        this.taskId = taskId;
+
+    }
+
+    public String getTaskTitle() {
+        return taskTitle;
+    }
+
+    public void setTaskTitle(String taskTitle) {
+        this.taskTitle = taskTitle;
+    }
+
+    public String getTaskContent() {
+        return taskContent;
+    }
+
+    public void setTaskContent(String taskContent) {
+        this.taskContent = taskContent;
+    }
+
+    public String getCheckId() {
+        return checkId;
+    }
+
+    public void setCheckId(String checkId) {
+        this.checkId = checkId;
     }
 }
