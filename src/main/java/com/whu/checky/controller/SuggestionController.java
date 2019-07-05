@@ -14,8 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.UUID;
 
-@RestController("/Suggestion")
+@RestController()
+@RequestMapping("/suggestion")
 public class SuggestionController {
     //管理端用
     @Autowired
@@ -28,6 +30,7 @@ public class SuggestionController {
     @PostMapping("/addSuggestion")
     public String addSuggestion(@RequestBody String jsonstr){
         Suggestion suggestion= JSON.parseObject(jsonstr,new TypeReference<Suggestion>(){});
+        suggestion.setSuggestionId(UUID.randomUUID().toString());
         int result=suggestionService.addSuggestion(suggestion);
         if(result==0){
             //添加失败

@@ -2,6 +2,8 @@ package com.whu.checky.domain;
 
 import com.baomidou.mybatisplus.annotations.TableId;
 
+import java.util.UUID;
+
 public class Task {
     @TableId
     private String taskId;
@@ -10,7 +12,7 @@ public class Task {
 
     private String typeId;
 
-    private String taskTittle;
+    private String taskTitle;
 
     private String taskContent;
     /**
@@ -25,7 +27,7 @@ public class Task {
      * 任务状态
      * success：任务完成    fail：任务未完成    during：任务进行中
      */
-    private String taskState;
+    private String taskState="during";
     /**
      * 任务押金
      */
@@ -37,11 +39,11 @@ public class Task {
     /**
      * 退款金额
      */
-    private Double refundMoney;
+    private Double refundMoney=0.0;
     /**
      * 能获得退款的最少打卡次数
      */
-    private Integer checkTimes;
+    private Integer checkTimes=0;
     /**
      * 打卡频率
      * 7位，对应周日至周六，哪一位为1，代表那一天需要打卡
@@ -72,12 +74,12 @@ public class Task {
         this.typeId = typeId;
     }
 
-    public String getTaskTittle() {
-        return taskTittle;
+    public String getTaskTitle() {
+        return taskTitle;
     }
 
-    public void setTaskTittle(String taskTittle) {
-        this.taskTittle = taskTittle;
+    public void setTaskTitle(String taskTitle) {
+        this.taskTitle = taskTitle;
     }
 
     public String getTaskContent() {

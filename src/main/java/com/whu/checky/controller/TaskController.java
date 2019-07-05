@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/task")
@@ -22,6 +23,7 @@ public class TaskController {
     @RequestMapping("/addTask")
     public String addTask(@RequestBody String jsonstr){
         Task task= JSON.parseObject(jsonstr,new TypeReference<Task>(){});
+        task.setTaskId(UUID.randomUUID().toString());
         int result=taskService.addTask(task);
         if(result==0){
             //添加失败

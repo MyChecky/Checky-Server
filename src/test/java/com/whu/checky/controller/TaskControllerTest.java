@@ -52,7 +52,7 @@ public class TaskControllerTest {
         task.setTaskId(UUID.randomUUID().toString());
         task.setUserId("oM2yQ4jR0La_jZ8hyxkERsqNTh_8");
         task.setTypeId("a8179f78-69ac-4723-bf23-7b4c695bdf7f");
-        task.setTaskTittle("背单词100天");
+        task.setTaskTitle("背单词100天");
         task.setTaskContent("每天背200单词");
         task.setTaskStartTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
         task.setTaskEndTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));

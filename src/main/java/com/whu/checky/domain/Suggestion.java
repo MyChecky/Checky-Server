@@ -14,6 +14,8 @@ public class Suggestion {
 
     private String suggestionContent;
 
+    private String suggestionState;
+
     public String getSuggestionId() {
         return suggestionId;
     }
@@ -44,5 +46,13 @@ public class Suggestion {
 
     public void setSuggestionContent(String suggestionContent) {
         this.suggestionContent = suggestionContent;
+    }
+
+    public String getSuggestionState() {
+        return suggestionState;
+    }
+
+    public void setSuggestionState(String suggestionState) {
+        this.suggestionState = suggestionState;
     }
 }
