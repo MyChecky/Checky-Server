@@ -1,8 +1,18 @@
 package com.whu.checky.domain;
 
-public class Check {
+import com.baomidou.mybatisplus.annotations.DataSource;
+import com.baomidou.mybatisplus.annotations.TableId;
+import com.baomidou.mybatisplus.annotations.TableName;
+
+import java.io.Serializable;
+
+@TableName("`check`")
+public class Check implements Serializable {
+    @TableId
     private String checkId;
+
     private String userId;
+
     private String taskId;
     /**
      * 打卡发布的时间

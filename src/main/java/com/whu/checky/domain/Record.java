@@ -1,5 +1,8 @@
 package com.whu.checky.domain;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * 一次打卡对应的详细记录
  */
@@ -19,7 +22,7 @@ public class Record {
     /**
      * 记录时间
      */
-    private String recordTime;
+    private String recordTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
     /**
      * 记录内容
      */

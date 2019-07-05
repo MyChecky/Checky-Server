@@ -64,13 +64,17 @@ public class WechatController {
             userService.register(user);
             check = user;
         }else{
+            redisService.delSessionId(check.getSessionId());
             updateFromWeixin(check,user);
             userService.updateUser(check);
         }
         redisService.saveSessionId(check.getSessionId(),check.getUserId());
 
         HashMap<String,String> ret = new HashMap<>();
-        ret.put("states",sessionKey);
+//        ret.put("states",sessionKey);
+        ret.put("states",openid);
+        ret.put("sessionKey",sessionKey);
+//        ret.put("openId",openid);
         return ret;
     }
 

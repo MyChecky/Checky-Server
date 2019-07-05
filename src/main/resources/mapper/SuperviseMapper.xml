@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.whu.checky.mapper.SuperviseMapper">
+    <select id="needToSupervise" resultType="Check">
+        SELECT  * FROM "check"
+        WHERE check_time &gt;= #{1}
+        AND  check_time &lt;= #{2}
+        AND task_id IN (
+        SELECT task_id FROM task_supervisor
+        WHERE supervisor_id =#{0} )
+    </select>
+
+    <update id="updateState">
+        UPDATE supervise
+        SET supervise_state=#{1}
+        WHERE supervisor_id=#{0}
+    </update>
+</mapper>
