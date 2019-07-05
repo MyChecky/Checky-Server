@@ -14,6 +14,7 @@ public class Suggestion {
 
     private String suggestionContent;
 
+
     private String suggestionState;
 
     public String getSuggestionId() {
