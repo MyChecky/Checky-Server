@@ -12,14 +12,10 @@ import com.whu.checky.service.FileService;
 import com.whu.checky.service.TaskService;
 import com.whu.checky.util.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -109,7 +105,7 @@ public class CheckController {
             //taskid,
             DayCheckAndTask ret = new DayCheckAndTask();
             ret.setTaskId(t.getTaskId());
-            ret.setTaskTitle(t.getTaskTittle());
+            ret.setTaskTitle(t.getTaskTitle());
             ret.setTaskContent(t.getTaskContent());
 
             if(check==null){
@@ -260,7 +256,7 @@ class DayCheckAndTask{
         return checkState;
     }
 
-    public void setCheckState(String checkState) {
+    void setCheckState(String checkState) {
         this.checkState = checkState;
     }
 
@@ -273,7 +269,7 @@ class DayCheckAndTask{
         return taskTitle;
     }
 
-    public void setTaskTitle(String taskTitle) {
+    void setTaskTitle(String taskTitle) {
         this.taskTitle = taskTitle;
     }
 
@@ -281,7 +277,7 @@ class DayCheckAndTask{
         return taskContent;
     }
 
-    public void setTaskContent(String taskContent) {
+    void setTaskContent(String taskContent) {
         this.taskContent = taskContent;
     }
 
