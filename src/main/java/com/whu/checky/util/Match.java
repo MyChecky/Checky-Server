@@ -5,13 +5,11 @@ import com.whu.checky.domain.Task;
 import com.whu.checky.domain.TaskSupervisor;
 import com.whu.checky.domain.User;
 import com.whu.checky.mapper.TaskMapper;
-import com.whu.checky.mapper.TaskSuspervisorMapper;
+import com.whu.checky.mapper.TaskSupervisorMapper;
 import com.whu.checky.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.sql.Wrapper;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -23,7 +21,7 @@ public class Match {
     TaskMapper taskMapper;
 
     @Autowired
-    TaskSuspervisorMapper taskSuspervisorMapper;
+    TaskSupervisorMapper taskSuspervisorMapper;
 
     @Autowired
     UserMapper userMapper;
