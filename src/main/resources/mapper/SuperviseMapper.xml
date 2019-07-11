@@ -27,6 +27,14 @@
     </select>
 
 
+
+    <select id="getContent" resultType="String">
+        SELECT task_content FROM  task
+        where task_id=#{0}
+
+    </select>
+
+
     <update id="updateState">
         UPDATE supervise
         SET supervise_state=#{1}

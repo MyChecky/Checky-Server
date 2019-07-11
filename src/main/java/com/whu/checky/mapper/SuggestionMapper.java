@@ -10,4 +10,5 @@ import org.springframework.stereotype.Component;
 @Component(value = "suggestionMapper")
 public interface SuggestionMapper extends BaseMapper<Suggestion> {
     Integer updateState(String suggestionid,String finalState);
+
 }
