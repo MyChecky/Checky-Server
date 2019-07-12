@@ -5,8 +5,9 @@
 #       根据参数挑选出所有需要该用户进行监督的check
         SET @allCheckid=(
         SELECT  check_id FROM "check"
-        WHERE check_time &gt;= #{1}
-        AND  check_time &lt;= #{2}
+#         WHERE check_time &gt;= #{1}
+#         AND  check_time &lt;= #{2}
+        WHERE check_time between (#{1},#{2})
         AND task_id IN (
         SELECT task_id FROM task_supervisor
         WHERE supervisor_id =#{0} )
