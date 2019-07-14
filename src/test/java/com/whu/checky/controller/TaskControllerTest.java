@@ -145,7 +145,25 @@ public class TaskControllerTest {
         System.out.println("after---------------------post");
         String result = mvcResult.getResponse().getContentAsString();
         System.out.println("==========结果为：==========\n" + result + "\n");
+    }
 
-
+    @Test
+    public void getDistribute() throws Exception{
+        ObjectMapper mapper=new ObjectMapper();
+        JSONObject request=new JSONObject();
+        request.put("taskId","4464440e-d6a9-4432-9fa7-1110e61116fa");
+        String json = mapper.writeValueAsString(request);
+        System.out.println("before--------------------post");
+        System.out.println(json);
+        MvcResult mvcResult=mvc.perform(MockMvcRequestBuilders.post("/task/getDistribute")
+                .contentType("application/json;charset=UTF-8")
+                .content(json)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+        System.out.println("after---------------------post");
+        String result = mvcResult.getResponse().getContentAsString();
+        System.out.println("==========结果为：==========\n" + result + "\n");
     }
 }

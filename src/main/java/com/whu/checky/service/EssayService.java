@@ -1,13 +1,21 @@
 package com.whu.checky.service;
 
+import com.whu.checky.domain.Essay;
+
+import java.util.List;
+
 public interface EssayService {
     //发布动态
-    void addEssay();
+    int addEssay(Essay essay);
+    //修改动态
+    int modifyEssay(Essay essay);
+    //删除动态
+    int deleteEssay(String essayId);
     //上传文件
     void uploadFile();
-    //查看动态
-    void queryEssay();
-    //删除动态
-    void deleteEssay();
+    //展示动态
+    List<Essay> displayEssay();
+
+
 
 }

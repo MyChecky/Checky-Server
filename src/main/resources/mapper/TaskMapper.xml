@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.whu.checky.mapper.TaskMapper">
+    <select id="queryUserTasks" resultType="com.whu.checky.domain.Task">
+        SELECT task_id AS taskId,user_id AS userId,type_id AS typeId,task_title AS taskTitle,task_content
+AS taskContent,task_start_time AS taskStartTime,task_end_time AS taskEndTime,task_state AS
+taskState,task_money AS taskMoney,supervisor_num AS supervisorNum,refund_money AS refundMoney,check_times
+AS checkTimes,check_frec AS checkFrec FROM task WHERE (user_id = #{userid}
+AND date(#{date}) between task_start_time and task_end_time)
+    </select>
+</mapper>

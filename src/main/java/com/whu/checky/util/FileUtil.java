@@ -1,9 +1,5 @@
 package com.whu.checky.util;
 
-import com.whu.checky.domain.Record;
-import com.whu.checky.mapper.RecordMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import java.io.File;
 import java.io.FileOutputStream;
 

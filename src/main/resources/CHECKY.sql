@@ -93,7 +93,7 @@ constraint `fk_supervisor_has_task` foreign key(supervisor_id) references checky
 create table checky.supervise(
 supervise_id varchar(36) not null unique,
 check_id varchar(36) not null,
-supervisor_id varchar(12) not null,
+supervisor_id varchar(36) not null,
 supervise_time varchar(19) not null,
 supervise_content varchar(255) not null default '暂时没有具体内容',
 supervise_state varchar(10) not null check(supervise_state = 'pass' or 'deny'), 

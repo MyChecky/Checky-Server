@@ -13,4 +13,5 @@ import java.util.List;
 public interface SuperviseMapper extends BaseMapper<Supervise> {
     List<Check> needToSupervise(String userId,String dataSubtract,String date);
     void updateState(String superviseId,String newState);
+    String getContent(String taskId);
 }

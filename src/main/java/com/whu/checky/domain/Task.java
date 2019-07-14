@@ -25,9 +25,9 @@ public class Task {
     private String taskEndTime;
     /**
      * 任务状态
-     * success：任务完成    fail：任务未完成    during：任务进行中
+     * success：任务完成    fail：任务未完成    during：任务进行中 nomatch 任务未建立匹配关系
      */
-    private String taskState="during";
+    private String taskState="nomatch";
     /**
      * 任务押金
      */

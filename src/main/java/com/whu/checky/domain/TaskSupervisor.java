@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.annotations.TableId;
 /**
  * 表示监督关系的记录
  */
-public class TaskSupervisor {
+public class TaskSupervisor{
     @TableId
     private String taskId;
     @TableId

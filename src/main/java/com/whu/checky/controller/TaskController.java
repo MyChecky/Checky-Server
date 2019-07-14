@@ -4,12 +4,14 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.whu.checky.domain.Task;
+import com.whu.checky.domain.TaskSupervisor;
 import com.whu.checky.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -87,4 +89,13 @@ public class TaskController {
 
     }
 
+    @RequestMapping("/getDistribute")
+    public HashMap<String, Double> getDistribute(@RequestBody String body){
+        JSONObject object= (JSONObject) JSON.parse(body);
+        String taskId= (String) object.get("taskId");
+
+        HashMap<String, Double> distribute = taskService.getDistribute(taskId);
+
+        return distribute;
+    }
 }

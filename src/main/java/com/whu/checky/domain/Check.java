@@ -1,6 +1,7 @@
 package com.whu.checky.domain;
 
 import com.baomidou.mybatisplus.annotations.DataSource;
+import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 
@@ -10,6 +11,9 @@ import java.io.Serializable;
 public class Check implements Serializable {
     @TableId
     private String checkId;
+
+    @TableField(exist = false)
+    private String checkContent;
 
     private String userId;
 
@@ -86,5 +90,13 @@ public class Check implements Serializable {
 
     public void setPassNum(Integer passNum) {
         this.passNum = passNum;
+    }
+
+    public String getCheckContent() {
+        return checkContent;
+    }
+
+    public void setCheckContent(String checkContent) {
+        this.checkContent = checkContent;
     }
 }

@@ -48,6 +48,11 @@ public class SuperviseServiceImpl implements SuperviseService {
     @Override
     public List<Check> userNeedToSupervise(String userid, String date1, String date2) {
         //查询某个用户需要监督的check
+        List<Check> result= superviseMapper.needToSupervise(userid,date1,date2);
+        for (Check check: result ) {
+            check.setCheckContent(superviseMapper.getContent(check.getTaskId()));
+
+        }
             return superviseMapper.needToSupervise(userid,date1,date2);
 
     }
