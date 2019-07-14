@@ -20,7 +20,7 @@ public class ReportController {
     @Autowired
     private ReportService reportService;
 
-    @RequestMapping
+    @RequestMapping("/add")
     public void addReport(@RequestBody String jsonstr){
         Report report= JSON.parseObject(jsonstr,new TypeReference<Report>(){});
         report.setReportId(UUID.randomUUID().toString());
@@ -33,7 +33,7 @@ public class ReportController {
 
     }
 
-    @RequestMapping
+    @RequestMapping("/queryUserReports")
     public List<Report> queryUserReports(@RequestBody String jsonstr){
         String userId= (String) JSON.parse(jsonstr);
         return reportService.queryUserReports(userId);
