@@ -109,7 +109,7 @@ public class CheckController {
             //taskid,
             DayCheckAndTask ret = new DayCheckAndTask();
             ret.setTaskId(t.getTaskId());
-            ret.setTaskTitle(t.getTaskTittle());
+            ret.setTaskTitle(t.getTaskTitle());
             ret.setTaskContent(t.getTaskContent());
 
             if(check==null){
