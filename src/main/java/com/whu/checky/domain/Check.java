@@ -24,6 +24,7 @@ public class Check implements Serializable {
     private String checkTime;
     /**
      * 打卡检查状态
+     * unknown: 已打卡未评定结果
      * pass：打卡被管理员或系统通过    deny：未通过
      */
     private String checkState;
