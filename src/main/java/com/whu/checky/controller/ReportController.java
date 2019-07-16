@@ -33,13 +33,13 @@ public class ReportController {
 
     }
 
-    @RequestMapping("/queryUserReports")
+    @RequestMapping("queryUserReports")
     public List<Report> queryUserReports(@RequestBody String jsonstr){
         String userId= (String) JSON.parse(jsonstr);
         return reportService.queryUserReports(userId);
     }
 
-    @RequestMapping("/deal")
+    @RequestMapping("deal")
     public void dealReport(@RequestBody String jsonstr){
         Report report= JSON.parseObject(jsonstr,new TypeReference<Report>(){});
         int result=reportService.dealReport(report);
@@ -50,7 +50,7 @@ public class ReportController {
         }
     }
 
-    @RequestMapping("/del")
+    @RequestMapping("del")
     public void deleteReport(@RequestBody String jsonstr){
         String reportId= (String) JSON.parse(jsonstr);
         int result=reportService.deleteReport(reportId);
