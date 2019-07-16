@@ -50,6 +50,16 @@ public class Task {
      */
     private String checkFrec;
 
+    private int matchNum;
+
+    public int getMatchNum() {
+        return matchNum;
+    }
+
+    public void setMatchNum(int matchNum) {
+        this.matchNum = matchNum;
+    }
+
     public String getTaskId() {
         return taskId;
     }

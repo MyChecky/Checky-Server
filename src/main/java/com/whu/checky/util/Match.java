@@ -7,14 +7,16 @@ import com.whu.checky.domain.User;
 import com.whu.checky.mapper.TaskMapper;
 import com.whu.checky.mapper.TaskSupervisorMapper;
 import com.whu.checky.mapper.UserMapper;
+import javafx.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 //匹配模块
+@Component
 public class Match {
 
     @Autowired
@@ -25,6 +27,9 @@ public class Match {
 
     @Autowired
     UserMapper userMapper;
+
+    private final int matchMax = 3;
+
 
 //    暂时先做简单的匹配，思路为从数据库取出未匹配任务
 //    取出用户记录并按监督次数排序
@@ -52,7 +57,7 @@ public class Match {
                 taskSuspervisorMapper.insert(temp);
                 user.setSuperviseNum(user.getSuperviseNum()+1);
                 userMapper.updateById(user);
-                t.setSupervisorNum(t.getSupervisorNum()+1);
+//                t.setSupervisorNum(t.getSupervisorNum()+1);
             }
             userList.sort(new Comparator<User>() {
                 @Override
@@ -60,7 +65,87 @@ public class Match {
                     return o1.getSuperviseNum()-o2.getSuperviseNum();
                 }
             });
-            taskMapper.updateById(t);
+//            taskMapper.updateById(t);
         }
     }
+
+
+//    @Scheduled(initialDelay = 0,fixedRate = 6000000)
+    public void matchSupervisorBySimilarity(){
+        List<Task> taskList = taskMapper.selectList(new EntityWrapper<Task>()
+                .eq("task_state","nomatch")
+                .or()
+                .eq("task_state","during")
+                .and()
+                .lt("match_num",matchMax)
+//                .or()
+//                .lt("supervisor_num",matchMax)
+        );
+
+
+
+        for(Task t:taskList){
+//            if(t.getTaskState().equals("during")) continue;
+            PriorityQueue<Pair<Integer,Double>> queue = new PriorityQueue<>(
+                    new Comparator<Pair<Integer,Double>>() {
+                    @Override
+                    public int compare(Pair<Integer,Double> o1, Pair<Integer,Double> o2) {
+                        return (int)(o1.getValue() - o2.getValue());
+                    }
+            });
+            for(int i=0;i<taskList.size();i++){
+                Task another = taskList.get(i);
+                if(t==another) continue;
+                double value = computeSimiV1(t,another);
+                queue.add(new Pair<>(i,value));
+            }
+
+            HashMap<String,Task> add = new HashMap<>();
+
+            for(int i=t.getSupervisorNum();i<matchMax&&!queue.isEmpty();){
+//                while(!queue.isEmpty()){
+                int idx = queue.poll().getKey();
+                Task temp = taskList.get(idx);
+                if(temp.getMatchNum()==matchMax||add.containsKey(temp.getUserId())) continue;
+                add.put(temp.getUserId(),temp);
+//                }
+                i++;
+            }
+
+            if(add.size()==matchMax){
+                for(Map.Entry<String,Task> entry:add.entrySet()){
+                    Task temp = entry.getValue();
+                    TaskSupervisor taskSupervisor = new TaskSupervisor();
+                    taskSupervisor.setTaskId(t.getTaskId());
+                    taskSupervisor.setSupervisorId(temp.getUserId());
+                    taskSupervisor.setAddTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+                    taskSuspervisorMapper.insert(taskSupervisor);
+                    t.setSupervisorNum(t.getSupervisorNum()+1);
+                    t.setTaskState("during");
+                    temp.setMatchNum(temp.getMatchNum()+1);
+                }
+            }
+        }
+
+        for(Task t:taskList) taskMapper.updateById(t);
+    }
+
+    private double computeSimiV1(Task t1, Task t2){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        double ans = 0.0;
+        try {
+            double startTimeDiff = (sdf.parse(t1.getTaskStartTime()).getTime() - sdf.parse(t2.getTaskStartTime()).getTime()) / trans;
+            double endTimeDiff = (sdf.parse(t1.getTaskEndTime()).getTime() - sdf.parse(t2.getTaskEndTime()).getTime()) / trans;
+            double typeDiff = t1.getTaskId().equals(t2.getTypeId())?0.5:1;
+            double goldDiff = t1.getTaskMoney()-t2.getTaskMoney();
+            ans = startTimeDiff*0.3+endTimeDiff*0.3+typeDiff+goldDiff*0.2;
+        }catch (Exception e){
+            return 0.0;
+        }
+        return ans;
+    }
+
+    private final int trans = (1000*60*60*24);
+
+
 }
