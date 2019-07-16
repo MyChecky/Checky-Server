@@ -1,5 +1,6 @@
 package com.whu.checky.domain;
 
+import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 
 /**
@@ -10,6 +11,8 @@ public class TaskSupervisor{
     private String taskId;
     @TableId
     private String supervisorId;
+
+
     /**
      * 开始监督的时间
      */
@@ -26,6 +29,7 @@ public class TaskSupervisor{
      * 监督者被移除的时间
      */
     private String removeTime;
+
 
     public String getTaskId() {
         return taskId;
