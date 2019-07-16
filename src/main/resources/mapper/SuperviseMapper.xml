@@ -41,4 +41,11 @@
         SET supervise_state=#{1}
         WHERE supervisor_id=#{0}
     </update>
+
+    <select id="getStateByIds" resultType="String">
+        SELECT supervise_state FROM  supervise
+        where (supervisor_id=#{supervisorId}
+            AND   check_id=#{checkId})
+    </select>
+
 </mapper>

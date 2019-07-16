@@ -5,6 +5,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.whu.checky.domain.Check;
 import com.whu.checky.domain.Supervise;
+import com.whu.checky.domain.SupervisorState;
+import com.whu.checky.domain.TaskSupervisor;
+import com.whu.checky.mapper.TaskSupervisorMapper;
 import com.whu.checky.service.SuperviseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,6 +22,8 @@ public class SuperviseController {
 
     @Autowired
     private SuperviseService superviseService;
+    @Autowired
+    private TaskSupervisorMapper taskSuspervisorMapper;
 
     //监督者对一个Check进行验证
     @RequestMapping("/addSupervise")
@@ -75,6 +80,16 @@ public class SuperviseController {
     public void modifySuperviseToFail(@RequestBody String jsonstr){
         String superviseId= (String) JSON.parse(jsonstr);
         superviseService.updateSupervise(superviseId,"Fail");
+    }
+
+
+
+    @RequestMapping("/querySupervisorState")
+    public List<SupervisorState> querySuperviseState(@RequestBody String jsonstr){
+        JSONObject object= (JSONObject) JSON.parse(jsonstr);
+        String taskId= (String) object.get("taskId");
+        String checkId= (String) object.get("checkId");
+        return superviseService.querySuperviseState(taskId,checkId);
     }
 
 }
