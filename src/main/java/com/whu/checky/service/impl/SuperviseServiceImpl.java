@@ -1,13 +1,8 @@
 package com.whu.checky.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.whu.checky.domain.Check;
-import com.whu.checky.domain.Supervise;
-import com.whu.checky.domain.SupervisorState;
-import com.whu.checky.domain.TaskSupervisor;
-import com.whu.checky.mapper.SuperviseMapper;
-import com.whu.checky.mapper.TaskSupervisorMapper;
-import com.whu.checky.mapper.UserMapper;
+import com.whu.checky.domain.*;
+import com.whu.checky.mapper.*;
 import com.whu.checky.service.SuperviseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,7 +18,11 @@ public class SuperviseServiceImpl implements SuperviseService {
     @Autowired
     private TaskSupervisorMapper taskSupervisorMapper;
     @Autowired
+    private CheckMapper checkMapper;
+    @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private TaskMapper taskMapper;
 
 
     @Override
@@ -56,21 +55,35 @@ public class SuperviseServiceImpl implements SuperviseService {
 
 
     @Override
-    public List<Check> userNeedToSupervise(String userid, String date1, String date2) {
+    public List<Check> userNeedToSupervise(String userId, String startDate, String endDate) {
         //查询某个用户需要监督的check
-        List<Check> result= superviseMapper.needToSupervise(userid,date1,date2);
-        for (Check check: result ) {
-            check.setCheckContent(superviseMapper.getContent(check.getTaskId()));
-
+        List<String> allCheckId=superviseMapper.allNeedToCheck(userId,startDate,endDate);
+        List<Check> result=new ArrayList<Check>();
+        for (String checkId:allCheckId){
+            if (superviseMapper.haveSupervised(checkId,userId)==null){
+                Check check=checkMapper.selectById(checkId);
+                Task task=taskMapper.selectById(check.getTaskId());
+                check.setTaskTitle(task.getTaskTitle());
+                check.setTaskContent(task.getTaskContent());
+                result.add(check);
+            }
         }
-            return superviseMapper.needToSupervise(userid,date1,date2);
+        return result;
+
+//
+//
+//        List<Check> result= superviseMapper.needToSupervise(userId,startDate,endDate);
+//        for (Check check: result ) {
+//            check.setCheckContent(superviseMapper.getContent(check.getTaskId()));
+//        }
+//            return superviseMapper.needToSupervise(userId,startDate,endDate);
 
     }
 
 
     @Override
     public List<SupervisorState> querySuperviseState(String taskId, String checkId){
-        String[] supervisorsId=(String[]) taskSupervisorMapper.getTaskSupervisors(taskId).toArray();
+        List<String> supervisorsId= taskSupervisorMapper.getTaskSupervisors(taskId);
         List<SupervisorState> supervisorsState=new ArrayList<SupervisorState>();
         for(String supervisorId:supervisorsId){
             SupervisorState supervisorState=new SupervisorState();

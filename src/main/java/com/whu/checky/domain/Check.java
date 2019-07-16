@@ -13,7 +13,10 @@ public class Check implements Serializable {
     private String checkId;
 
     @TableField(exist = false)
-    private String checkContent;
+    private String taskTitle;
+
+    @TableField(exist = false)
+    private String taskContent;
 
     private String userId;
 
@@ -93,11 +96,20 @@ public class Check implements Serializable {
         this.passNum = passNum;
     }
 
-    public String getCheckContent() {
-        return checkContent;
+
+    public String getTaskTitle() {
+        return taskTitle;
     }
 
-    public void setCheckContent(String checkContent) {
-        this.checkContent = checkContent;
+    public void setTaskTitle(String taskTitle) {
+        this.taskTitle = taskTitle;
+    }
+
+    public String getTaskContent() {
+        return taskContent;
+    }
+
+    public void setTaskContent(String taskContent) {
+        this.taskContent = taskContent;
     }
 }

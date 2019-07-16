@@ -38,7 +38,7 @@ public class MoneyController {
 
     }
 
-    @RequestMapping("")
+    @RequestMapping("/queryMoneyRecord")
     public List<MoneyFlow> queryMoneyRecord(@RequestBody String jsonstr){
         String userId= (String) JSON.parse(jsonstr);
         return moneyService.queryUserMoneyFlow(userId);

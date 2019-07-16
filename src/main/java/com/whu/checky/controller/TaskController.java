@@ -63,8 +63,9 @@ public class TaskController {
     //查询某个task
     @RequestMapping("/queryTask")
     public Task queryTask(@RequestBody String jsonstr){
-        String taskid= (String) JSON.parse(jsonstr);
-        Task res=taskService.queryTask(taskid);
+        JSONObject object= (JSONObject) JSON.parse(jsonstr);
+        String taskId= (String)object.get("taskId");
+        Task res=taskService.queryTask(taskId);
         if(res==null){
             return null;
         }else {

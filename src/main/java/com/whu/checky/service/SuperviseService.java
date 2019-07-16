@@ -21,7 +21,7 @@ public interface SuperviseService {
     Supervise querySupervise(String superviseId);
 
 
-    List<Check> userNeedToSupervise(String userid, String date1, String date2);
+    List<Check> userNeedToSupervise(String userId, String startDate, String endDate);
 
     //监督者监督状态
     List<SupervisorState> querySuperviseState(String taskId, String checkId);

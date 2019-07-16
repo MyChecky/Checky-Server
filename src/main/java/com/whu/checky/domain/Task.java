@@ -1,5 +1,6 @@
 package com.whu.checky.domain;
 
+import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 
 import java.util.UUID;
@@ -163,4 +164,5 @@ public class Task {
     public void setCheckFrec(String checkFrec) {
         this.checkFrec = checkFrec;
     }
+
 }

@@ -37,10 +37,10 @@ public class SuperviseController {
     @RequestMapping("/needToSupervise")
     public List<Check> needToSupervise(@RequestBody String jsonstr){
         JSONObject object= (JSONObject) JSON.parse(jsonstr);
-        String supervisorId= (String) object.get("userid");
-        String date1= (String) object.get("date1");
-        String date2= (String) object.get("date2");
-        return superviseService.userNeedToSupervise(supervisorId,date1,date2);
+        String supervisorId= (String) object.get("userId");
+        String startDate= (String) object.get("startDate");
+        String endDate= (String) object.get("endDate");
+        return superviseService.userNeedToSupervise(supervisorId,startDate,endDate);
 
     }
 

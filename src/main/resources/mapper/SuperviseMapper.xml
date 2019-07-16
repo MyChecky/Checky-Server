@@ -1,45 +1,59 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.whu.checky.mapper.SuperviseMapper">
-    <select id="needToSupervise" resultType="Check">
-#       根据参数挑选出所有需要该用户进行监督的check
-        SET @allCheckid=(
-        SELECT  check_id FROM "check"
-#         WHERE check_time &gt;= #{1}
-#         AND  check_time &lt;= #{2}
-        WHERE check_time between (#{1},#{2})
-        AND task_id IN (
-        SELECT task_id FROM task_supervisor
-        WHERE supervisor_id =#{0} )
-        );
-#         去除掉那些已经监督了的
-        SELECT  * FROM "check"
-        WHERE @allCheckid NOT IN (
-        SELECT supervise.check_id FROM supervise
-        WHERE supervisor_id=#{0}
-        AND supervise.check_id IN @allCheckid);
+<!--    <select id="needToSupervise" resultType="Check">-->
+<!--#       根据参数挑选出所有需要该用户进行监督的check-->
+<!--        SET @allCheckid=(-->
+<!--        SELECT  check_id FROM `check`-->
+<!--        WHERE check_time between #{startDate} AND #{endDate}-->
+<!--        AND task_id IN (-->
+<!--        SELECT task_id FROM task_supervisor-->
+<!--        WHERE supervisor_id =#{userId} )-->
+<!--        );-->
+<!--#         去除掉那些已经监督了的-->
+<!--        SELECT  * FROM `check`-->
+<!--        WHERE @allCheckid NOT IN (-->
+<!--        SELECT supervise.check_id FROM supervise-->
+<!--        WHERE supervisor_id=#{userId}-->
+<!--        AND supervise.check_id IN @allCheckid);-->
+<!--    </select>-->
+
+    <select id="allNeedToCheck" resultType="String">
+        SELECT  check_id FROM `check`
+        WHERE check_time between #{startDate} AND #{endDate}
+          AND task_id IN (
+            SELECT task_id FROM task_supervisor
+            WHERE supervisor_id =#{userId})
     </select>
 
-    <select id="haveBeenSupervised">
-        SELECT check_id FROM  supervise
-        where (supervisor_id=#{0}
-         AND   check_id=#{1})
+<!--    <select id="needToSupervise" resultType="String">-->
+<!--        SELECT  check_id FROM `check`-->
+<!--        WHERE check_time between #{startDate} AND #{endDate}-->
+<!--          AND task_id IN (-->
+<!--            SELECT task_id FROM task_supervisor-->
+<!--            WHERE supervisor_id =#{userId})-->
+<!--    </select>-->
 
+
+    <select id="haveSupervised" resultType="String">
+        SELECT check_id FROM  supervise
+        where (supervisor_id=#{userId}
+         AND   check_id=#{checkId})
     </select>
 
 
 
     <select id="getContent" resultType="String">
         SELECT task_content FROM  task
-        where task_id=#{0}
+        where task_id=#{taskId}
 
     </select>
 
 
     <update id="updateState">
         UPDATE supervise
-        SET supervise_state=#{1}
-        WHERE supervisor_id=#{0}
+        SET supervise_state=#{newState}
+        WHERE supervisor_id=#{superviseId}
     </update>
 
     <select id="getStateByIds" resultType="String">
