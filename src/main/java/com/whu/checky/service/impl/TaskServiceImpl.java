@@ -38,9 +38,9 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<Task> queryUserTasks(String userid, String date) {
-        if(date==null) return taskMapper.selectList(new EntityWrapper<Task>().eq("user_id",userid));
-        else return taskMapper.queryUserTasks(userid,date);
+    public List<Task> queryUserTasks(String userId, String date) {
+        if(date==null) return taskMapper.selectList(new EntityWrapper<Task>().eq("user_id",userId));
+        else return taskMapper.queryUserTasks(userId,date);
 //                taskMapper.selectList(new EntityWrapper<Task>().eq("user_id",userid).le("task_start_time",date)
 //                .ge("task_end_time",date));
     }

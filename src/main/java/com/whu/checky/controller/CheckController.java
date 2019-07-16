@@ -89,6 +89,7 @@ public class CheckController {
         List<DayCheckAndTask> unKnownChecks = new ArrayList<>();
 
         for(Task t:taksList){
+            if(t.getTaskState().equals("nomatch")) continue;
             Check check = checkService.getCheckByTask(t.getTaskId(),date);
 //            List<Object> temp = new ArrayList<>();
 //            temp.add(t);
