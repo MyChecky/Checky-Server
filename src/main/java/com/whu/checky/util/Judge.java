@@ -24,7 +24,7 @@ public class Judge {
     @Value("${jobs.match.maxNum}")
     int matchMax;
 
-    @Value("${jobs.judge.timeoutDay}")
+    @Value("${jobs.judge.check.timeoutDay}")
     int timeoutDay;
 
     @Autowired
@@ -44,7 +44,7 @@ public class Judge {
 //    若监督的数量已足够则进行判定
 //    否则判断是否过期（过了一定的天数还没有足够的监督人数
 //    若过期则从监督人数通过是否过半进行判定，无人监督则算通过
-    @Scheduled(cron = "${jobs.judge.cron}")
+    @Scheduled(cron = "${jobs.judge.check.cron}")
     public void dailyCheckSupervisedJudge(){
         System.out.println("Task start!");
         List<Check> checkList = checkMapper.selectList(new EntityWrapper<Check>()
@@ -98,6 +98,30 @@ public class Judge {
 //                e.printStackTrace();
 //            }
         }
+
+    @Scheduled(cron = "${jobs.judge.task.cron}")
+    public void taskFinishJudge(){
+        Date today = new Date();
+        String now = sdf.format(today);
+        String before = sdf.format(new Date(today.getTime()-timeoutDay* 24 * 60 * 60 * 1000));
+        List<Task> taskList = taskMapper.selectList(new EntityWrapper<Task>()
+            .eq("task_state","during")
+            .and()
+            .between("task_end_time",before,now)
+        );
+
+        for(Task t:taskList){
+            int count = checkMapper.selectCount(new EntityWrapper<Check>()
+                .eq("check_state","pass")
+                .and()
+                .eq("task_id",t.getTaskId())
+            );
+            if(count>=t.getCheckTimes()) t.setTaskState("success");
+            else if(count-timeoutDay<=t.getCheckTimes()) t.setTaskState("fail");
+            else continue;
+            taskMapper.updateById(t);
+        }
+    }
 
 
 

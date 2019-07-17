@@ -36,9 +36,11 @@ jobs:
         cron: 0 0 0 * * *
         maxNum: 3
     judge:
-        timeoutDay: 3
-        cron: 0 0 0 * * *
-
+        check:
+            timeoutDay: 3
+            cron: 0 0 0 * * *
+        task:
+            cron: 0 0 3 * * *
 spring:
     servlet:
         multipart:
