@@ -15,6 +15,8 @@ public interface EssayService {
     void uploadFile();
     //展示动态
     List<Essay> displayEssay();
+    //展示动态
+    List<Essay> getMyEssay(String userId);
 
 
 

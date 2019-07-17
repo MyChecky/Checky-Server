@@ -1,6 +1,7 @@
 package com.whu.checky.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.whu.checky.domain.Report;
 import com.whu.checky.service.ReportService;
@@ -20,7 +21,7 @@ public class ReportController {
     @Autowired
     private ReportService reportService;
 
-    @RequestMapping("/add")
+    @RequestMapping("/addReport")
     public void addReport(@RequestBody String jsonstr){
         Report report= JSON.parseObject(jsonstr,new TypeReference<Report>(){});
         report.setReportId(UUID.randomUUID().toString());
@@ -33,13 +34,16 @@ public class ReportController {
 
     }
 
-    @RequestMapping("queryUserReports")
+    @RequestMapping("/queryUserReports")
     public List<Report> queryUserReports(@RequestBody String jsonstr){
-        String userId= (String) JSON.parse(jsonstr);
-        return reportService.queryUserReports(userId);
+        JSONObject object= (JSONObject) JSON.parse(jsonstr);
+        String userId= (String)object.get("userId");
+        List<Report> reports=reportService.queryUserReports(userId);
+        return reports;
     }
 
-    @RequestMapping("deal")
+
+    @RequestMapping("/dealReport")
     public void dealReport(@RequestBody String jsonstr){
         Report report= JSON.parseObject(jsonstr,new TypeReference<Report>(){});
         int result=reportService.dealReport(report);
@@ -50,7 +54,7 @@ public class ReportController {
         }
     }
 
-    @RequestMapping("del")
+    @RequestMapping("/deleteReport")
     public void deleteReport(@RequestBody String jsonstr){
         String reportId= (String) JSON.parse(jsonstr);
         int result=reportService.deleteReport(reportId);

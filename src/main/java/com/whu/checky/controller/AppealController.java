@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -73,6 +74,15 @@ public class AppealController {
         }
         return ans;
 
+    }
+
+
+    @RequestMapping("/getMyAppeal")
+    public List<Appeal> getMyAppeal(@RequestBody String jsonstr){
+        JSONObject object= (JSONObject) JSON.parse(jsonstr);
+        String userId= (String)object.get("userId");
+        List<Appeal> appeals=appealService.queryAppealFromUser(userId);
+        return appeals;
     }
 
 }
