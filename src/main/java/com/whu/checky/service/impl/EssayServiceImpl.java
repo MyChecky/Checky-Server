@@ -39,7 +39,7 @@ public class EssayServiceImpl implements EssayService {
     }
 
     @Override
-    public List<Essay> getMyEssay(String userId) {
+    public List<Essay> queryUserEssays(String userId) {
         return essayMapper.selectList(new EntityWrapper<Essay>()
         .eq("user_id",userId)
         .orderBy("essay_time"));

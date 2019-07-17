@@ -57,11 +57,11 @@ public class EassyController {
 
 
     //查看自己的动态
-    @RequestMapping("/getMyEssay")
-    public List<Essay> getMyEssay(@RequestBody String jsonstr) {
+    @RequestMapping("/queryUserEssays")
+    public List<Essay> queryUserEssays(@RequestBody String jsonstr) {
         JSONObject object= (JSONObject) JSON.parse(jsonstr);
         String userId= (String)object.get("userId");
-        return essayService.getMyEssay(userId);
+        return essayService.queryUserEssays(userId);
     }
 
 

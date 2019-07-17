@@ -77,8 +77,8 @@ public class AppealController {
     }
 
 
-    @RequestMapping("/getMyAppeal")
-    public List<Appeal> getMyAppeal(@RequestBody String jsonstr){
+    @RequestMapping("/queryUserAppeal")
+    public List<Appeal> queryUserAppeal(@RequestBody String jsonstr){
         JSONObject object= (JSONObject) JSON.parse(jsonstr);
         String userId= (String)object.get("userId");
         List<Appeal> appeals=appealService.queryAppealFromUser(userId);

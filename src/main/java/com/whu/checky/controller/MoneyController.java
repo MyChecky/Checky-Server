@@ -15,6 +15,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 @RestController
+@RequestMapping("/money")
 public class MoneyController {
     @Autowired
     private MoneyService moneyService;
