@@ -26,14 +26,15 @@ public class RecordController {
         String checkId= (String)object.get("checkId");
         List<Record> records=recordService.getRecordsByCheckId(checkId);
         JSONObject res=new JSONObject();
-        Record text;
+        Record textRecord=null;
         for (Record record: records){
             if (record.getRecordType().equals("text")){
-                text=record;
-                records.remove(record);
-                res.put("text",record);
+                textRecord=record;
             }
+
         }
+        records.remove(textRecord);
+        res.put("text",textRecord);
         res.put("image",records);
 
         return res;

@@ -9,12 +9,10 @@ import com.whu.checky.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 @Service("taskService")
 public class TaskServiceImpl implements TaskService {
@@ -23,6 +21,8 @@ public class TaskServiceImpl implements TaskService {
 
     @Autowired
     private TaskSupervisorMapper taskSupervisorMapper;
+
+    private  SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
     @Override
     public Integer addTask(Task task) {
@@ -41,8 +41,30 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public List<Task> queryUserTasks(String userId, String date) {
-        if(date==null) return taskMapper.selectList(new EntityWrapper<Task>().eq("user_id",userId));
-        else return taskMapper.queryUserTasks(userId,date);
+        List<Task> res;
+        if(date==null) res=taskMapper.selectList(new EntityWrapper<Task>().eq("user_id",userId));
+        else {
+            res = taskMapper.queryUserTasks(userId, date);
+            try {
+                Date tmpDate = format.parse(date);
+                Calendar cal = Calendar.getInstance();
+                //int[] weekDays = {7,1,2,3,4,5,6};
+                cal.setTime(tmpDate);
+                int w = cal.get(Calendar.DAY_OF_WEEK) - 1; // 指示一个星期中的某天。
+                List<Task> removeList=new LinkedList<Task>();
+                for (Task task:res){
+                    if (task.getCheckFrec().charAt(w)!='1') {
+                        removeList.add(task);
+                    }
+                }
+                for (Task task:removeList){
+                    res.remove(task);
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        return res;
 //                taskMapper.selectList(new EntityWrapper<Task>().eq("user_id",userid).le("task_start_time",date)
 //                .ge("task_end_time",date));
     }
