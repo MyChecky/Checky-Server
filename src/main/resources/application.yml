@@ -33,8 +33,11 @@ xcloud:
 
 jobs:
     match:
-        cron: 0 5 11 * * *
+        cron: 0 0 0 * * *
         maxNum: 3
+    judge:
+        timeoutDay: 3
+        cron: 0 0 0 * * *
 
 spring:
     servlet:

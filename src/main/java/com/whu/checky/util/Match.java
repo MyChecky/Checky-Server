@@ -112,7 +112,7 @@ public class Match {
 //                while(!queue.isEmpty()){
                 int idx = queue.poll().getKey();
                 Task temp = taskList.get(idx);
-                if(temp.getMatchNum()==matchMax||add.containsKey(temp.getUserId())) continue;
+                if(temp.getMatchNum()==matchMax||add.containsKey(temp.getUserId())||temp.getUserId().equals(t.getUserId())) continue;
                 add.put(temp.getUserId(),temp);
 //                }
                 i++;
