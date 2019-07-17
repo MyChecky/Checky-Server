@@ -1,5 +1,8 @@
 package com.whu.checky.domain;
 
+import com.baomidou.mybatisplus.annotations.TableName;
+
+@TableName("moneyflow")
 public class MoneyFlow {
     private String flowId;
 
