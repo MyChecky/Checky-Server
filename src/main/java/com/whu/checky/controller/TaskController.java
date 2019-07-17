@@ -95,8 +95,6 @@ public class TaskController {
         JSONObject object= (JSONObject) JSON.parse(body);
         String taskId= (String) object.get("taskId");
 
-        HashMap<String, Double> distribute = taskService.getDistribute(taskId);
-
-        return distribute;
+        return taskService.distribute(taskId);
     }
 }

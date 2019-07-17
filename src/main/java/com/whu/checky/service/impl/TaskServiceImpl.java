@@ -6,11 +6,13 @@ import com.whu.checky.domain.TaskSupervisor;
 import com.whu.checky.mapper.TaskMapper;
 import com.whu.checky.mapper.TaskSupervisorMapper;
 import com.whu.checky.service.TaskService;
-import org.apache.logging.log4j.util.PropertySource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -56,8 +58,10 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public HashMap <String, Double> getDistribute(String taskid) {
+    public HashMap <String, Double> distribute(String taskid) {
         HashMap<String, Double> result = new HashMap <>();
+        Date now = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
         Task t = taskMapper.selectById(taskid);
 
@@ -65,17 +69,21 @@ public class TaskServiceImpl implements TaskService {
         supervisors.sort(Comparator.comparingInt(TaskSupervisor::getSuperviseNum));
 
         int length = supervisors.size();
-        double money = 0;
-        if(length != 0)
-            money = t.getTaskMoney()*0.8;
+        double money = t.getTaskMoney()*0.8;
+        int superviseNum = 0;
 
-        for(int i = length - 1; i >=0; i--){
-            TaskSupervisor taskSupervisor = supervisors.get(i);
-            if(i != 0)
-                money *= 0.6;
-            taskSupervisor.setBenefit(money);
-            taskSupervisorMapper.update(taskSupervisor, new EntityWrapper <TaskSupervisor>().eq("supervisor_id",taskSupervisor.getSupervisorId()));
-            result.put(supervisors.get(i).getSupervisorId(),money);
+        for (TaskSupervisor supvisor:supervisors) {
+            superviseNum += supvisor.getSuperviseNum();
+        }
+
+        for (TaskSupervisor taskSupervisor : supervisors) {
+            taskSupervisor.setBenefit(money * taskSupervisor.getSuperviseNum() / superviseNum);
+            taskSupervisor.setRemoveTime(dateFormat.format(now));
+            taskSupervisorMapper.update(taskSupervisor, new EntityWrapper <TaskSupervisor>()
+                    .eq("task_id", taskSupervisor.getTaskId())
+                    .and()
+                    .eq("supervisor_id", taskSupervisor.getSupervisorId()));
+            result.put(taskSupervisor.getSupervisorId(), money);
         }
 
         return result;
