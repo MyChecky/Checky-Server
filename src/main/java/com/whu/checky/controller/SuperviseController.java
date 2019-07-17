@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/supervise")
@@ -29,6 +30,7 @@ public class SuperviseController {
     @RequestMapping("/addSupervise")
     public void addSupervise(@RequestBody String jsonstr){
         Supervise supervise= JSON.parseObject(jsonstr,new TypeReference<Supervise>(){});
+        supervise.setSuperviseId(UUID.randomUUID().toString());
         superviseService.addSupervise(supervise);
     }
 
