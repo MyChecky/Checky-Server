@@ -9,6 +9,7 @@ import com.whu.checky.mapper.TaskSupervisorMapper;
 import com.whu.checky.mapper.UserMapper;
 import javafx.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -28,7 +29,8 @@ public class Match {
     @Autowired
     UserMapper userMapper;
 
-    private final int matchMax = 3;
+    @Value("${jobs.match.maxNum}")
+    private int matchMax;
 
 
 //    暂时先做简单的匹配，思路为从数据库取出未匹配任务
@@ -71,8 +73,11 @@ public class Match {
     }
 
 
-//    @Scheduled(initialDelay = 0,fixedRate = 6000000)
+
+
+    @Scheduled(cron = "${jobs.match.cron}")
     public void matchSupervisorBySimilarity(){
+        System.out.println("Task start!");
         List<Task> taskList = taskMapper.selectList(new EntityWrapper<Task>()
                 .eq("task_state","nomatch")
                 .or()
@@ -135,6 +140,7 @@ public class Match {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         double ans = 0.0;
         try {
+            int trans = (1000*60*60*24);
             double startTimeDiff = (sdf.parse(t1.getTaskStartTime()).getTime() - sdf.parse(t2.getTaskStartTime()).getTime()) / trans;
             double endTimeDiff = (sdf.parse(t1.getTaskEndTime()).getTime() - sdf.parse(t2.getTaskEndTime()).getTime()) / trans;
             double typeDiff = t1.getTaskId().equals(t2.getTypeId())?0.5:1;
@@ -145,8 +151,6 @@ public class Match {
         }
         return ans;
     }
-
-    private final int trans = (1000*60*60*24);
 
 
 }

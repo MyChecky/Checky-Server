@@ -26,11 +26,11 @@ public class AppealController {
     HashMap<String,String> addAppeal(@RequestBody String body){
         JSONObject data = JSONObject.parseObject(body);
         Appeal appeal = new Appeal();
-        appeal.setAppealId(UUID.randomUUID().toString().substring(0,20));
+        appeal.setAppealId(UUID.randomUUID().toString());
         appeal.setUserId(data.getString("userId"));
         appeal.setTaskId(data.getString("taskId"));
         appeal.setCheckId(data.getString("checkId"));
-        appeal.setAppealContent(data.getString("content"));
+        appeal.setAppealContent(data.getString("appealContent"));
 
         HashMap<String,String> ans = new HashMap<>();
         if(appealService.addAppeal(appeal)){
@@ -46,8 +46,8 @@ public class AppealController {
 
     @PostMapping("/display2User")
     String displayAppeal(@RequestBody String body){
-        JSONObject data = JSON.parseObject(body);
-        List<Appeal> ans = appealService.queryAppealFromUser(data.getString("userId"));
+        String userId= (String) JSON.parse(body);
+        List<Appeal> ans = appealService.queryAppealFromUser(userId);
         JSONObject json = new JSONObject();
         if(ans==null) json.put("state","fail");
         else{
@@ -56,15 +56,14 @@ public class AppealController {
             json.put("appeals",ans);
         }
         return json.toJSONString();
-
     }
 
     @PostMapping("/del")
     HashMap<String,String> deleteAppeal(@RequestBody String body){
         HashMap<String,String> ans = new HashMap<>();
         try{
-            JSONObject data = JSONObject.parseObject(body);
-            if(appealService.deleteAppeal(data.getString("appealId")))
+            String appealId = (String)JSONObject.parse(body);
+            if(appealService.deleteAppeal(appealId))
                 ans.put("state","ok");
             else
                 ans.put("state","fail");

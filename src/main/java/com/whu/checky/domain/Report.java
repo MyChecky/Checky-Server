@@ -1,9 +1,12 @@
 package com.whu.checky.domain;
 
+import com.baomidou.mybatisplus.annotations.TableId;
+
 /**
  * 举报记录，对象可以是动态、打卡、任务和监督人
  */
 public class Report {
+    @TableId
     private String reportId;
     /**
      * 举报人
