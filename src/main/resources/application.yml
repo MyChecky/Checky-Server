@@ -13,8 +13,8 @@ Spring:
     #driver-class-name: com.mysql.jdbc.Driver
     driver-class-name: net.sf.log4jdbc.DriverSpy
     hikari:
-      max-lifetime: 1765000
-      maximum-pool-size: 15
+      max-lifetime: 500000
+      maximum-pool-size: 20
 
 
 mybatis-plus:

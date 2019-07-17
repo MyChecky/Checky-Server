@@ -93,6 +93,7 @@ public class SuperviseServiceImpl implements SuperviseService {
             if (supervisorState.getSupervisorState()==null){
                 supervisorState.setSupervisorState("unknown");
             }
+            supervisorsState.add(supervisorState);
         }
         return supervisorsState;
     }

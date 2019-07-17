@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service("AdministratorService")
+@Service("administratorService")
 public class AdministratorServiceImpl implements AdministratorService {
     @Autowired
     private AdministratorMapper mapper;
