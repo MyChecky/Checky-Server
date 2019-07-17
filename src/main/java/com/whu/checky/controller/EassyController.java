@@ -62,8 +62,6 @@ public class EassyController {
         JSONObject object= (JSONObject) JSON.parse(jsonstr);
         String userId= (String)object.get("userId");
         return essayService.getMyEssay(userId);
-
-
     }
 
 
