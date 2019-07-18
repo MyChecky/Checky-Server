@@ -10,6 +10,8 @@ public class MoneyFlow {
 
     private String toUserId;
 
+    private String taskId;
+
     private Double flowMoney;
 
     private String flowTime;
@@ -36,6 +38,14 @@ public class MoneyFlow {
 
     public void setToUserId(String toUserId) {
         this.toUserId = toUserId;
+    }
+
+    public String getTaskId() {
+        return taskId;
+    }
+
+    public void setTaskId(String taskId) {
+        this.taskId = taskId;
     }
 
     public Double getFlowMoney() {

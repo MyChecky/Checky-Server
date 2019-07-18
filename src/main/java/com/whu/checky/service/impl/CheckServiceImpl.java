@@ -57,5 +57,15 @@ public class CheckServiceImpl implements CheckService {
         else return null;
     }
 
+    @Override
+    public void updatePassSuperviseCheck(String checkId) {
+        mapper.updatePassSuperviseCheck(checkId);
+    }
+
+    @Override
+    public void updateDenySuperviseCheck(String checkId) {
+        mapper.updateDenySuperviseCheck(checkId);
+    }
+
 
 }

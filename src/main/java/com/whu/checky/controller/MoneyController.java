@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.whu.checky.domain.MoneyFlow;
 import com.whu.checky.service.MoneyService;
+import com.whu.checky.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +20,8 @@ import java.util.List;
 public class MoneyController {
     @Autowired
     private MoneyService moneyService;
+    @Autowired
+    private TaskService taskService;
 
     @RequestMapping("/pay")
     public void pay(@RequestBody String jsonstr){
@@ -51,6 +54,7 @@ public class MoneyController {
             MyFlow flow=new MyFlow();
             flow.setFlowMoney(record.getFlowMoney());
             flow.setFlowTime(record.getFlowTime());
+            flow.setTaskTitle(taskService.queryTask(record.getTaskId()).getTaskTitle());
             if (record.getFromUserId().equals(userId)) {
                 flow.setType("cost");
             }else {
@@ -65,6 +69,7 @@ class MyFlow{
     private String type;
     private double flowMoney;
     private String flowTime;
+    private String taskTitle;
 
     public String getType() {
         return type;
@@ -88,6 +93,14 @@ class MyFlow{
 
     public void setFlowTime(String flowTime) {
         this.flowTime = flowTime;
+    }
+
+    public String getTaskTitle() {
+        return taskTitle;
+    }
+
+    public void setTaskTitle(String taskTitle) {
+        this.taskTitle = taskTitle;
     }
 }
 

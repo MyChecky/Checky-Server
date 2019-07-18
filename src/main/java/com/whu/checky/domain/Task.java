@@ -45,6 +45,11 @@ public class Task {
      * 能获得退款的最少打卡次数
      */
     private Integer checkTimes=0;
+
+    /**
+     * 已经打卡的次数
+     */
+    private Integer checkNum=0;
     /**
      * 打卡频率
      * 7位，对应周日至周六，哪一位为1，代表那一天需要打卡
@@ -165,4 +170,11 @@ public class Task {
         this.checkFrec = checkFrec;
     }
 
+    public Integer getCheckNum() {
+        return checkNum;
+    }
+
+    public void setCheckNum(Integer checkNum) {
+        this.checkNum = checkNum;
+    }
 }

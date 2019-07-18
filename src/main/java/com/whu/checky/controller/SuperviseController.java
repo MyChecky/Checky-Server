@@ -8,6 +8,7 @@ import com.whu.checky.domain.Supervise;
 import com.whu.checky.domain.SupervisorState;
 import com.whu.checky.domain.TaskSupervisor;
 import com.whu.checky.mapper.TaskSupervisorMapper;
+import com.whu.checky.service.CheckService;
 import com.whu.checky.service.SuperviseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,6 +26,8 @@ public class SuperviseController {
     private SuperviseService superviseService;
     @Autowired
     private TaskSupervisorMapper taskSuspervisorMapper;
+    @Autowired
+    private CheckService checkService;
 
     //监督者对一个Check进行验证
     @RequestMapping("/addSupervise")
@@ -32,6 +35,17 @@ public class SuperviseController {
         Supervise supervise= JSON.parseObject(jsonstr,new TypeReference<Supervise>(){});
         supervise.setSuperviseId(UUID.randomUUID().toString());
         superviseService.addSupervise(supervise);
+        String checkId=supervise.getCheckId();
+        if(supervise.getSuperviseState().equals("pass")){
+            //如果通过,对应check的supervise_num+1
+            //同时pass_num也+1
+            checkService.updatePassSuperviseCheck(checkId);
+        }else {
+            //如果没有通过，那么只有check的supervise_num+1
+            checkService.updateDenySuperviseCheck(checkId);
+        }
+
+
     }
 
 

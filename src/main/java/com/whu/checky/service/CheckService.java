@@ -20,4 +20,8 @@ public interface CheckService {
 
     Check getCheckByTask(String taskId,String date);
 
+    void updatePassSuperviseCheck(String checkId);
+
+    void updateDenySuperviseCheck(String checkId);
+
 }

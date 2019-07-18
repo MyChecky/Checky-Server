@@ -47,6 +47,7 @@ public class TaskController {
             moneyFlow.setToUserId("System");
             moneyFlow.setFromUserId(task.getUserId());
             moneyFlow.setFlowMoney(task.getTaskMoney());
+            moneyFlow.setTaskId(task.getTaskId());
             moneyFlow.setFlowTime(ft.format(new Date()));
             moneyFlow.setFlowId(UUID.randomUUID().toString());
             int addMoneyRes=moneyService.addMoneyRecord(moneyFlow);

@@ -24,8 +24,50 @@ public class TaskServiceImpl implements TaskService {
 
     private  SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
+    private Calendar cal = Calendar.getInstance();
+    private int[] weekDays = {7,1,2,3,4,5,6};
+
     @Override
     public Integer addTask(Task task) {
+        int weekNum=0;
+        int res=0;
+//        try {
+//            Date dateStart = format.parse(task.getTaskStartTime());
+//            Date dateEnd = format.parse(task.getTaskEndTime());
+//            weekNum=(int)(dateEnd.getTime() - dateStart.getTime())/86400000/7;
+//        }catch (Exception e){
+//            e.printStackTrace();
+//
+//        }
+        String temp=task.getCheckFrec();
+        try {
+            Date dateStart = format.parse(task.getTaskStartTime());
+            Date dateEnd = format.parse(task.getTaskEndTime());
+            weekNum=(int)((dateEnd.getTime() - dateStart.getTime())/86400000/7);
+            Date startDate = format.parse(task.getTaskStartTime());
+            cal.setTime(startDate);
+            int w1 = cal.get(Calendar.DAY_OF_WEEK) - 1; // 开始日期是周几
+            Date endDate = format.parse(task.getTaskEndTime());
+            cal.setTime(endDate);
+            int w2 = cal.get(Calendar.DAY_OF_WEEK) - 1; // 结束日期是周几
+            if (w1!=w2){
+                    while(w1!=w2){
+                        if(temp.charAt(w1)=='1') res++;
+                        w1=(w1+1)%7;
+                    }
+                }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        int Frec=0;
+        for(int i=0;i<7;i++){
+            if(temp.charAt(i)=='1') Frec++;
+        }
+
+        int checkTimes=weekNum*Frec;
+        res+=checkTimes;
+        task.setCheckTimes(res);
         return taskMapper.insert(task);
     }
 
