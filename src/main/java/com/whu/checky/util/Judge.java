@@ -58,10 +58,15 @@ public class Judge {
 
         for(Check c: checkList){
             try {
-                int supervisorNum = taskMapper.selectById(c.getTaskId()).getSupervisorNum();
+                Task task = taskMapper.selectById(c.getTaskId());
+                int supervisorNum = task.getSupervisorNum();
                 double timeDiff = (new Date().getTime() - sdf.parse(c.getCheckTime()).getTime()) / (1000 * 60 * 60 * 24);//超过一定天数后监督人数不足自动判定
                 if(c.getSuperviseNum()==supervisorNum||timeDiff>=timeoutDay) {
-                    if (c.getPassNum() * 2 >= c.getSuperviseNum()) c.setCheckState("pass");
+                    if (c.getPassNum() * 2 >= c.getSuperviseNum()) {
+                        c.setCheckState("pass");
+                        task.setCheckNum(task.getCheckNum()+1);
+                        taskMapper.updateById(task);
+                    }
                     else c.setCheckState("deny");
 
                     checkMapper.updateById(c);
@@ -117,11 +122,12 @@ public class Judge {
         );
 
         for(Task t:taskList){
-            int count = checkMapper.selectCount(new EntityWrapper<Check>()
-                .eq("check_state","pass")
-                .and()
-                .eq("task_id",t.getTaskId())
-            );
+//            int count = checkMapper.selectCount(new EntityWrapper<Check>()
+//                .eq("check_state","pass")
+//                .and()
+//                .eq("task_id",t.getTaskId())
+//            );
+            int count = t.getCheckNum();
             if(count>=t.getCheckTimes()) {
                 t.setTaskState("success");
                 //成功全额退款
