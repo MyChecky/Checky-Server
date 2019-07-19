@@ -10,7 +10,7 @@ import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Component;
 
 @Mapper
-@Component(value = "AdminMapper")
+@Component(value = "AdministratorMapper")
 public interface AdministratorMapper extends BaseMapper<Administrator> {
     String selectMaxId();
 }

@@ -1,6 +1,7 @@
 package com.whu.checky.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.whu.checky.domain.Essay;
 import com.whu.checky.service.EssayService;
@@ -53,6 +54,16 @@ public class EassyController {
         }
 
     }
+
+
+    //查看自己的动态
+    @RequestMapping("/queryUserEssays")
+    public List<Essay> queryUserEssays(@RequestBody String jsonstr) {
+        JSONObject object= (JSONObject) JSON.parse(jsonstr);
+        String userId= (String)object.get("userId");
+        return essayService.queryUserEssays(userId);
+    }
+
 
     //展示动态
     public List<Essay> displayEassy(){

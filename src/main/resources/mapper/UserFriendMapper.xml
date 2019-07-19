@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.whu.checky.mapper.UserFriendMapper">
+    <update id="addCooNum">
+    UPDATE `user_friend`
+        SET coo_num=coo_num+1
+        WHERE (to_user_id=#{fromUserId} AND from_user_id=#{toUserId})
+        OR (to_user_id=#{toUserId} AND from_user_id=#{fromUserId})
+    </update>
+</mapper>

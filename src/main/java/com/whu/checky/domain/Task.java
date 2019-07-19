@@ -1,5 +1,6 @@
 package com.whu.checky.domain;
 
+import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 
 import java.util.UUID;
@@ -44,11 +45,26 @@ public class Task {
      * 能获得退款的最少打卡次数
      */
     private Integer checkTimes=0;
+
+    /**
+     * 已经打卡的次数
+     */
+    private Integer checkNum=0;
     /**
      * 打卡频率
      * 7位，对应周日至周六，哪一位为1，代表那一天需要打卡
      */
     private String checkFrec;
+
+    private int matchNum;
+
+    public int getMatchNum() {
+        return matchNum;
+    }
+
+    public void setMatchNum(int matchNum) {
+        this.matchNum = matchNum;
+    }
 
     public String getTaskId() {
         return taskId;
@@ -152,5 +168,13 @@ public class Task {
 
     public void setCheckFrec(String checkFrec) {
         this.checkFrec = checkFrec;
+    }
+
+    public Integer getCheckNum() {
+        return checkNum;
+    }
+
+    public void setCheckNum(Integer checkNum) {
+        this.checkNum = checkNum;
     }
 }

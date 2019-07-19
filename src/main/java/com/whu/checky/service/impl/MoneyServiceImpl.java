@@ -3,19 +3,22 @@ package com.whu.checky.service.impl;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.whu.checky.domain.MoneyFlow;
+import com.whu.checky.domain.Task;
+import com.whu.checky.domain.TaskSupervisor;
 import com.whu.checky.mapper.MoneyFlowMapper;
+import com.whu.checky.mapper.TaskMapper;
 import com.whu.checky.service.MoneyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 
 @Service("/moneyService")
 public class MoneyServiceImpl implements MoneyService {
     @Autowired
     private MoneyFlowMapper moneyFlowMapper;
-
-
 
     @Override
     public int addMoneyRecord(MoneyFlow moneyFlow) {
@@ -53,6 +56,5 @@ public class MoneyServiceImpl implements MoneyService {
     public List<MoneyFlow> queryUserScopeMoneyFlow(String startDate, String endDate, String userId) {
         return  moneyFlowMapper.queryUserScopeMoneyFlow(startDate,endDate,userId);
     }
-
 
 }

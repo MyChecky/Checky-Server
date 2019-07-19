@@ -3,14 +3,18 @@ package com.whu.checky.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
+import com.whu.checky.domain.MoneyFlow;
 import com.whu.checky.domain.Task;
 import com.whu.checky.domain.TaskSupervisor;
+import com.whu.checky.service.MoneyService;
 import com.whu.checky.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -21,6 +25,11 @@ public class TaskController {
 
     @Autowired
     private TaskService taskService;
+    @Autowired
+    private MoneyService moneyService;
+
+    private SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd");
+
     //新建打卡
     @RequestMapping("/addTask")
     public String addTask(@RequestBody String jsonstr){
@@ -32,16 +41,30 @@ public class TaskController {
             return "addTaskFail";
         }else {
             //添加成功
-            return "addTaskSuccess";
+            //微信支付相关
+            //在Money表当中插入一条用户交付押金的记录
+            MoneyFlow moneyFlow=new MoneyFlow();
+            moneyFlow.setToUserId("System");
+            moneyFlow.setFromUserId(task.getUserId());
+            moneyFlow.setFlowMoney(task.getTaskMoney());
+            moneyFlow.setTaskId(task.getTaskId());
+            moneyFlow.setFlowTime(ft.format(new Date()));
+            moneyFlow.setFlowId(UUID.randomUUID().toString());
+            int addMoneyRes=moneyService.addMoneyRecord(moneyFlow);
+            if(addMoneyRes==1) {
+                return "addTaskSuccess";
+            }else{
+                return "insertMoneyFlowError";
+            }
         }
-
     }
 
     //查询属于某个用户的tasks
     @RequestMapping("/queryUserTasks")
     public List<Task> queryUserTasks(@RequestBody String jsonstr){
-        String userid= (String) JSON.parse(jsonstr);
-        return taskService.queryUserTasks(userid,null);
+        JSONObject object= (JSONObject) JSON.parse(jsonstr);
+        String userId= (String) object.get("userId");
+        return taskService.queryUserTasks(userId,null);
     }
 
 
@@ -63,8 +86,9 @@ public class TaskController {
     //查询某个task
     @RequestMapping("/queryTask")
     public Task queryTask(@RequestBody String jsonstr){
-        String taskid= (String) JSON.parse(jsonstr);
-        Task res=taskService.queryTask(taskid);
+        JSONObject object= (JSONObject) JSON.parse(jsonstr);
+        String taskId= (String)object.get("taskId");
+        Task res=taskService.queryTask(taskId);
         if(res==null){
             return null;
         }else {
@@ -94,8 +118,6 @@ public class TaskController {
         JSONObject object= (JSONObject) JSON.parse(body);
         String taskId= (String) object.get("taskId");
 
-        HashMap<String, Double> distribute = taskService.getDistribute(taskId);
-
-        return distribute;
+        return taskService.distribute(taskId);
     }
 }

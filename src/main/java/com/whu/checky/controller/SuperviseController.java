@@ -5,6 +5,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.whu.checky.domain.Check;
 import com.whu.checky.domain.Supervise;
+import com.whu.checky.domain.SupervisorState;
+import com.whu.checky.domain.TaskSupervisor;
+import com.whu.checky.mapper.TaskSupervisorMapper;
+import com.whu.checky.service.CheckService;
 import com.whu.checky.service.SuperviseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/supervise")
@@ -19,12 +24,28 @@ public class SuperviseController {
 
     @Autowired
     private SuperviseService superviseService;
+    @Autowired
+    private TaskSupervisorMapper taskSuspervisorMapper;
+    @Autowired
+    private CheckService checkService;
 
     //监督者对一个Check进行验证
     @RequestMapping("/addSupervise")
     public void addSupervise(@RequestBody String jsonstr){
         Supervise supervise= JSON.parseObject(jsonstr,new TypeReference<Supervise>(){});
+        supervise.setSuperviseId(UUID.randomUUID().toString());
         superviseService.addSupervise(supervise);
+        String checkId=supervise.getCheckId();
+        if(supervise.getSuperviseState().equals("pass")){
+            //如果通过,对应check的supervise_num+1
+            //同时pass_num也+1
+            checkService.updatePassSuperviseCheck(checkId);
+        }else {
+            //如果没有通过，那么只有check的supervise_num+1
+            checkService.updateDenySuperviseCheck(checkId);
+        }
+
+
     }
 
 
@@ -32,10 +53,10 @@ public class SuperviseController {
     @RequestMapping("/needToSupervise")
     public List<Check> needToSupervise(@RequestBody String jsonstr){
         JSONObject object= (JSONObject) JSON.parse(jsonstr);
-        String supervisorId= (String) object.get("userid");
-        String date1= (String) object.get("date1");
-        String date2= (String) object.get("date2");
-        return superviseService.userNeedToSupervise(supervisorId,date1,date2);
+        String supervisorId= (String) object.get("userId");
+        String startDate= (String) object.get("startDate");
+        String endDate= (String) object.get("endDate");
+        return superviseService.userNeedToSupervise(supervisorId,startDate,endDate);
 
     }
 
@@ -75,6 +96,16 @@ public class SuperviseController {
     public void modifySuperviseToFail(@RequestBody String jsonstr){
         String superviseId= (String) JSON.parse(jsonstr);
         superviseService.updateSupervise(superviseId,"Fail");
+    }
+
+
+
+    @RequestMapping("/querySupervisorState")
+    public List<SupervisorState> querySuperviseState(@RequestBody String jsonstr){
+        JSONObject object= (JSONObject) JSON.parse(jsonstr);
+        String taskId= (String) object.get("taskId");
+        String checkId= (String) object.get("checkId");
+        return superviseService.querySuperviseState(taskId,checkId);
     }
 
 }

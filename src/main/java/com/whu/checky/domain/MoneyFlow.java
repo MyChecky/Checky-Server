@@ -1,11 +1,16 @@
 package com.whu.checky.domain;
 
+import com.baomidou.mybatisplus.annotations.TableName;
+
+@TableName("moneyflow")
 public class MoneyFlow {
     private String flowId;
 
     private String fromUserId;
 
     private String toUserId;
+
+    private String taskId;
 
     private Double flowMoney;
 
@@ -33,6 +38,14 @@ public class MoneyFlow {
 
     public void setToUserId(String toUserId) {
         this.toUserId = toUserId;
+    }
+
+    public String getTaskId() {
+        return taskId;
+    }
+
+    public void setTaskId(String taskId) {
+        this.taskId = taskId;
     }
 
     public Double getFlowMoney() {

@@ -1,5 +1,7 @@
 package com.whu.checky.domain;
 
+import com.baomidou.mybatisplus.annotations.TableField;
+
 /**
  * 表示好友关系的记录
  */
@@ -8,6 +10,8 @@ public class UserFriend {
     private String fromUserId;
     private String cooNum;
     private String addTime;
+    @TableField(exist = false)
+    private String friendName;
 
     public String getToUserId() {
         return toUserId;
@@ -39,5 +43,13 @@ public class UserFriend {
 
     public void setAddTime(String addTime) {
         this.addTime = addTime;
+    }
+
+    public String getFriendName() {
+        return friendName;
+    }
+
+    public void setFriendName(String friendName) {
+        this.friendName = friendName;
     }
 }

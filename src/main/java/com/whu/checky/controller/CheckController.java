@@ -9,6 +9,7 @@ import com.whu.checky.domain.Record;
 import com.whu.checky.domain.Task;
 import com.whu.checky.service.CheckService;
 import com.whu.checky.service.FileService;
+import com.whu.checky.service.RecordService;
 import com.whu.checky.service.TaskService;
 import com.whu.checky.util.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,9 @@ public class CheckController {
 
     @Autowired
     private TaskService taskService;
+
+    @Autowired
+    private RecordService recordService;
 
     @PostMapping("/addCheck")
     public HashMap<String,String> addCheck(@RequestBody String body){
@@ -72,9 +76,29 @@ public class CheckController {
     }
 
     @PostMapping("/listCheck")
-    public List<Check> listCheck(@RequestBody String body){
-        String userId = (String) JSON.parse(body);
-        return checkService.queryCheck("user_id", userId);
+    public List<CheckHistory> listCheck(@RequestBody String body){
+        JSONObject object = JSONObject.parseObject(body);
+        String userId = (String) object.get("userId");
+        List<Check> checks=checkService.queryCheckByUserId(userId);
+        List<CheckHistory> res=new ArrayList<CheckHistory>();
+        for(Check check:checks){
+            List<Record> records=recordService.getRecordsByCheckId(check.getCheckId());
+            Record textRecord=null;
+            for (Record record: records){
+                if (record.getRecordType().equals("text")){
+                    textRecord=record;
+                }
+
+            }
+            records.remove(textRecord);
+            CheckHistory checkHistory=new CheckHistory();
+            check.setTaskTitle(taskService.getTitleById(check.getTaskId()));
+            checkHistory.setCheck(check);
+            checkHistory.setImages(records);
+            checkHistory.setText(textRecord);
+            res.add(checkHistory);
+        }
+        return res;
     }
 
     @PostMapping("/listDayCheck")
@@ -89,6 +113,7 @@ public class CheckController {
         List<DayCheckAndTask> unKnownChecks = new ArrayList<>();
 
         for(Task t:taksList){
+            if(t.getTaskState().equals("nomatch")) continue;
             Check check = checkService.getCheckByTask(t.getTaskId(),date);
 //            List<Object> temp = new ArrayList<>();
 //            temp.add(t);
@@ -287,5 +312,38 @@ class DayCheckAndTask{
 
     public void setCheckId(String checkId) {
         this.checkId = checkId;
+    }
+}
+
+
+
+class CheckHistory{
+    private Check check;
+    private List<Record> images;
+    private Record text;
+
+    public Check getCheck() {
+        return check;
+    }
+
+    public void setCheck(Check check) {
+        this.check = check;
+    }
+
+
+    public List<Record> getImages() {
+        return images;
+    }
+
+    public void setImages(List<Record> images) {
+        this.images = images;
+    }
+
+    public Record getText() {
+        return text;
+    }
+
+    public void setText(Record text) {
+        this.text = text;
     }
 }

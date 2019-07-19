@@ -22,4 +22,18 @@
         #{checkTime,jdbcType=VARCHAR}
         )
     </insert>
+
+    <update id="updatePassSuperviseCheck">
+    UPDATE `check`
+    SET supervise_num=supervise_num+1,
+        pass_num=pass_num+1
+    WHERE check_id=#{checkId}
+    </update>
+
+    <update id="updateDenySuperviseCheck">
+    UPDATE `check`
+    SET supervise_num=supervise_num+1
+    WHERE check_id=#{checkId}
+    </update>
+
 </mapper>

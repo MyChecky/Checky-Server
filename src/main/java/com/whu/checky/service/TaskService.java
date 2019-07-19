@@ -10,10 +10,11 @@ public interface TaskService {
     Integer addTask(Task task);
     Integer delTask(String taskid);
     Integer updataTask(Task task);
+    String getTitleById(String taskId);
     List<Task> queryUserTasks(String userid,String date);
     List<Task> listTasks();
     Task queryTask(String taskid);
-    HashMap<String,Double> getDistribute(String taskid);
+    HashMap<String,Double> distribute(String taskid);
 //    //打卡日历
 //    void getTasks();
 //    //打卡清单和历史记录

@@ -13,8 +13,8 @@ Spring:
     #driver-class-name: com.mysql.jdbc.Driver
     driver-class-name: net.sf.log4jdbc.DriverSpy
     hikari:
-      max-lifetime: 1765000
-      maximum-pool-size: 15
+      max-lifetime: 500000
+      maximum-pool-size: 20
 
 
 mybatis-plus:
@@ -31,6 +31,16 @@ xcloud:
 #  level:
 #    com.whu.checky.mapper: debug
 
+jobs:
+    match:
+        cron: 0 05 13 * * *
+        maxNum: 3
+    judge:
+        check:
+            timeoutDay: 3
+            cron: 0 23 16 * * *
+        task:
+            cron: 0 10 16 * * *
 spring:
     servlet:
         multipart:

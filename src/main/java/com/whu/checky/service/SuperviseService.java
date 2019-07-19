@@ -2,6 +2,8 @@ package com.whu.checky.service;
 
 import com.whu.checky.domain.Check;
 import com.whu.checky.domain.Supervise;
+import com.whu.checky.domain.SupervisorState;
+import com.whu.checky.domain.TaskSupervisor;
 
 import java.util.List;
 
@@ -19,5 +21,8 @@ public interface SuperviseService {
     Supervise querySupervise(String superviseId);
 
 
-    List<Check> userNeedToSupervise(String userid, String date1, String date2);
+    List<Check> userNeedToSupervise(String userId, String startDate, String endDate);
+
+    //监督者监督状态
+    List<SupervisorState> querySuperviseState(String taskId, String checkId);
 }
