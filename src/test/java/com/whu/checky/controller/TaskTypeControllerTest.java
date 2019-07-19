@@ -42,7 +42,7 @@ public class TaskTypeControllerTest {
         ObjectMapper mapper=new ObjectMapper();
         TaskType type=new TaskType();
         type.setTypeId(UUID.randomUUID().toString());
-        type.setTypeContent("早起");
+        type.setTypeContent("打游戏");
         String json=mapper.writeValueAsString(type);
         System.out.println("before--------------------post");
         System.out.println(json.toString());

@@ -153,5 +153,10 @@ public class TaskServiceImpl implements TaskService {
         return result;
     }
 
+    @Override
+    public String getTitleById(String taskId){
+        return taskMapper.getTitleById(taskId);
+    }
+
 
 }

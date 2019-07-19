@@ -12,4 +12,5 @@ import java.util.List;
 @Component(value = "taskMapper")
 public interface TaskMapper extends BaseMapper<Task> {
     List<Task> queryUserTasks(@Param("userId") String userId, @Param("date") String date);
+    String getTitleById(@Param("taskId")String taskId);
 }

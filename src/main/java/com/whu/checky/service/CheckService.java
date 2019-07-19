@@ -12,6 +12,8 @@ public interface CheckService {
     //查询打卡
     List<Check> queryCheck(String column, String checkId);
 
+    List<Check> queryCheckByUserId(String userId);
+
     void getCheckHistory();
 
     void updateCheck(Check check);

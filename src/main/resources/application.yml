@@ -33,7 +33,7 @@ xcloud:
 
 jobs:
     match:
-        cron: 0 14 16 * * *
+        cron: 0 05 13 * * *
         maxNum: 3
     judge:
         check:

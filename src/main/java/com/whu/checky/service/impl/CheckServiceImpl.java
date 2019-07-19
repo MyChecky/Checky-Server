@@ -33,6 +33,14 @@ public class CheckServiceImpl implements CheckService {
     }
 
     @Override
+    public List<Check> queryCheckByUserId(String userId) {
+        return mapper.selectList(new EntityWrapper<Check>()
+                .eq("user_id",userId).orderBy("check_time"));
+    }
+
+
+
+    @Override
     public void getCheckHistory() {
 
     }

@@ -56,16 +56,6 @@ public class Task {
      */
     private String checkFrec;
 
-    private Integer checkNum=0;
-
-    public Integer getCheckNum() {
-        return checkNum;
-    }
-
-    public void setCheckNum(Integer checkNum) {
-        this.checkNum = checkNum;
-    }
-
     private int matchNum;
 
     public int getMatchNum() {

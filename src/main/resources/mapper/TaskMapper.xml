@@ -8,4 +8,9 @@ taskState,task_money AS taskMoney,supervisor_num AS supervisorNum,refund_money A
 AS checkTimes,check_frec AS checkFrec FROM task WHERE (user_id = #{userId}
 AND date(#{date}) between task_start_time and task_end_time)
     </select>
+    <select id="getTitleById" resultType="String">
+        SELECT task_title
+        FROM task
+        WHERE task_id=#{taskId}
+    </select>
 </mapper>
