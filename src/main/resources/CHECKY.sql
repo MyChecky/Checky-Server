@@ -1,5 +1,4 @@
-/*!40100 DEFAULT CHARACTER SET utf8 */;
-CREATE DATABASE `checky`
+CREATE DATABASE `checky`;
 
 CREATE table checky.user(
 user_id varchar(36) not null unique,
@@ -48,8 +47,9 @@ task_state varchar(10) not null check(task_state = 'success' or 'fail' or 'durin
 task_money double not null default 0,
 supervisor_num int not null default 0,
 refund_money double,
+check_num int not null,
 check_times int not null default 0,
-check_frec varchar(7) not null default "0000000",
+check_frec varchar(7) not null default '0000000',
 constraint `pk_task` primary key(task_id),
 constraint `fk_task_to_user` foreign key(user_id) references checky.user(user_id) on update cascade,  
 constraint `fk_task_to_type` foreign key(type_id) references checky.task_type(type_id) on update cascade
@@ -60,7 +60,7 @@ check_id varchar(36) not null unique,
 user_id varchar(36) not null,
 task_id varchar(36) not null,
 check_time varchar(19) not null,
-check_state varchar(10) check(check_stete = 'pass' or 'deny'),
+check_state varchar(10) check(checky.check.check_state = 'pass' or 'deny'),
 supervise_num int not null default 0,
 pass_num int not null default 0,
 constraint `pk_check` primary key(check_id),
@@ -101,6 +101,10 @@ constraint `pk_supervise` primary key(supervise_id),
 constraint `fk_supervise_to_check` foreign key(check_id) references checky.check(check_id) on update cascade,
 constraint `fk_supervise_to_supervisor` foreign key(supervisor_id) references checky.task_supervisor(supervisor_id) on update cascade 
 );
+
+CREATE TRIGGER `checky`.`updateUserAfterInsert` AFTER INSERT ON `supervise` FOR EACH ROW
+update checky.user set checky.user.supervise_num = checky.user.supervise_num + 1
+where user.user_id = new.supervisor_id;
 
 create table checky.appeal(
 appeal_id varchar(36) not null unique,
