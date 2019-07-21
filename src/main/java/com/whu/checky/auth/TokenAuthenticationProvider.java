@@ -37,6 +37,7 @@ public class TokenAuthenticationProvider implements AuthenticationProvider {
 
         UserDetails user = tokenService.authenticateToken(token,id);
 
+        if(user == null) return authentication;
         Authentication auth = new PreAuthenticatedAuthenticationToken(
                 user, token, user.getAuthorities());
         auth.setAuthenticated(true);

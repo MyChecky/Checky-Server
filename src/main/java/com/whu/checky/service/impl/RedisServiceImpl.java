@@ -38,7 +38,8 @@ public class RedisServiceImpl implements RedisService {
 
     @Override
     public void delSessionId(String sessionId) {
-        stringRedisTemplate.delete(sessionId);
+//        stringRedisTemplate.delete(sessionId);
+        redisTemplate.delete(sessionId);
     }
 
     @Override

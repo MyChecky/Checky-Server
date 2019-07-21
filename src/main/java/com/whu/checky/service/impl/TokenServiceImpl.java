@@ -18,31 +18,36 @@ public class TokenServiceImpl implements TokenService {
     @Override
     public UserDetails authenticateToken(@NonNull String token,String id) {
         Object obj = redisService.getUserOrAdminBySessionId(token);
-        if(obj==null) return null;
+        if(obj!=null) {
+            if (obj instanceof com.whu.checky.domain.User) {
+                com.whu.checky.domain.User user = (com.whu.checky.domain.User) obj;
+                if (id.equals(user.getUserId())) {
+                    return User.builder()
+                            .username(id)
+                            .password("")
+                            .authorities(Role.USER)
+                            .build();
+                }
+            } else if (obj instanceof Administrator) {
+                Administrator admin = (Administrator) obj;
+                if (id.equals(admin.getUserId())) {
+                    return User.builder()
+                            .username(id)
+                            .password("")
+                            .authorities(Role.ADMIN,Role.USER)
+                            .build();
+                }
+            }
+        }
 
-        if (obj instanceof com.whu.checky.domain.User) {
-            com.whu.checky.domain.User user = (com.whu.checky.domain.User) obj;
-            if(id.equals(user.getUserId())) {
-                return User.builder()
-                        .username(id)
-                        .password("")
-                        .authorities(Role.USER)
-                        .build();
-            }
-        }
-        else if(obj instanceof Administrator){
-            Administrator admin = (Administrator) obj;
-            if(id.equals(admin.getUserName())){
-                return User.builder()
-                        .username(id)
-                        .password("")
-                        .authorities(Role.ADMIN)
-                        .build();
-            }
-        }
+        return User.builder()
+                .username(id)
+                .password("")
+                .authorities(Role.API).build();
+
 
 //        throw ResultException.of(MyError.TOKEN_NOT_FOUND)
 //                .errorData(token);
-        return null;
+//        return null;
     }
 }
