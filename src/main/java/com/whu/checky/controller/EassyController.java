@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -19,10 +21,13 @@ public class EassyController {
     @Autowired
     private EssayService essayService;
 
+    private SimpleDateFormat dateFormat= new SimpleDateFormat("yyyy-MM-dd :hh:mm:ss");
     //发表动态
+    @RequestMapping("/addEassy")
     public void addEassy(@RequestBody String jsonstr){
         Essay essay= JSON.parseObject(jsonstr,new TypeReference<Essay>(){});
         essay.setEssayId(UUID.randomUUID().toString());
+        essay.setEssayTime(dateFormat.format(new Date()));
         int result=essayService.addEssay(essay);
         if(result==1){
             //插入成功

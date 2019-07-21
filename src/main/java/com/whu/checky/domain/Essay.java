@@ -13,7 +13,7 @@ public class Essay {
     /**
      * 点赞次数
      */
-    private Integer likeNum;
+    private Integer likeNum=0;
     /**
      * 乐观锁字段
      */
