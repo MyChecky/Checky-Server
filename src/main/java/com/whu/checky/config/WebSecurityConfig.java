@@ -1,5 +1,6 @@
 package com.whu.checky.config;
 
+import com.whu.checky.auth.BodyReaderFilter;
 import com.whu.checky.auth.TokenAuthenticationFilter;
 import com.whu.checky.auth.TokenAuthenticationProvider;
 import com.whu.checky.service.TokenService;
@@ -33,13 +34,17 @@ public class WebSecurityConfig {
         @Override
         protected void configure(HttpSecurity http) throws Exception {
             http
-                    .antMatcher("/cancel-resources/**")
+
+//                    .antMatcher("/**")
+                    .addFilterAfter(new BodyReaderFilter(),BasicAuthenticationFilter.class)
                     .addFilterAfter(new TokenAuthenticationFilter(),
                             BasicAuthenticationFilter.class)
 //                    .addFilterAfter(new ResultExceptionTranslationFilter(),
 //                            ExceptionTranslationFilter.class)
                     .authorizeRequests()
-                    .anyRequest().hasRole("API")
+                    .antMatchers("/wechat/login","/admin/login","/resources/**").permitAll()
+                    .antMatchers("/admin","/**/admin/**").hasRole("ADMIN")
+                    .antMatchers("/**").hasRole("USER")
                     .and()
                     .csrf()
                     .disable()

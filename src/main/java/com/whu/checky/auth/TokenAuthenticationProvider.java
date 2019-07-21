@@ -2,6 +2,7 @@ package com.whu.checky.auth;
 
 
 import com.whu.checky.service.TokenService;
+import javafx.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
@@ -26,13 +27,15 @@ public class TokenAuthenticationProvider implements AuthenticationProvider {
             return authentication;
         }
 
-        String token = authentication.getCredentials().toString();
+        Pair<String,String> pair = (Pair)(authentication.getCredentials());
+        String token = pair.getKey();
+        String id = pair.getValue();
 
         if (token==null||token.equals("")) {
             return authentication;
         }
 
-        UserDetails user = tokenService.authenticateToken(token);
+        UserDetails user = tokenService.authenticateToken(token,id);
 
         Authentication auth = new PreAuthenticatedAuthenticationToken(
                 user, token, user.getAuthorities());
