@@ -17,10 +17,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @RestController
 @RequestMapping("/check")
@@ -236,13 +234,14 @@ public class CheckController {
                     String type = FileUtil.getFileTypePostFix(file.getOriginalFilename());
                     String fileName = UUID.randomUUID().toString() + type;
 
+                    String day = new SimpleDateFormat("yyyyMMdd").format(new Date());
 //                    String filePath = request.getSession().getServletContext().getRealPath("/");
-                    String filePath = uploadConfig.getUploadPath() + contentType + "/";
+                    String filePath = uploadConfig.getUploadPath()  + contentType + "/" + day+ "/";
 //                    System.out.println(filePath+fileName);
 
                     FileUtil.uploadFile(file.getBytes(), filePath, fileName);
                     Record record = new Record();
-                    record.setFileAddr("resources/"+ contentType + "/"+fileName);
+                    record.setFileAddr("resources/" + contentType + "/" + day + "/"+fileName);
                     record.setRecordType(file.getContentType());
                     record.setCheckId(request.getParameter("checkId"));
                     fileService.saveFile2Database(record);

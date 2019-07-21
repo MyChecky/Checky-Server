@@ -63,7 +63,23 @@ public class User implements Serializable{
 
     private String sessionId;
 
+    private int userCredit;
 
+    public void setLongtitude(double longtitude) {
+        this.longtitude = longtitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public int getUserCredit() {
+        return userCredit;
+    }
+
+    public void setUserCredit(int userCredit) {
+        this.userCredit = userCredit;
+    }
 
     private String userTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
 

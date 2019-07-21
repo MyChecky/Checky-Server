@@ -42,7 +42,8 @@ public class TestRedis {
         // set
         operations.set("obj.user.key", user);
         // get
-        User user2 = operations.get("obj.user.key");
+        Object user2 = operations.get("obj.user.key");
+        assert user2 instanceof User;
     }
 
 }

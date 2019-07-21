@@ -68,12 +68,12 @@ public class WechatController {
             updateFromWeixin(check,user);
             userService.updateUser(check);
         }
-        redisService.saveSessionId(check.getSessionId(),check.getUserId());
+        redisService.saveUserOrAdminBySessionId(skey,check);
 
         HashMap<String,String> ret = new HashMap<>();
 //        ret.put("states",sessionKey);
         ret.put("states",openid);
-        ret.put("sessionKey",sessionKey);
+        ret.put("sessionKey",skey);
 //        ret.put("openId",openid);
         return ret;
     }
