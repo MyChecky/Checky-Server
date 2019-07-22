@@ -1,11 +1,15 @@
 package com.whu.checky.domain;
 
+import com.baomidou.mybatisplus.annotations.TableId;
+import org.springframework.data.annotation.Id;
+
 public class Essay {
+    @TableId
     private String essayId;
 
     private String userId;
 
-    private String essayTittle;
+//    private String essayTittle;
 
     private String essayContent;
 
@@ -14,14 +18,19 @@ public class Essay {
      * 点赞次数
      */
     private Integer likeNum=0;
+
+    /**
+     * 评论次数
+     */
+    private Integer commentNum=0;
     /**
      * 乐观锁字段
      */
     private Integer version;
-    /**
-     * 可能有关联的打卡记录
-     */
-    private String recordId;
+//    /**
+//     * 可能有关联的打卡记录
+//     */
+//    private String recordId="";
     /**
      * 经度
      */
@@ -47,13 +56,13 @@ public class Essay {
         this.userId = userId;
     }
 
-    public String getEssayTittle() {
-        return essayTittle;
-    }
-
-    public void setEssayTittle(String essayTittle) {
-        this.essayTittle = essayTittle;
-    }
+//    public String getEssayTittle() {
+//        return essayTittle;
+//    }
+//
+//    public void setEssayTittle(String essayTittle) {
+//        this.essayTittle = essayTittle;
+//    }
 
     public String getEssayContent() {
         return essayContent;
@@ -79,6 +88,14 @@ public class Essay {
         this.likeNum = likeNum;
     }
 
+    public Integer getCommentNum() {
+        return commentNum;
+    }
+
+    public void setCommentNum(Integer commentNum) {
+        this.commentNum = commentNum;
+    }
+
     public Integer getVersion() {
         return version;
     }
@@ -87,13 +104,13 @@ public class Essay {
         this.version = version;
     }
 
-    public String getRecordId() {
-        return recordId;
-    }
-
-    public void setRecordId(String recordId) {
-        this.recordId = recordId;
-    }
+//    public String getRecordId() {
+//        return recordId;
+//    }
+//
+//    public void setRecordId(String recordId) {
+//        this.recordId = recordId;
+//    }
 
     public String getLongtitude() {
         return longtitude;

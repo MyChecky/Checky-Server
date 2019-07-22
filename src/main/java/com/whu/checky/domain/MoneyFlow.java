@@ -1,9 +1,11 @@
 package com.whu.checky.domain;
 
+import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 
 @TableName("moneyflow")
 public class MoneyFlow {
+    @TableId
     private String flowId;
 
     private String fromUserId;

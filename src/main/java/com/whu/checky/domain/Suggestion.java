@@ -1,9 +1,12 @@
 package com.whu.checky.domain;
 
+import com.baomidou.mybatisplus.annotations.TableId;
+
 /**
  * 生成type的建议
  */
 public class Suggestion {
+    @TableId
     private String suggestionId;
 
     private String userId;

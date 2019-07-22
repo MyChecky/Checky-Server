@@ -11,7 +11,7 @@ public interface UserService {
 //    boolean updateSessionID(User user,String id);
     void updateUser(User user);
     //查询用户
-    User queryUser(String user);
+    User queryUser(String userId);
     //删除用户
     void deleteUser();
 

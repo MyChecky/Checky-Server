@@ -44,4 +44,9 @@ public class EssayServiceImpl implements EssayService {
         .eq("user_id",userId)
         .orderBy("essay_time"));
     }
+
+    @Override
+    public Essay queryEssayById(String essayId) {
+        return essayMapper.selectById(essayId);
+    }
 }
