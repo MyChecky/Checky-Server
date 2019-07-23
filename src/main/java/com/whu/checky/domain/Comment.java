@@ -1,5 +1,6 @@
 package com.whu.checky.domain;
 
+import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 import org.springframework.data.annotation.Id;
 
@@ -19,6 +20,16 @@ public class Comment {
      * 评论内容
      */
     private String commentContent;
+    /**
+     * 评论人名字
+     */
+    @TableField(exist = false)
+    private String userName;
+    /**
+     * 评论人头像
+     */
+    @TableField(exist = false)
+    private String userAvatar;
 
     public String getCommentId() {
         return commentId;
@@ -42,6 +53,22 @@ public class Comment {
 
     public void setEssayId(String essayId) {
         this.essayId = essayId;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getUserAvatar() {
+        return userAvatar;
+    }
+
+    public void setUserAvatar(String userAvatar) {
+        this.userAvatar = userAvatar;
     }
 
     public String getCommentTime() {

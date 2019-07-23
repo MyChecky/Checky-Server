@@ -60,16 +60,32 @@ public class EssayController {
     }
 
     //删除动态
-    @RequestMapping("/delEssay")
-    public void delEassy(@RequestBody String jsonstr){
+    @RequestMapping("/deleteEssay")
+    public JSONObject deleteEssay(@RequestBody String jsonstr){
         JSONObject object= (JSONObject) JSON.parse(jsonstr);
         String essayId= (String)object.get("essayId");
+//        List<Record> records=recordService.getRecordsByEssayId(essayId);
+//        for (Record record:records){
+//            recordService.deleteRecordById(record.getRecordId());
+//        }
+//        List<Comment> comments=commentService.queryCommentByEssayId(essayId);
+//        for (Comment comment:comments){
+//            commentService.deleteComment(comment.getCommentId());
+//        }
+////        List<EssayLike> likes=likeService.(essayId);
+//        for (Comment comment:comments){
+//            commentService.deleteComment(comment.getCommentId());
+//        }
         int result=essayService.deleteEssay(essayId);
+        JSONObject res=new JSONObject();
         if(result==1){
-            //删除成功
+            object.put("state","OK");
+            //插入成功
         }else {
-            //删除失败
+            object.put("state","FAIL");
+            //插入失败
         }
+        return res;
     }
 
     //修改动态
@@ -91,11 +107,15 @@ public class EssayController {
     public List<EssayAndRecord> queryUserEssays(@RequestBody String jsonstr) {
         JSONObject object= (JSONObject) JSON.parse(jsonstr);
         String userId= (String)object.get("userId");
+        User publisher=userService.queryUser(userId);
         List<EssayAndRecord> res=new ArrayList<EssayAndRecord>();
         List<Essay> essays=essayService.queryUserEssays(userId);
         for (Essay essay:essays){
             List<Record> records=recordService.getRecordsByEssayId(essay.getEssayId());
             EssayAndRecord essayAndRecord=new EssayAndRecord();
+            essayAndRecord.setUserId(publisher.getUserId());
+            essayAndRecord.setUserAvatar(publisher.getUserAvatar());
+            essayAndRecord.setUserName(publisher.getUserName());
             essayAndRecord.setImg(records);
             essayAndRecord.setEssay(essay);
             res.add(essayAndRecord);
@@ -108,38 +128,43 @@ public class EssayController {
     public EssayAndRecord queryEssayById(@RequestBody String jsonstr) {
         JSONObject object= (JSONObject) JSON.parse(jsonstr);
         String essayId= (String)object.get("essayId");
+        String userId= (String)object.get("userId");
         Essay essay=essayService.queryEssayById(essayId);
         List<Record> records=recordService.getRecordsByEssayId(essay.getEssayId());
-        User user=userService.queryUser(essay.getUserId());
+        User publisher=userService.queryUser(essay.getUserId());
         EssayAndRecord essayAndRecord=new EssayAndRecord();
-        essayAndRecord.setUserId(user.getUserId());
-        essayAndRecord.setUserAvatar(user.getUserAvatar());
-        essayAndRecord.setUserName(user.getUserName());
+        essayAndRecord.setUserId(publisher.getUserId());
+        essayAndRecord.setUserAvatar(publisher.getUserAvatar());
+        essayAndRecord.setUserName(publisher.getUserName());
         essayAndRecord.setImg(records);
         essayAndRecord.setEssay(essay);
         //此处有问题还没有查询
-        essayAndRecord.setLike(true);
+        EssayLike essayLike=likeService.queryLike(userId,essay.getEssayId());
+        boolean like=essayLike==null?false:true;
+        essayAndRecord.setLike(like);
         return essayAndRecord;
     }
 
 
     //展示动态
     @RequestMapping("/displayEssay")
-    public List<EssayAndRecord> displayEssay(){
+    public List<EssayAndRecord> displayEssay(@RequestBody String jsonstr){
+        JSONObject object= (JSONObject) JSON.parse(jsonstr);
+        String userId= (String)object.get("userId");
         List<EssayAndRecord> res=new ArrayList<EssayAndRecord>();
         List<Essay> essays=essayService.displayEssay();
         for (Essay essay:essays){
             List<Record> records=recordService.getRecordsByEssayId(essay.getEssayId());
-            User user=userService.queryUser(essay.getUserId());
+            User publisher=userService.queryUser(essay.getUserId());
             EssayAndRecord essayAndRecord=new EssayAndRecord();
-            essayAndRecord.setUserId(user.getUserId());
-            essayAndRecord.setUserAvatar(user.getUserAvatar());
-            essayAndRecord.setUserName(user.getUserName());
+            essayAndRecord.setUserId(publisher.getUserId());
+            essayAndRecord.setUserAvatar(publisher.getUserAvatar());
+            essayAndRecord.setUserName(publisher.getUserName());
             essayAndRecord.setImg(records);
             essayAndRecord.setEssay(essay);
             //此处有问题还没有查询
-            boolean like=likeService.queryLike
-                    (essay.getUserId(),essay.getEssayId())==0?false:true;
+            EssayLike essayLike=likeService.queryLike(userId,essay.getEssayId());
+            boolean like=essayLike==null?false:true;
             essayAndRecord.setLike(like);
             res.add(essayAndRecord);
         }
@@ -149,9 +174,9 @@ public class EssayController {
     //点赞
     @RequestMapping("/like")
     public JSONObject likeEssay(@RequestBody String jsonstr){
-        Like like= JSON.parseObject(jsonstr,new TypeReference<Like>(){});
-        like.setAddTime(dateFormat.format(new Date()));
-        int res=likeService.Like(like);
+        EssayLike essayLike= JSON.parseObject(jsonstr,new TypeReference<EssayLike>(){});
+        essayLike.setAddTime(dateFormat.format(new Date()));
+        int res=likeService.Like(essayLike);
         JSONObject object=new JSONObject();
         if(res==1){
             //点赞成功
@@ -317,7 +342,7 @@ class EssayAndRecord{
         this.img = img;
     }
 
-    public boolean isLike() {
+    public boolean getLike() {
         return Like;
     }
 
@@ -325,3 +350,4 @@ class EssayAndRecord{
         Like = like;
     }
 }
+

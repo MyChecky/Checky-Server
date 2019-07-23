@@ -35,14 +35,14 @@ public class EssayServiceImpl implements EssayService {
 
     @Override
     public List<Essay> displayEssay() {
-        return essayMapper.selectList(new EntityWrapper<Essay>().orderBy("essay_time").orderBy("like_num"));
+        return essayMapper.selectList(new EntityWrapper<Essay>().orderBy("essay_time",false).orderBy("like_num"));
     }
 
     @Override
     public List<Essay> queryUserEssays(String userId) {
         return essayMapper.selectList(new EntityWrapper<Essay>()
         .eq("user_id",userId)
-        .orderBy("essay_time"));
+        .orderBy("essay_time",false));
     }
 
     @Override

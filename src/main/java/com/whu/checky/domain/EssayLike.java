@@ -2,7 +2,7 @@ package com.whu.checky.domain;
 
 import com.baomidou.mybatisplus.annotations.TableId;
 
-public class Like {
+public class EssayLike {
     @TableId
     private String userId;
     @TableId
