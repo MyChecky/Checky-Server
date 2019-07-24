@@ -43,12 +43,12 @@ public class WebSecurityConfig {
 //                            ExceptionTranslationFilter.class)
                     .authorizeRequests()
 
-                    .antMatchers("/**").permitAll()
+//                    .antMatchers("/**").permitAll()
 
 //                    暂时关闭权限认证
-//                    .antMatchers("/wechat/login","/admin/login","/resources/**").permitAll()
-//                    .antMatchers("/admin","/**/admin/**").hasRole("ADMIN")
-//                    .antMatchers("/**").hasRole("USER")
+                    .antMatchers("/wechat/login","/admin/login","/resources/**").permitAll()
+                    .antMatchers("/admin","/**/admin/**").hasRole("ADMIN")
+                    .antMatchers("/**").hasRole("USER")
                     .and()
                     .csrf()
                     .disable()

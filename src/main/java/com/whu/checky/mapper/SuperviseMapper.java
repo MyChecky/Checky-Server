@@ -15,6 +15,6 @@ public interface SuperviseMapper extends BaseMapper<Supervise> {
     List<String> allNeedToCheck(@Param("userId") String userId,@Param("startDate") String startDate,@Param("endDate") String endDate);
     void updateState(String superviseId,String newState);
 //    String getContent(String taskId);
-    String getStateByIds(String supervisorId,String checkId);
+    String getStateByIds(@Param("supervisorId")String supervisorId,@Param("checkId")String checkId);
     String haveSupervised(@Param("checkId")String checkId,@Param("userId")String userId);
 }
