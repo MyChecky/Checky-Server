@@ -1,6 +1,6 @@
 package com.whu.checky.config;
 
-import com.whu.checky.auth.BodyReaderFilter;
+
 import com.whu.checky.auth.TokenAuthenticationFilter;
 import com.whu.checky.auth.TokenAuthenticationProvider;
 import com.whu.checky.service.TokenService;
@@ -36,7 +36,7 @@ public class WebSecurityConfig {
             http
 
 //                    .antMatcher("/**")
-                    .addFilterAfter(new BodyReaderFilter(),BasicAuthenticationFilter.class)
+//                    .addFilterAfter(new BodyReaderFilter(),BasicAuthenticationFilter.class)
                     .addFilterAfter(new TokenAuthenticationFilter(),
                             BasicAuthenticationFilter.class)
 //                    .addFilterAfter(new ResultExceptionTranslationFilter(),

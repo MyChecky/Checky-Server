@@ -43,7 +43,7 @@ public class TokenServiceImpl implements TokenService {
         return User.builder()
                 .username(id)
                 .password("")
-                .authorities(Role.API).build();
+                .authorities(Role.VISITOR).build();
 
 
 //        throw ResultException.of(MyError.TOKEN_NOT_FOUND)

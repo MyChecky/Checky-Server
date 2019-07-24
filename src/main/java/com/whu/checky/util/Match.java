@@ -25,7 +25,7 @@ public class Match {
     TaskMapper taskMapper;
 
     @Autowired
-    TaskSupervisorMapper taskSuspervisorMapper;
+    TaskSupervisorMapper taskSupervisorMapper;
 
     @Autowired
     UserMapper userMapper;
@@ -39,6 +39,7 @@ public class Match {
     //    暂时先做简单的匹配，思路为从数据库取出未匹配任务
 //    取出用户记录并按监督次数排序
 //    暂时只选取前三个建立监督关系，不足则取所有
+    @Deprecated
     public void matchSupervisor() {
         List<Task> taskList = taskMapper.selectList(new EntityWrapper<Task>()
                 .eq("task_state", "nomatch")
@@ -60,7 +61,7 @@ public class Match {
                 temp.setAddTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
                 temp.setTaskId(taskId);
                 temp.setSupervisorId(user.getUserId());
-                taskSuspervisorMapper.insert(temp);
+                taskSupervisorMapper.insert(temp);
                 user.setSuperviseNum(user.getSuperviseNum() + 1);
                 userMapper.updateById(user);
 //                t.setSupervisorNum(t.getSupervisorNum()+1);
@@ -131,7 +132,7 @@ public class Match {
                     taskSupervisor.setTaskId(t.getTaskId());
                     taskSupervisor.setSupervisorId(temp.getUserId());
                     taskSupervisor.setAddTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-                    taskSuspervisorMapper.insert(taskSupervisor);
+                    taskSupervisorMapper.insert(taskSupervisor);
                     t.setSupervisorNum(t.getSupervisorNum() + 1);
                     t.setTaskState("during");
                     temp.setMatchNum(temp.getMatchNum() + 1);
