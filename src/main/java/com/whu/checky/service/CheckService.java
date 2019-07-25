@@ -1,5 +1,6 @@
 package com.whu.checky.service;
 
+import com.baomidou.mybatisplus.plugins.Page;
 import com.whu.checky.domain.Check;
 
 import java.util.List;
@@ -12,7 +13,7 @@ public interface CheckService {
     //查询打卡
     List<Check> queryCheck(String column, String checkId);
 
-    List<Check> queryCheckByUserId(String userId);
+    List<Check> queryCheckByUserId(String userId, Page<Check> page);
 
     void getCheckHistory();
 

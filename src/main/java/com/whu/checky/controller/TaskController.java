@@ -3,11 +3,10 @@ package com.whu.checky.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
-import com.whu.checky.domain.MoneyFlow;
-import com.whu.checky.domain.Task;
-import com.whu.checky.domain.TaskSupervisor;
+import com.whu.checky.domain.*;
 import com.whu.checky.service.MoneyService;
 import com.whu.checky.service.TaskService;
+import com.whu.checky.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +26,9 @@ public class TaskController {
     private TaskService taskService;
     @Autowired
     private MoneyService moneyService;
+    @Autowired
+    private UserService userService;
+
 
     private SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd");
 
@@ -85,15 +87,21 @@ public class TaskController {
 
     //查询某个task
     @RequestMapping("/queryTask")
-    public Task queryTask(@RequestBody String jsonstr){
+    public JSONObject queryTask(@RequestBody String jsonstr){
         JSONObject object= (JSONObject) JSON.parse(jsonstr);
         String taskId= (String)object.get("taskId");
-        Task res=taskService.queryTask(taskId);
-        if(res==null){
-            return null;
+        Task task=taskService.queryTask(taskId);
+        JSONObject res=new JSONObject();
+        if(task!=null){
+            User user=userService.queryUser(task.getUserId());
+            res.put("state","OK");
+            res.put("task",task);
+            res.put("userName",user.getUserName());
+            res.put("userAvatar",user.getUserAvatar());
         }else {
-            return res;
+            res.put("state","FAIL");
         }
+        return res;
     }
 
     //Task结束，结算状态

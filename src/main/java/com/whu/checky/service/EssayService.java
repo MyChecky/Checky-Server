@@ -1,5 +1,6 @@
 package com.whu.checky.service;
 
+import com.baomidou.mybatisplus.plugins.Page;
 import com.whu.checky.domain.Essay;
 
 import java.util.List;
@@ -14,9 +15,11 @@ public interface EssayService {
     //上传文件
     void uploadFile();
     //展示动态
-    List<Essay> displayEssay();
+    List<Essay> displayEssay(Page<Essay> page);
     //展示动态
     List<Essay> queryUserEssays(String userId);
+    //展示动态
+    Essay queryEssayById(String essayId);
 
 
 

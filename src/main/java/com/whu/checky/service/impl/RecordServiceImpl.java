@@ -29,4 +29,9 @@ public class RecordServiceImpl implements RecordService {
     public List<Record> getRecordsByEssayId(String EssayId) {
         return recordMapper.selectList(new EntityWrapper<Record>().eq("essay_id",EssayId));
     }
+
+    @Override
+    public Integer deleteRecordById(String recordId) {
+        return recordMapper.deleteById(recordId);
+    }
 }

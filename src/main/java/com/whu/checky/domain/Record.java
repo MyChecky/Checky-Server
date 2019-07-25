@@ -1,5 +1,7 @@
 package com.whu.checky.domain;
 
+import com.baomidou.mybatisplus.annotations.TableId;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -7,9 +9,12 @@ import java.util.Date;
  * 一次打卡对应的详细记录
  */
 public class Record {
+    @TableId
     private String recordId;
 
     private String checkId;
+
+    private String essayId;
     /**
      * 记录类型
      * image    sound    video
@@ -42,6 +47,14 @@ public class Record {
 
     public void setCheckId(String checkId) {
         this.checkId = checkId;
+    }
+
+    public String getEssayId() {
+        return essayId;
+    }
+
+    public void setEssayId(String essayId) {
+        this.essayId = essayId;
     }
 
     public String getRecordType() {

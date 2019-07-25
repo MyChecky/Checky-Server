@@ -30,8 +30,8 @@ suggestion_id varchar(36) not null unique,
 user_id varchar(36) not null,
 suggestion_content varchar(50) not null,
 suggestion_time varchar(19) not null,
-suggestion_state varchar(10) check (suggestion_state = 'waiting' or 'processed')
-constraint `pk_type` primary key(suggestion_id),
+suggestion_state varchar(10) check (suggestion_state = 'waiting' or 'processed'),
+constraint `pk_suggestion` primary key(suggestion_id),
 constraint `fk_suggestion_to_user` foreign key(user_id) references checky.user(user_id) on update cascade
 );
 
@@ -43,7 +43,7 @@ task_tittle varchar(50) not null,
 task_content varchar(255) not null default '暂时没有具体内容',
 task_start_time varchar(19) not null,
 task_end_time varchar(19) not null,
-task_state varchar(10) not null check(task_state = 'success' or 'fail' or 'during'),
+task_state varchar(10) not null check(task_state = 'nomatch'or'success' or 'fail' or 'during') default 'nomatch',
 task_money double not null default 0,
 supervisor_num int not null default 0,
 refund_money double,
@@ -71,12 +71,14 @@ constraint `fk_check_to_task` foreign key(task_id) references checky.task(task_i
 create table checky.record(
 record_id varchar(36) not null unique,
 check_id varchar(36) not null,
+essay_id varchar(36) not null,
 record_type varchar(10) not null check(record_type = 'image' or 'sound' or 'video'),
 file_addr varchar(255) not null,
 record_time varchar(19) not null,
 record_content varchar(1024),
 constraint `pk_record` primary key(record_id),
-constraint `fk_record_to_check` foreign key(check_id) references checky.check(check_id) on update cascade
+constraint `fk_record_to_check` foreign key(check_id) references checky.check(check_id) on update cascade,
+constraint `fk_record_to_essay` foreign key(essay_id) references checky.essay(essay_id) on update cascade
 );
 
 create table checky.task_supervisor(
@@ -124,30 +126,56 @@ constraint `fk_appeal_to_check` foreign key(check_id) references checky.check(ch
 create table checky.essay(
 essay_id varchar(36) not null unique,
 user_id varchar(36) not null,
-record_id varchar(36) not null,
-essay_tittle varchar(50) not null default '没有标题',
 essay_content varchar(1024) not null default '暂时没有具体内容',
 essay_time varchar(19) not null,
 like_num int default 0 not null,
+comment_num int default 0 not null,
 version int not null default 0,
 longtitude decimal(10,7),
 latitude decimal(10,7),
 constraint `pk_essay` primary key(essay_id),
-constraint `fk_essay_to_user` foreign key(user_id) references checky.user(user_id) on update cascade,
-constraint `fk_essay_to_record` foreign key(record_id) references checky.record(record_id) on update cascade
+constraint `fk_essay_to_user` foreign key(user_id) references checky.user(user_id) on update cascade
 );
+
+create table checky.like(
+user_id varchar(36) not null,
+essay_id varchar(36) not null,
+add_time varchar(19) not null,
+constraint `pk_like` primary key(user_id, essay_id),
+constraint `fk_like_to_essay` foreign key(essay_id) references checky.essay(essay_id) on update cascade,
+constraint `fk_like_to_user` foreign key(user_id) references checky.user(user_id) on update cascade
+);
+
+create trigger checky.like_after_insert after insert on `like` for each row
+begin
+    update essay set like_num = like_num + 1 where essay_id = new.essay_id;
+end ;
+
+create trigger checky.like_before_delete before delete on `like` for each row
+begin
+    update essay set like_num = like_num - 1 where essay_id = old.essay_id;
+end ;
 
 create table checky.comment(
 comment_id varchar(36) not null unique,
 essay_id varchar(36) not null,
 user_id varchar(36) not null,
 comment_content varchar(255) not null default '暂时没有具体内容',
-comment_type varchar(10) not null default 'comment' check(comment_type = 'like' or 'comment' or 'both'),
 comment_time varchar(19) not null,
 constraint `pk_comment` primary key(comment_id),
 constraint `fk_comment_to_essay` foreign key(essay_id) references checky.essay(essay_id) on update cascade,
 constraint `fk_comment_to_user` foreign key(user_id) references checky.user(user_id) on update cascade
 );
+
+create trigger checky.comment_after_insert after insert on `comment` for each row
+begin
+    update essay set comment_num = comment_num + 1 where essay_id = new.essay_id;
+end ;
+
+create trigger checky.comment_before_delete before delete on `comment` for each row
+begin
+    update essay set comment_num = comment_num - 1 where essay_id = old.essay_id;
+end ;
 
 create table checky.report(
 report_id varchar(36) not null unique,

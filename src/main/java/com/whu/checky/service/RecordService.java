@@ -9,5 +9,6 @@ public interface RecordService {
 
     List<Record> getRecordsByCheckId(String checkId);
     List<Record> getRecordsByEssayId(String EssayId);
+    Integer deleteRecordById(String recordId);
 
 }

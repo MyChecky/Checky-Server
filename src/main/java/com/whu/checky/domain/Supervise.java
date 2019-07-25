@@ -1,6 +1,9 @@
 package com.whu.checky.domain;
 
+import com.baomidou.mybatisplus.annotations.TableId;
+
 public class Supervise {
+    @TableId
     private String superviseId;
 
     private String checkId;
