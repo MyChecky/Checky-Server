@@ -1,6 +1,8 @@
 package com.whu.checky.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.plugins.Page;
+import com.baomidou.mybatisplus.plugins.pagination.Pagination;
 import com.whu.checky.domain.Essay;
 import com.whu.checky.mapper.EssayMapper;
 import com.whu.checky.service.EssayService;
@@ -34,15 +36,19 @@ public class EssayServiceImpl implements EssayService {
     }
 
     @Override
-    public List<Essay> displayEssay() {
-        return essayMapper.selectList(new EntityWrapper<Essay>().orderBy("essay_time",false).orderBy("like_num"));
+    public List<Essay> displayEssay(Page<Essay> page) {
+        return essayMapper.selectPage(
+                page,
+                new EntityWrapper<Essay>().orderBy("essay_time",false).orderBy("like_num"));
     }
 
     @Override
     public List<Essay> queryUserEssays(String userId) {
-        return essayMapper.selectList(new EntityWrapper<Essay>()
-        .eq("user_id",userId)
-        .orderBy("essay_time",false));
+        return essayMapper.selectPage(
+                new Page<Essay>(1,10),
+                new EntityWrapper<Essay>()
+                        .eq("user_id",userId)
+                        .orderBy("essay_time",false));
     }
 
     @Override

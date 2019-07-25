@@ -3,8 +3,10 @@ package com.whu.checky.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.whu.checky.config.UploadConfig;
 import com.whu.checky.domain.Check;
+import com.whu.checky.domain.Essay;
 import com.whu.checky.domain.Record;
 import com.whu.checky.domain.Task;
 import com.whu.checky.service.CheckService;
@@ -73,11 +75,14 @@ public class CheckController {
             return null;
     }
 
+
     @PostMapping("/listCheck")
     public List<CheckHistory> listCheck(@RequestBody String body){
         JSONObject object = JSONObject.parseObject(body);
         String userId = (String) object.get("userId");
-        List<Check> checks=checkService.queryCheckByUserId(userId);
+        int currentPage=(Integer) object.get("cPage");
+        Page<Check> page=new Page<>(currentPage,10);
+        List<Check> checks=checkService.queryCheckByUserId(userId,page);
         List<CheckHistory> res=new ArrayList<CheckHistory>();
         for(Check check:checks){
             List<Record> records=recordService.getRecordsByCheckId(check.getCheckId());

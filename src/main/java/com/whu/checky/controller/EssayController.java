@@ -3,6 +3,7 @@ package com.whu.checky.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.whu.checky.config.UploadConfig;
 import com.whu.checky.domain.*;
 import com.whu.checky.service.*;
@@ -138,9 +139,8 @@ public class EssayController {
         essayAndRecord.setUserName(publisher.getUserName());
         essayAndRecord.setImg(records);
         essayAndRecord.setEssay(essay);
-        //此处有问题还没有查询
         EssayLike essayLike=likeService.queryLike(userId,essay.getEssayId());
-        boolean like=essayLike==null?false:true;
+        boolean like=essayLike!=null;
         essayAndRecord.setLike(like);
         return essayAndRecord;
     }
@@ -151,8 +151,10 @@ public class EssayController {
     public List<EssayAndRecord> displayEssay(@RequestBody String jsonstr){
         JSONObject object= (JSONObject) JSON.parse(jsonstr);
         String userId= (String)object.get("userId");
+        int currentPage=(Integer) object.get("cPage");
+        Page<Essay> page=new Page<>(currentPage,5);
         List<EssayAndRecord> res=new ArrayList<EssayAndRecord>();
-        List<Essay> essays=essayService.displayEssay();
+        List<Essay> essays=essayService.displayEssay(page);
         for (Essay essay:essays){
             List<Record> records=recordService.getRecordsByEssayId(essay.getEssayId());
             User publisher=userService.queryUser(essay.getUserId());

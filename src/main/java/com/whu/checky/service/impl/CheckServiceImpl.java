@@ -1,6 +1,7 @@
 package com.whu.checky.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.whu.checky.domain.Check;
 import com.whu.checky.domain.Task;
 import com.whu.checky.mapper.CheckMapper;
@@ -33,9 +34,10 @@ public class CheckServiceImpl implements CheckService {
     }
 
     @Override
-    public List<Check> queryCheckByUserId(String userId) {
-        return mapper.selectList(new EntityWrapper<Check>()
-                .eq("user_id",userId).orderBy("check_time"));
+    public List<Check> queryCheckByUserId(String userId, Page<Check> page) {
+        return mapper.selectPage(page,
+                new EntityWrapper<Check>()
+                        .eq("user_id",userId).orderBy("check_time"));
     }
 
 

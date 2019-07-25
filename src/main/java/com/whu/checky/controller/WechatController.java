@@ -48,8 +48,8 @@ public class WechatController {
         String sessionKey = node.get("session_key").asText();
 
         JSONObject location = (JSONObject) object.get("location");
-        double latitude = Double.parseDouble(location.get("latitude").toString());
-        double longitude = Double.parseDouble(location.get("longitude").toString());
+//        double latitude = Double.parseDouble(location.get("latitude").toString());
+//        double longitude = Double.parseDouble(location.get("longitude").toString());
 
         User user = new User();
         user.setUserId(openid);
@@ -57,8 +57,8 @@ public class WechatController {
         String skey = UUID.randomUUID().toString();
         user.setSessionId(skey);
         User check = userService.queryUser(openid);
-        user.setLatitude(latitude);
-        user.setLongtitude(longitude);
+//        user.setLatitude(latitude);
+//        user.setLongtitude(longitude);
 //        boolean flag = false;
         if(check==null){
             userService.register(user);

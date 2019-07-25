@@ -5,6 +5,7 @@ truncate TABLE checky.appeal;
 truncate TABLE checky.check;
 truncate TABLE checky.comment;
 truncate TABLE checky.essay;
+truncate TABLE checky.essaylike;
 truncate TABLE checky.moneyflow;
 truncate TABLE checky.record;
 truncate TABLE checky.report;
