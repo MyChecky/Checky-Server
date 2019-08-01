@@ -30,7 +30,7 @@ public class AdminController {
         String message = "success";
 
         //构建Administrator
-        Administrator administrator = paserJson2User(body);
+        Administrator administrator = parserJson2User(body);
 
         //处理登录
         try{
@@ -45,14 +45,16 @@ public class AdminController {
         //
         return message;
     }
+
     @PostMapping("/login")
     public HashMap<String,String> login(@RequestBody String body) {
         String message = "success";
         HashMap<String,String> ans = new HashMap<>();
 
         //构建Administrator
-        Administrator administrator = paserJson2User(body);
+        Administrator administrator = parserJson2User(body);
         String sessionKey = UUID.randomUUID().toString();
+        administrator.setSessionId(sessionKey);
         //处理登录
         try{
             int result = administratorService.login(administrator);
@@ -61,8 +63,8 @@ public class AdminController {
             if(result == 2)
                 message = "wrongpassword";
             else{
-                redisService.saveUserOrAdminBySessionId(sessionKey,administrator);
                 ans.put("sessionKey",sessionKey);
+                ans.put("userId",administrator.getUserId());
             }
         }
         catch (Exception ex){
@@ -91,7 +93,7 @@ public class AdminController {
     }
 
 
-    private Administrator paserJson2User(String body){
+    private Administrator parserJson2User(String body){
         //解析json获取登录信息
         JSONObject object = JSONObject.parseObject(body);
         String name = object.getString("userName");

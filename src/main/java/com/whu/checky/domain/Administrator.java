@@ -13,6 +13,16 @@ public class Administrator implements Serializable {
 
     private String userPassword;
 
+    private String sessionId;
+
+    public String getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
+    }
+
     public String getUserId() {
         return userId;
     }

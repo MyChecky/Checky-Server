@@ -222,5 +222,7 @@ create table checky.administrator(
 user_id int not null unique,
 user_name varchar(20) not null,
 user_password varchar(20) not null,
+session_id varchar(40) null,
 constraint `pk_administrator` primary key(user_id)
 );
+
