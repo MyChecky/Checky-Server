@@ -18,6 +18,6 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         System.out.println(uploadConfig.getStaticPath());
         System.out.println(uploadConfig.getUploadPath());
-        registry.addResourceHandler(uploadConfig.getStaticPath()).addResourceLocations("file:"+uploadConfig.getUploadPath());
+        registry.addResourceHandler(uploadConfig.getStaticPath()+"/**").addResourceLocations("file:"+uploadConfig.getUploadPath());
     }
 }

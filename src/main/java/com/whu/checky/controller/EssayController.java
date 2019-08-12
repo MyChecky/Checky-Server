@@ -276,7 +276,7 @@ public class EssayController {
 
                     FileUtil.uploadFile(file.getBytes(), filePath, fileName);
                     Record record = new Record();
-                    record.setFileAddr("resources/" + contentType + "/" + day + "/"+fileName);
+                    record.setFileAddr(uploadConfig.getStaticPath() + "/" + contentType + "/" + day + "/"+fileName);
                     record.setRecordType(file.getContentType());
                     record.setEssayId(request.getParameter("essayId"));
                     fileService.saveFile2Database(record);
