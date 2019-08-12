@@ -1,6 +1,7 @@
 package com.whu.checky.auth;
 
 
+import com.whu.checky.auth.filter.TokenAuthenticationFilter;
 import com.whu.checky.service.TokenService;
 import javafx.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,6 @@ public class TokenAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public boolean supports(Class<?> aClass) {
-        return (TokenAuthenticationFilter.TokenAuthentication.class.isAssignableFrom(aClass));
+        return (TokenAuthentication.class.isAssignableFrom(aClass));
     }
 }

@@ -1,7 +1,8 @@
 package com.whu.checky.config;
 
 
-import com.whu.checky.auth.TokenAuthenticationFilter;
+import com.whu.checky.auth.filter.CorsFilter;
+import com.whu.checky.auth.filter.TokenAuthenticationFilter;
 import com.whu.checky.auth.TokenAuthenticationProvider;
 import com.whu.checky.service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 @Configuration
@@ -37,6 +39,7 @@ public class WebSecurityConfig {
 
 //                    .antMatcher("/**")
 //                    .addFilterAfter(new BodyReaderFilter(),BasicAuthenticationFilter.class)
+                    .addFilterBefore(new CorsFilter(),UsernamePasswordAuthenticationFilter.class)
                     .addFilterAfter(new TokenAuthenticationFilter(),
                             BasicAuthenticationFilter.class)
 //                    .addFilterAfter(new ResultExceptionTranslationFilter(),

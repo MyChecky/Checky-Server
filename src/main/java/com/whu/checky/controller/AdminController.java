@@ -27,7 +27,7 @@ public class AdminController {
 
     @PostMapping("/register")
     public String register(@RequestBody String body){
-        String message = "success";
+        String message = "ok";
 
         //构建Administrator
         Administrator administrator = parserJson2User(body);
@@ -48,7 +48,7 @@ public class AdminController {
 
     @PostMapping("/login")
     public HashMap<String,String> login(@RequestBody String body) {
-        String message = "success";
+        String message = "ok";
         HashMap<String,String> ans = new HashMap<>();
 
         //构建Administrator
@@ -60,7 +60,7 @@ public class AdminController {
             int result = administratorService.login(administrator);
             if(result == 1)
                 message = "missusername";
-            if(result == 2)
+            else if(result == 2)
                 message = "wrongpassword";
             else{
                 ans.put("sessionKey",sessionKey);
@@ -96,8 +96,8 @@ public class AdminController {
     private Administrator parserJson2User(String body){
         //解析json获取登录信息
         JSONObject object = JSONObject.parseObject(body);
-        String name = object.getString("userName");
-        String password = object.getString("userPassword");
+        String name = object.getString("username");
+        String password = object.getString("password");
 
         //构造登录用户
         Administrator administrator = new Administrator();
