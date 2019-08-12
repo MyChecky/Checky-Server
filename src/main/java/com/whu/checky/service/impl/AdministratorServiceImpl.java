@@ -17,6 +17,9 @@ public class AdministratorServiceImpl implements AdministratorService {
     @Autowired
     private AdministratorMapper mapper;
 
+    @Autowired
+    private RedisService redisService;
+
 
     @Override
     public int register(Administrator administrator) throws Exception {
@@ -43,7 +46,10 @@ public class AdministratorServiceImpl implements AdministratorService {
         } else if (!temp.get(0).getUserPassword().equals(administrator.getUserPassword())) {
             return 2;
         } else {
+            if(temp.get(0).getSessionId()!=null) redisService.delSessionId(temp.get(0).getSessionId());
             administrator.setUserId(temp.get(0).getUserId());
+            mapper.updateById(administrator);
+            redisService.saveUserOrAdminBySessionId(administrator.getSessionId(),administrator);
             return 0;
         }
 
