@@ -20,6 +20,7 @@ public class TokenServiceImpl implements TokenService {
         Object obj = redisService.getUserOrAdminBySessionId(token);
         if(obj!=null) {
             if (obj instanceof com.whu.checky.domain.User) {
+
                 com.whu.checky.domain.User user = (com.whu.checky.domain.User) obj;
                 if (id.equals(user.getUserId())) {
                     return User.builder()
@@ -38,6 +39,8 @@ public class TokenServiceImpl implements TokenService {
                             .build();
                 }
             }
+            redisService.updateExpireTime(token);
+
         }
 
         return User.builder()

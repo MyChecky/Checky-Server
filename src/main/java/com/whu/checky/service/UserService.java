@@ -13,7 +13,9 @@ public interface UserService {
     //查询用户
     User queryUser(String userId);
     //删除用户
-    void deleteUser();
+    void deleteUser(String userId);
+
+    List<User> getAllUsers(int page);
 
 
 }

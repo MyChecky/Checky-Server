@@ -1,4 +1,4 @@
-package com.whu.checky.controller;
+package com.whu.checky.controller.admin;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;

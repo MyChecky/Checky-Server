@@ -46,12 +46,17 @@ public class RedisServiceImpl implements RedisService {
     public void saveUserOrAdminBySessionId(String sessionId, Object obj) {
         ValueOperations<String, Object> operations = redisTemplate.opsForValue();
         if(obj instanceof User) operations.set(sessionId, obj,2,TimeUnit.HOURS);
-        else operations.set(sessionId, obj,30,TimeUnit.MINUTES);
+        else operations.set(sessionId, obj,60,TimeUnit.MINUTES);
     }
 
     @Override
     public Object getUserOrAdminBySessionId(String sessionId){
         return redisTemplate.opsForValue().get(sessionId);
+    }
+
+    @Override
+    public void updateExpireTime(String key) {
+        redisTemplate.expire(key,30,TimeUnit.MINUTES);
     }
 
 
