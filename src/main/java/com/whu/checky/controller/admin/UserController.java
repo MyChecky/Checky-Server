@@ -27,6 +27,7 @@ public class UserController {
         List<User> userList = userService.getAllUsers(page);
         HashMap<String,Object> resp = new HashMap<>();
         resp.put("state","ok");
+        resp.put("usersSize",userService.getAllUsersNum());
         resp.put("users",userList);
         return resp;
     }

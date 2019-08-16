@@ -17,5 +17,6 @@ public interface UserService {
 
     List<User> getAllUsers(int page);
 
+    int getAllUsersNum();
 
 }
