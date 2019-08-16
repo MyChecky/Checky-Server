@@ -13,4 +13,6 @@ public interface RedisService {
     void saveUserOrAdminBySessionId(String sessionId,Object obj);
 
     Object getUserOrAdminBySessionId(String sessionId);
+
+    void updateExpireTime(String key);
 }
