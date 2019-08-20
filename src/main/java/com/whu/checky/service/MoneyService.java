@@ -2,7 +2,6 @@ package com.whu.checky.service;
 
 import com.whu.checky.domain.MoneyFlow;
 
-import java.util.HashMap;
 import java.util.List;
 
 public interface MoneyService {
@@ -18,8 +17,12 @@ public interface MoneyService {
     MoneyFlow queryMoneyFlow(String flowId);
     //查询某个用户的所有流水
     List<MoneyFlow> queryUserMoneyFlow(String userId);
+
+    List<MoneyFlow> queryUserMoneyFlow(String userId, int page);
     //查询所有的流水
     List<MoneyFlow> queryAllMoneyFlow();
+
+    List<MoneyFlow> queryAllMoneyFlow(int page);
     //查看一段日期内系统的所有流水
     List<MoneyFlow> queryAllScopeMoneyFlow(String startDate,String endDate);
     //查看一段日期内某个用户的所有流水

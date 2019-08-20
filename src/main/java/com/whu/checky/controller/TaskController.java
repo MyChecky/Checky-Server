@@ -3,7 +3,9 @@ package com.whu.checky.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
-import com.whu.checky.domain.*;
+import com.whu.checky.domain.MoneyFlow;
+import com.whu.checky.domain.Task;
+import com.whu.checky.domain.User;
 import com.whu.checky.service.MoneyService;
 import com.whu.checky.service.TaskService;
 import com.whu.checky.service.UserService;
@@ -74,7 +76,7 @@ public class TaskController {
     @RequestMapping("/queryDayUserTasks")
     public List<Task> queryDayUserTasks(@RequestBody String jsonstr){
         JSONObject object= (JSONObject) JSON.parse(jsonstr);
-        String date= (String) object.get("taskId");
+        String date = (String) object.get("date");//？
         String userid= (String) object.get("userid");
         return taskService.queryUserTasks(userid,date);
     }

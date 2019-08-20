@@ -1,6 +1,8 @@
 package com.whu.checky.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.whu.checky.domain.Task;
 import com.whu.checky.domain.TaskSupervisor;
 import com.whu.checky.mapper.TaskMapper;
@@ -11,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service("taskService")
@@ -151,6 +152,19 @@ public class TaskServiceImpl implements TaskService {
         }
 
         return result;
+    }
+
+    @Override
+    public List<Task> query(HashMap<String, String> params, int page) {
+        Wrapper<Task> wrapper = new EntityWrapper<>();
+        for (String key : params.keySet()) {
+            wrapper = wrapper.eq(key, params.get(key));
+        }
+        if (page == -1) {
+            return taskMapper.selectList(wrapper);
+        } else {
+            return taskMapper.selectPage(new Page<Task>(page, 10), wrapper);
+        }
     }
 
     @Override

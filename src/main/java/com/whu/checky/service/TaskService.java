@@ -19,4 +19,5 @@ public interface TaskService {
 //    void getTasks();
 //    //打卡清单和历史记录
 //    void getTaskList();
+List<Task> query(HashMap<String, String> params, int page);
 }
