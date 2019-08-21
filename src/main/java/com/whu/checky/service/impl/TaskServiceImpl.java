@@ -168,6 +168,15 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    public int getTasksNum(HashMap<String, String> params) {
+        Wrapper<Task> wrapper = new EntityWrapper<>();
+        for (String key : params.keySet()) {
+            wrapper = wrapper.eq(key, params.get(key));
+        }
+        return taskMapper.selectCount(wrapper);
+    }
+
+    @Override
     public String getTitleById(String taskId){
         return taskMapper.getTitleById(taskId);
     }
