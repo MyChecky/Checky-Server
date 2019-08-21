@@ -3,13 +3,22 @@ package com.whu.checky.domain;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 
-import java.util.UUID;
-
 public class Task {
     @TableId
     private String taskId;
 
     private String userId;
+
+    @TableField(exist = false)
+    private String userName;
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
 
     private String typeId;
 

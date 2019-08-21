@@ -160,10 +160,13 @@ public class TaskServiceImpl implements TaskService {
         for (String key : params.keySet()) {
             wrapper = wrapper.eq(key, params.get(key));
         }
+
         if (page == -1) {
-            return taskMapper.selectList(wrapper);
+//            return taskMapper.selectList(wrapper);
+            return taskMapper.getTasksWithName(wrapper);
         } else {
-            return taskMapper.selectPage(new Page<Task>(page, 10), wrapper);
+//            return taskMapper.selectPage(new Page<Task>(page, 10), wrapper);
+            return taskMapper.getTasksWithName(wrapper, new Page<Task>(page, 10));
         }
     }
 

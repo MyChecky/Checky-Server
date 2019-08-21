@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -38,14 +37,7 @@ public class TaskController {
             resp.put("type", "userId");
         }
         List<Task> taskList = taskService.query(params, page);
-        HashMap<String, String> userList = new HashMap<>();
-        List<Object> list = new ArrayList<>();
-        for (Task t : taskList) {
-            userList.put(t.getUserId(), userService.queryUser(t.getUserId()).getUserName());
-
-        }
         resp.put("tasks", taskList);
-        resp.put("userNames", userList);
         resp.put("tasksSize", taskService.getTasksNum(params));
         resp.put("state", "ok");
         return resp;
