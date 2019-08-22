@@ -1,5 +1,6 @@
 package com.whu.checky.service;
 
+import com.baomidou.mybatisplus.plugins.Page;
 import com.whu.checky.domain.MoneyFlow;
 
 import java.util.List;
@@ -18,11 +19,11 @@ public interface MoneyService {
     //查询某个用户的所有流水
     List<MoneyFlow> queryUserMoneyFlow(String userId);
 
-    List<MoneyFlow> queryUserMoneyFlow(String userId, int page);
+    List<MoneyFlow> queryUserMoneyFlow(String userId, Page page);
     //查询所有的流水
     List<MoneyFlow> queryAllMoneyFlow();
 
-    List<MoneyFlow> queryAllMoneyFlow(int page);
+    List<MoneyFlow> queryAllMoneyFlow(Page page);
     //查看一段日期内系统的所有流水
     List<MoneyFlow> queryAllScopeMoneyFlow(String startDate,String endDate);
     //查看一段日期内某个用户的所有流水

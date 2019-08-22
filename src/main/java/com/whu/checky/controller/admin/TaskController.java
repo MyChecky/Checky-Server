@@ -2,6 +2,7 @@ package com.whu.checky.controller.admin;
 
 
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.whu.checky.domain.Task;
 import com.whu.checky.service.TaskService;
 import com.whu.checky.service.UserService;
@@ -30,15 +31,19 @@ public class TaskController {
     public HashMap<String, Object> all(@RequestBody String body) {
         JSONObject json = JSONObject.parseObject(body);
         int page = json.getInteger("page");
+        Page<Task> p = null;
+        if (page != -1) {
+            p = new Page<>(page, 10);
+        }
         HashMap<String, Object> resp = new HashMap<>();
         HashMap<String, String> params = new HashMap<>();
         if (json.containsKey("userId")) {
             params.put("user_id", json.getString("userId"));
             resp.put("type", "userId");
         }
-        List<Task> taskList = taskService.query(params, page);
+        List<Task> taskList = taskService.query(params, p);
         resp.put("tasks", taskList);
-        resp.put("tasksSize", taskService.getTasksNum(params));
+        if (p != null) resp.put("tasksSize", p.getTotal());
         resp.put("state", "ok");
         return resp;
     }

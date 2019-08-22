@@ -1,6 +1,7 @@
 package com.whu.checky.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.whu.checky.domain.MoneyFlow;
 import com.whu.checky.mapper.MoneyFlowMapper;
@@ -36,13 +37,16 @@ public class MoneyServiceImpl implements MoneyService {
     }
 
     @Override
-    public List<MoneyFlow> queryUserMoneyFlow(String userId, int page) {
-        return moneyFlowMapper.selectPage(new Page<MoneyFlow>(page, 10), new EntityWrapper<MoneyFlow>()
+    public List<MoneyFlow> queryUserMoneyFlow(String userId, Page page) {
+        Wrapper<MoneyFlow> wrapper = new EntityWrapper<MoneyFlow>()
                 .eq("to_user_id", userId)
                 .or()
                 .eq("from_user_id", userId)
-                .orderBy("flow_time", true))
-                ;
+                .orderBy("flow_time", true);
+        if (page == null)
+            return moneyFlowMapper.getMoneyFlowsWithName(wrapper);
+        else
+            return moneyFlowMapper.getMoneyFlowsWithName(wrapper, page);
     }
 
     @Override
@@ -53,10 +57,12 @@ public class MoneyServiceImpl implements MoneyService {
     }
 
     @Override
-    public List<MoneyFlow> queryAllMoneyFlow(int page) {
-        return moneyFlowMapper.selectPage(new Page<MoneyFlow>(page, 10), new EntityWrapper<MoneyFlow>()
-                .orderBy("flow_time", true))
-                ;
+    public List<MoneyFlow> queryAllMoneyFlow(Page page) {
+        Wrapper<MoneyFlow> wrapper = new EntityWrapper<MoneyFlow>()
+                .orderBy("flow_time", true);
+
+        if (page != null) return moneyFlowMapper.getMoneyFlowsWithName(wrapper, page);
+        else return moneyFlowMapper.getMoneyFlowsWithName(wrapper);
     }
 
     @Override

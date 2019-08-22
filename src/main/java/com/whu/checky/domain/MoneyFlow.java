@@ -1,5 +1,6 @@
 package com.whu.checky.domain;
 
+import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 
@@ -10,7 +11,29 @@ public class MoneyFlow {
 
     private String fromUserId;
 
+    @TableField(exist = false)
+    private String fromUserName = "";
+
     private String toUserId;
+
+    public String getToUserName() {
+        return toUserName;
+    }
+
+    public void setToUserName(String toUserName) {
+        this.toUserName = toUserName;
+    }
+
+    @TableField(exist = false)
+    private String toUserName = "";
+
+    public String getFromUserName() {
+        return fromUserName;
+    }
+
+    public void setFromUserName(String fromUserName) {
+        this.fromUserName = fromUserName;
+    }
 
     private String taskId;
 

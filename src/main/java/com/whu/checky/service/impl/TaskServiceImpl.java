@@ -155,18 +155,18 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<Task> query(HashMap<String, String> params, int page) {
+    public List<Task> query(HashMap<String, String> params, Page page) {
         Wrapper<Task> wrapper = new EntityWrapper<>();
         for (String key : params.keySet()) {
             wrapper = wrapper.eq(key, params.get(key));
         }
 
-        if (page == -1) {
+        if (page == null) {
 //            return taskMapper.selectList(wrapper);
             return taskMapper.getTasksWithName(wrapper);
         } else {
 //            return taskMapper.selectPage(new Page<Task>(page, 10), wrapper);
-            return taskMapper.getTasksWithName(wrapper, new Page<Task>(page, 10));
+            return taskMapper.getTasksWithName(wrapper, page);
         }
     }
 

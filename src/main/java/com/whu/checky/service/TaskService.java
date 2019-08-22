@@ -1,5 +1,6 @@
 package com.whu.checky.service;
 
+import com.baomidou.mybatisplus.plugins.Page;
 import com.whu.checky.domain.Task;
 
 import java.util.HashMap;
@@ -19,7 +20,7 @@ public interface TaskService {
 //    void getTasks();
 //    //打卡清单和历史记录
 //    void getTaskList();
-List<Task> query(HashMap<String, String> params, int page);
+List<Task> query(HashMap<String, String> params, Page page);
 
     int getTasksNum(HashMap<String, String> params);
 }
