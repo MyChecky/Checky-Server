@@ -2,6 +2,8 @@ package com.whu.checky.service.impl;
 
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.plugins.Page;
+import com.whu.checky.domain.Appeal;
 import com.whu.checky.domain.Report;
 import com.whu.checky.mapper.ReportMapper;
 import com.whu.checky.service.ReportService;
@@ -39,5 +41,12 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public Report queryReportById(String reportId) {
         return reportMapper.selectById(reportId);
+    }
+
+    @Override
+    public List<Report> displayReports(Page<Report> page) {
+        return reportMapper.selectPage(
+                page,
+                new EntityWrapper<Report>().orderBy("report_time",true));
     }
 }

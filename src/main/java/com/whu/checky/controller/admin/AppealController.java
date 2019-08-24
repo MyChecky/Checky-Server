@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -33,19 +32,20 @@ public class AppealController {
         int currentPage=(Integer) object.get("Page");
         Page<Appeal> page=new Page<>(currentPage,5);
         List<AdminAppeal> adminAppeals=new ArrayList<AdminAppeal>();
-        List<Appeal> appeals=appealService.displayAppeal(page);
+        List<Appeal> appeals=appealService.displayAppeals(page);
         for (Appeal appeal:appeals){
             AdminAppeal adminAppeal=new AdminAppeal();
             User user=userService.queryUser(appeal.getUserId());
-            adminAppeal.setAppealContent(adminAppeal.getAppealContent());
-            adminAppeal.setAppealId(adminAppeal.getAppealId());
-            adminAppeal.setAppealTime(adminAppeal.getAppealId());
-            adminAppeal.setCheckId(adminAppeal.getCheckId());
-            adminAppeal.setTaskId(adminAppeal.getTaskId());
-            adminAppeal.setUserId(adminAppeal.getUserId());
+            adminAppeal.setAppealContent(appeal.getAppealContent());
+            adminAppeal.setAppealId(appeal.getAppealId());
+            adminAppeal.setAppealTime(appeal.getAppealId());
+            adminAppeal.setCheckId(appeal.getCheckId());
+            adminAppeal.setTaskId(appeal.getTaskId());
+            adminAppeal.setUserId(appeal.getUserId());
             adminAppeal.setUserName(user.getUserName());
             adminAppeals.add(adminAppeal);
         }
+        res.put("state","ok");
         res.put("appeals",adminAppeals);
         return res;
     }

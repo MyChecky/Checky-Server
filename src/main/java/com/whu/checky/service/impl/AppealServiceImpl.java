@@ -50,7 +50,7 @@ public class AppealServiceImpl implements AppealService {
 
 
     @Override
-    public List<Appeal> displayAppeal(Page<Appeal> page) {
+    public List<Appeal> displayAppeals(Page<Appeal> page) {
         return mapper.selectPage(
                 page,
                 new EntityWrapper<Appeal>().orderBy("appeal_time",true));

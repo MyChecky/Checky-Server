@@ -16,6 +16,6 @@ public interface AppealService {
     //查询申诉
     List<Appeal> queryAppealFromUser(String userId);
     //管理员查看所有申诉
-    List<Appeal> displayAppeal(Page<Appeal> page);
+    List<Appeal> displayAppeals(Page<Appeal> page);
 
 }

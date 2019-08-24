@@ -1,6 +1,7 @@
 package com.whu.checky.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.whu.checky.domain.Suggestion;
 import com.whu.checky.mapper.SuggestionMapper;
 import com.whu.checky.service.SuggestionService;
@@ -30,5 +31,11 @@ public class SuggestionServiceImpl implements SuggestionService {
     @Override
     public List<Suggestion> ListSuggestion() {
         return suggestionMapper.selectList(new EntityWrapper<Suggestion>());
+    }
+    @Override
+    public List<Suggestion> displaySuggestions(Page<Suggestion> page) {
+        return suggestionMapper.selectPage(
+                page,
+                new EntityWrapper<Suggestion>().orderBy("suggestion_time",true));
     }
 }
