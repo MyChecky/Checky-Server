@@ -1,6 +1,7 @@
 package com.whu.checky.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.whu.checky.domain.Appeal;
 import com.whu.checky.mapper.AppealMapper;
 import com.whu.checky.service.AppealService;
@@ -45,6 +46,14 @@ public class AppealServiceImpl implements AppealService {
                 .orderBy("appeal_time",false)
         );
 
+    }
+
+
+    @Override
+    public List<Appeal> displayAppeal(Page<Appeal> page) {
+        return mapper.selectPage(
+                page,
+                new EntityWrapper<Appeal>().orderBy("appeal_time",true));
     }
 
 
