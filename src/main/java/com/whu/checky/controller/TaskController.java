@@ -97,6 +97,7 @@ public class TaskController {
         if(task!=null){
             User user=userService.queryUser(task.getUserId());
             res.put("state","OK");
+            task.setUserName(user.getUserName());
             res.put("task",task);
             res.put("userName",user.getUserName());
             res.put("userAvatar",user.getUserAvatar());

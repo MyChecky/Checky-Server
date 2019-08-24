@@ -8,6 +8,7 @@ import com.whu.checky.domain.User;
 import com.whu.checky.service.EssayService;
 import com.whu.checky.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 @RestController
 @RequestMapping("/admin/essay")
+@Component("AdminEssayController")
 public class EssayController {
     @Autowired
     private EssayService essayService;
@@ -27,7 +29,7 @@ public class EssayController {
     public JSONObject all(@RequestBody String jsonstr){
         JSONObject res=new JSONObject();
         JSONObject object= (JSONObject) JSON.parse(jsonstr);
-        int currentPage=(Integer) object.get("Page");
+        int currentPage = (Integer) object.get("page");
         Page<Essay> page=new Page<>(currentPage,5);
         List<AdminEssay> adminEssays=new ArrayList<AdminEssay>();
         List<Essay> essays=essayService.displayEssay(page);
