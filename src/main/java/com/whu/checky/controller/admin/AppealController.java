@@ -8,6 +8,7 @@ import com.whu.checky.domain.User;
 import com.whu.checky.service.AppealService;
 import com.whu.checky.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +19,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/admin/appeal")
+@Component("AdminAppealController")
 public class AppealController {
 
     @Autowired
@@ -25,11 +27,12 @@ public class AppealController {
     @Autowired
     private UserService userService;
 
+    //查看所有的申訴
     @PostMapping("/all")
     public JSONObject all(@RequestBody String body) {
         JSONObject res=new JSONObject();
         JSONObject object= (JSONObject) JSON.parse(body);
-        int currentPage=(Integer) object.get("Page");
+        int currentPage=(Integer) object.get("page");
         Page<Appeal> page=new Page<>(currentPage,5);
         List<AdminAppeal> adminAppeals=new ArrayList<AdminAppeal>();
         List<Appeal> appeals=appealService.displayAppeals(page);

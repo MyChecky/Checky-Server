@@ -68,6 +68,14 @@ public class CheckServiceImpl implements CheckService {
     }
 
     @Override
+    public List<Check> getTaskChecks(String taskId) {
+        List<Check> list = mapper.selectList(new EntityWrapper<Check>()
+                .eq("task_id",taskId)
+        );
+        return list;
+    }
+
+    @Override
     public void updatePassSuperviseCheck(String checkId) {
         mapper.updatePassSuperviseCheck(checkId);
     }
