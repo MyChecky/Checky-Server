@@ -27,11 +27,12 @@ public class AppealController {
     private UserService userService;
 
     @PostMapping("/all")
-    public List<AdminAppeal> all(@RequestBody String body) {
+    public JSONObject all(@RequestBody String body) {
+        JSONObject res=new JSONObject();
         JSONObject object= (JSONObject) JSON.parse(body);
         int currentPage=(Integer) object.get("Page");
         Page<Appeal> page=new Page<>(currentPage,5);
-        List<AdminAppeal> res=new ArrayList<AdminAppeal>();
+        List<AdminAppeal> adminAppeals=new ArrayList<AdminAppeal>();
         List<Appeal> appeals=appealService.displayAppeal(page);
         for (Appeal appeal:appeals){
             AdminAppeal adminAppeal=new AdminAppeal();
@@ -43,8 +44,9 @@ public class AppealController {
             adminAppeal.setTaskId(adminAppeal.getTaskId());
             adminAppeal.setUserId(adminAppeal.getUserId());
             adminAppeal.setUserName(user.getUserName());
-            res.add(adminAppeal);
+            adminAppeals.add(adminAppeal);
         }
+        res.put("adminAppeals",adminAppeals);
         return res;
     }
 
