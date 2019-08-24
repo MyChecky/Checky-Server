@@ -46,7 +46,7 @@ public class AppealController {
             adminAppeal.setUserName(user.getUserName());
             adminAppeals.add(adminAppeal);
         }
-        res.put("adminAppeals",adminAppeals);
+        res.put("appeals",adminAppeals);
         return res;
     }
 
