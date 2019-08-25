@@ -29,7 +29,7 @@ public class EssayController {
     public JSONObject all(@RequestBody String jsonstr){
         JSONObject res=new JSONObject();
         JSONObject object= (JSONObject) JSON.parse(jsonstr);
-        int currentPage = (Integer) object.get("page");
+        int currentPage=(Integer) object.get("page");
         Page<Essay> page=new Page<>(currentPage,5);
         List<AdminEssay> adminEssays=new ArrayList<AdminEssay>();
         List<Essay> essays=essayService.displayEssay(page);
@@ -37,9 +37,9 @@ public class EssayController {
             AdminEssay adminEssay=new AdminEssay();
             User user=userService.queryUser(essay.getUserId());
             adminEssay.setCommentNum(essay.getCommentNum());
-            adminEssay.setEassyContent(essay.getEssayContent());
-            adminEssay.setEassyId(essay.getEssayId());
-            adminEssay.setEassyTime(essay.getEssayTime());
+            adminEssay.setEssayContent(essay.getEssayContent());
+            adminEssay.setEssayId(essay.getEssayId());
+            adminEssay.setEssayTime(essay.getEssayTime());
             adminEssay.setLikeNum(essay.getLikeNum());
             adminEssay.setUserName(user.getUserName());
             adminEssays.add(adminEssay);
@@ -52,9 +52,9 @@ public class EssayController {
 
     class AdminEssay{
         private int commentNum;
-        private String eassyContent;
-        private String eassyId;
-        private String eassyTime;
+        private String essayContent;
+        private String essayId;
+        private String essayTime;
         private int likeNum;
         private String userName;
 
@@ -66,28 +66,28 @@ public class EssayController {
             this.commentNum = commentNum;
         }
 
-        public String getEassyContent() {
-            return eassyContent;
+        public String getEssayContent() {
+            return essayContent;
         }
 
-        public void setEassyContent(String eassyContent) {
-            this.eassyContent = eassyContent;
+        public void setEssayContent(String essayContent) {
+            this.essayContent = essayContent;
         }
 
-        public String getEassyId() {
-            return eassyId;
+        public String getEssayId() {
+            return essayId;
         }
 
-        public void setEassyId(String eassyId) {
-            this.eassyId = eassyId;
+        public void setEssayId(String essayId) {
+            this.essayId = essayId;
         }
 
-        public String getEassyTime() {
-            return eassyTime;
+        public String getEssayTime() {
+            return essayTime;
         }
 
-        public void setEassyTime(String eassyTime) {
-            this.eassyTime = eassyTime;
+        public void setEssayTime(String essayTime) {
+            this.essayTime = essayTime;
         }
 
         public int getLikeNum() {

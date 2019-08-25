@@ -3,8 +3,10 @@ package com.whu.checky.controller.admin;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.plugins.Page;
+import com.whu.checky.domain.Appeal;
 import com.whu.checky.domain.Report;
 import com.whu.checky.domain.User;
+import com.whu.checky.service.AppealService;
 import com.whu.checky.service.ReportService;
 import com.whu.checky.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,11 +30,12 @@ public class ReportController {
     @Autowired
     private UserService userService;
 
+    //查看所有舉報
     @PostMapping("/all")
     public JSONObject all(@RequestBody String body) {
         JSONObject res=new JSONObject();
         JSONObject object= (JSONObject) JSON.parse(body);
-        int currentPage = (Integer) object.get("page");
+        int currentPage=(Integer) object.get("page");
         Page<Report> page=new Page<>(currentPage,5);
         List<AdminReport> adminReports=new ArrayList<AdminReport>();
         List<Report> reports=reportService.displayReports(page);

@@ -23,6 +23,8 @@ public interface CheckService {
 
     Check getCheckByTask(String taskId,String date);
 
+    List<Check> getTaskChecks(String taskId);
+
     void updatePassSuperviseCheck(String checkId);
 
     void updateDenySuperviseCheck(String checkId);

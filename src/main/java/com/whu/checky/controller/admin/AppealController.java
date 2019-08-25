@@ -27,11 +27,12 @@ public class AppealController {
     @Autowired
     private UserService userService;
 
+    //查看所有的申訴
     @PostMapping("/all")
     public JSONObject all(@RequestBody String body) {
         JSONObject res=new JSONObject();
         JSONObject object= (JSONObject) JSON.parse(body);
-        int currentPage = (Integer) object.get("page");
+        int currentPage=(Integer) object.get("page");
         Page<Appeal> page=new Page<>(currentPage,5);
         List<AdminAppeal> adminAppeals=new ArrayList<AdminAppeal>();
         List<Appeal> appeals=appealService.displayAppeals(page);
