@@ -42,6 +42,11 @@ public class ReportController {
         for (Report report:reports){
             AdminReport adminReport=new AdminReport();
             User user=userService.queryUser(report.getUserId());
+            String objectId=report.getCheckId()!=null?report.getCheckId()
+                    :report.getEssayId()!=null?report.getEssayId()
+                    :report.getSupervisorId()!=null?report.getSupervisorId()
+                    :report.getTaskId()!=null?report.getTaskId():null;
+            adminReport.setObjectId(objectId);
             adminReport.setReportContent(report.getReportContent());
             adminReport.setReportId(report.getReportId());
             adminReport.setReportTime(report.getReportTime());
@@ -57,12 +62,21 @@ public class ReportController {
 
 
     class AdminReport{
+        private String objectId;
         private String reportContent;
         private String reportId;
         private String reportTime;
         private String reportType;
         private String userId;
         private String userName;
+
+        public String getObjectId() {
+            return objectId;
+        }
+
+        public void setObjectId(String objectId) {
+            this.objectId = objectId;
+        }
 
         public String getReportContent() {
             return reportContent;
