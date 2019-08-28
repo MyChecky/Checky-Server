@@ -69,11 +69,11 @@ public class TaskController {
     @Autowired
     TaskSupervisorMapper taskSupervisorMapper;
 
-//    @PostMapping("/all")
+    //    @PostMapping("/all")
 //    public JSONObject all(@RequestBody String body) {
 //
 //    }
-        @PostMapping("/tasks")
+    @PostMapping("/tasks")
     public HashMap<String, Object> all(@RequestBody String body) {
         JSONObject json = JSONObject.parseObject(body);
         int page = json.getInteger("page");
@@ -97,39 +97,40 @@ public class TaskController {
     //查看任務詳情
     @PostMapping("/detail")
     public JSONObject detail(@RequestBody String body) {
-        JSONObject res=new JSONObject();
-        JSONObject object= (JSONObject) JSON.parse(body);
-        String taskId=(String)object.get("taskId");
-        Task task=taskService.queryTask(taskId);
-        res.put("state","ok");
-        res.put("task",task);
+        JSONObject res = new JSONObject();
+        JSONObject object = (JSONObject) JSON.parse(body);
+        String taskId = (String) object.get("taskId");
+        Task task = taskService.queryTask(taskId);
+        task.setUserName(userService.queryUser(task.getUserId()).getUserName());
+        res.put("state", "ok");
+        res.put("task", task);
         return res;
     }
 
     //查看打卡詳情
     @PostMapping("/check")
     public JSONObject check(@RequestBody String body) {
-        JSONObject res=new JSONObject();
-        JSONObject object= (JSONObject) JSON.parse(body);
-        String taskId=(String)object.get("taskId");
-        List<Check> checks=checkService.getTaskChecks(taskId);
-        res.put("state","ok");
-        res.put("checks",checks);
+        JSONObject res = new JSONObject();
+        JSONObject object = (JSONObject) JSON.parse(body);
+        String taskId = (String) object.get("taskId");
+        List<Check> checks = checkService.getTaskChecks(taskId);
+        res.put("state", "ok");
+        res.put("checks", checks);
         return res;
     }
 
     //查看监督者
     @PostMapping("/supervisors")
     public JSONObject supervisors(@RequestBody String body) {
-        JSONObject res=new JSONObject();
-        JSONObject object= (JSONObject) JSON.parse(body);
-        String taskId=(String)object.get("taskId");
-        List<String> supervisorsId= taskSupervisorMapper.getTaskSupervisors(taskId);
-        List<AdminTaskSupervisor> adminTaskSupervisors=new ArrayList<AdminTaskSupervisor>();
-        for(String supervisorId:supervisorsId){
-            AdminTaskSupervisor adminTaskSupervisor=new AdminTaskSupervisor();
-            User user=userService.queryUser(supervisorId);
-            TaskSupervisor taskSupervisor=taskSupervisorMapper.getTaskSupervisor(taskId,supervisorId);
+        JSONObject res = new JSONObject();
+        JSONObject object = (JSONObject) JSON.parse(body);
+        String taskId = (String) object.get("taskId");
+        List<String> supervisorsId = taskSupervisorMapper.getTaskSupervisors(taskId);
+        List<AdminTaskSupervisor> adminTaskSupervisors = new ArrayList<AdminTaskSupervisor>();
+        for (String supervisorId : supervisorsId) {
+            AdminTaskSupervisor adminTaskSupervisor = new AdminTaskSupervisor();
+            User user = userService.queryUser(supervisorId);
+            TaskSupervisor taskSupervisor = taskSupervisorMapper.getTaskSupervisor(taskId, supervisorId);
             adminTaskSupervisor.setAddTime(taskSupervisor.getAddTime());
             adminTaskSupervisor.setBenefit(taskSupervisor.getBenefit());
             adminTaskSupervisor.setSuperviseNum(taskSupervisor.getSuperviseNum());
@@ -137,12 +138,12 @@ public class TaskController {
             adminTaskSupervisor.setUserName(user.getUserName());
             adminTaskSupervisors.add(adminTaskSupervisor);
         }
-        res.put("state","ok");
-        res.put("supervisors",adminTaskSupervisors);
+        res.put("state", "ok");
+        res.put("supervisors", adminTaskSupervisors);
         return res;
     }
 
-    class AdminTaskSupervisor{
+    class AdminTaskSupervisor {
         private String addTime;
         private double benefit;
         private int superviseNum;

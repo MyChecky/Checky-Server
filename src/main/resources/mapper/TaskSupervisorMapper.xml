@@ -6,8 +6,12 @@
     </select>
 
     <select id="getTaskSupervisor" resultType="TaskSupervisor">
-        SELECT add_time AS addTime,benefit AS benefit,
-         supervise_num AS superviseNum FROM task_supervisor WHERE task_id=#{taskId} AND
-        supervisor_id=#{supervisorId}
+        SELECT
+        add_time AS addTime,
+        benefit AS benefit,
+        supervise_num AS superviseNum
+        FROM task_supervisor
+        WHERE task_id = #{taskId} AND
+        supervisor_id = #{supervisorId}
     </select>
 </mapper>

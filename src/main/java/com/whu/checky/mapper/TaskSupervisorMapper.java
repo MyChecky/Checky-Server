@@ -12,6 +12,7 @@ import java.util.List;
 @Component(value = "taskSupervisorMapper")
 public interface TaskSupervisorMapper extends BaseMapper<TaskSupervisor> {
     List<String> getTaskSupervisors(String taskId);
+
     TaskSupervisor getTaskSupervisor(@Param("taskId") String taskId,
-                                     @Param("supervisorId")String supervisorId);
+                                     @Param("supervisorId") String supervisorId);
 }

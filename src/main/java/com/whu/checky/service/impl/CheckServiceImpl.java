@@ -3,7 +3,6 @@ package com.whu.checky.service.impl;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.whu.checky.domain.Check;
-import com.whu.checky.domain.Task;
 import com.whu.checky.mapper.CheckMapper;
 import com.whu.checky.service.CheckService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,7 +69,7 @@ public class CheckServiceImpl implements CheckService {
     @Override
     public List<Check> getTaskChecks(String taskId) {
         List<Check> list = mapper.selectList(new EntityWrapper<Check>()
-                .eq("task_id",taskId)
+                .eq("task_id", taskId)
         );
         return list;
     }

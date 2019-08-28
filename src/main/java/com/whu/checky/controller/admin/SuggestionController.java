@@ -30,7 +30,7 @@ public class SuggestionController {
     public JSONObject all(@RequestBody String jsonstr){
         JSONObject res=new JSONObject();
         JSONObject object= (JSONObject) JSON.parse(jsonstr);
-        int currentPage=(Integer) object.get("page");
+        int currentPage = (Integer) object.get("page");
         Page<Suggestion> page=new Page<>(currentPage,5);
         List<AdminSuggestion> adminSuggestions=new ArrayList<AdminSuggestion>();
         List<Suggestion> suggestions=suggestionService.displaySuggestions(page);
@@ -42,7 +42,7 @@ public class SuggestionController {
             adminSuggestion.setSuggestionTime(suggestion.getSuggestionTime());
             adminSuggestion.setUserId(user.getUserId());
             adminSuggestion.setUserName(user.getUserName());
-            suggestions.add(suggestion);
+            adminSuggestions.add(adminSuggestion);
         }
         res.put("state","ok");
         res.put("suggestions",adminSuggestions);

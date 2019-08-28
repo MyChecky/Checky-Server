@@ -32,7 +32,7 @@ public class AppealController {
     public JSONObject all(@RequestBody String body) {
         JSONObject res=new JSONObject();
         JSONObject object= (JSONObject) JSON.parse(body);
-        int currentPage=(Integer) object.get("page");
+        int currentPage = (Integer) object.get("page");
         Page<Appeal> page=new Page<>(currentPage,5);
         List<AdminAppeal> adminAppeals=new ArrayList<AdminAppeal>();
         List<Appeal> appeals=appealService.displayAppeals(page);
