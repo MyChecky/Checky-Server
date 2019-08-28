@@ -33,9 +33,8 @@ public class TaskTypeServiceImpl implements TaskTypeService {
     }
 
     @Override
-    public List<TaskType> QueryTaskType(String typeContent) {
-        return taskTypeMapper.selectList(new EntityWrapper<TaskType>()
-        .like("typeContent",typeContent));
+    public TaskType QueryTaskType(String typeId) {
+        return taskTypeMapper.selectById(typeId);
     }
 
     @Override

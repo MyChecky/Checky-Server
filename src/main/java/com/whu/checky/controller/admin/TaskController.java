@@ -11,6 +11,7 @@ import com.whu.checky.domain.User;
 import com.whu.checky.mapper.TaskSupervisorMapper;
 import com.whu.checky.service.CheckService;
 import com.whu.checky.service.TaskService;
+import com.whu.checky.service.TaskTypeService;
 import com.whu.checky.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -60,20 +61,21 @@ import java.util.List;
 public class TaskController {
 
     @Autowired
-    TaskService taskService;
+    private TaskService taskService;
     @Autowired
-    CheckService checkService;
+    private CheckService checkService;
+    @Autowired
+    private TaskTypeService taskTypeService;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private TaskSupervisorMapper taskSupervisorMapper;
 
-    @Autowired
-    UserService userService;
-    @Autowired
-    TaskSupervisorMapper taskSupervisorMapper;
-
-    //    @PostMapping("/all")
+//    @PostMapping("/all")
 //    public JSONObject all(@RequestBody String body) {
 //
 //    }
-    @PostMapping("/tasks")
+        @PostMapping("/tasks")
     public HashMap<String, Object> all(@RequestBody String body) {
         JSONObject json = JSONObject.parseObject(body);
         int page = json.getInteger("page");
@@ -97,40 +99,40 @@ public class TaskController {
     //查看任務詳情
     @PostMapping("/detail")
     public JSONObject detail(@RequestBody String body) {
-        JSONObject res = new JSONObject();
-        JSONObject object = (JSONObject) JSON.parse(body);
-        String taskId = (String) object.get("taskId");
-        Task task = taskService.queryTask(taskId);
-        task.setUserName(userService.queryUser(task.getUserId()).getUserName());
-        res.put("state", "ok");
-        res.put("task", task);
+        JSONObject res=new JSONObject();
+        JSONObject object= (JSONObject) JSON.parse(body);
+        String taskId=(String)object.get("taskId");
+        Task task=taskService.queryTask(taskId);
+        task.setTypeContent(taskTypeService.QueryTaskType(task.getTypeId()).getTypeContent());
+        res.put("state","ok");
+        res.put("task",task);
         return res;
     }
 
     //查看打卡詳情
     @PostMapping("/check")
     public JSONObject check(@RequestBody String body) {
-        JSONObject res = new JSONObject();
-        JSONObject object = (JSONObject) JSON.parse(body);
-        String taskId = (String) object.get("taskId");
-        List<Check> checks = checkService.getTaskChecks(taskId);
-        res.put("state", "ok");
-        res.put("checks", checks);
+        JSONObject res=new JSONObject();
+        JSONObject object= (JSONObject) JSON.parse(body);
+        String taskId=(String)object.get("taskId");
+        List<Check> checks=checkService.getTaskChecks(taskId);
+        res.put("state","ok");
+        res.put("checks",checks);
         return res;
     }
 
     //查看监督者
     @PostMapping("/supervisors")
     public JSONObject supervisors(@RequestBody String body) {
-        JSONObject res = new JSONObject();
-        JSONObject object = (JSONObject) JSON.parse(body);
-        String taskId = (String) object.get("taskId");
-        List<String> supervisorsId = taskSupervisorMapper.getTaskSupervisors(taskId);
-        List<AdminTaskSupervisor> adminTaskSupervisors = new ArrayList<AdminTaskSupervisor>();
-        for (String supervisorId : supervisorsId) {
-            AdminTaskSupervisor adminTaskSupervisor = new AdminTaskSupervisor();
-            User user = userService.queryUser(supervisorId);
-            TaskSupervisor taskSupervisor = taskSupervisorMapper.getTaskSupervisor(taskId, supervisorId);
+        JSONObject res=new JSONObject();
+        JSONObject object= (JSONObject) JSON.parse(body);
+        String taskId=(String)object.get("taskId");
+        List<String> supervisorsId= taskSupervisorMapper.getTaskSupervisors(taskId);
+        List<AdminTaskSupervisor> adminTaskSupervisors=new ArrayList<AdminTaskSupervisor>();
+        for(String supervisorId:supervisorsId){
+            AdminTaskSupervisor adminTaskSupervisor=new AdminTaskSupervisor();
+            User user=userService.queryUser(supervisorId);
+            TaskSupervisor taskSupervisor=taskSupervisorMapper.getTaskSupervisor(taskId,supervisorId);
             adminTaskSupervisor.setAddTime(taskSupervisor.getAddTime());
             adminTaskSupervisor.setBenefit(taskSupervisor.getBenefit());
             adminTaskSupervisor.setSuperviseNum(taskSupervisor.getSuperviseNum());
@@ -138,12 +140,12 @@ public class TaskController {
             adminTaskSupervisor.setUserName(user.getUserName());
             adminTaskSupervisors.add(adminTaskSupervisor);
         }
-        res.put("state", "ok");
-        res.put("supervisors", adminTaskSupervisors);
+        res.put("state","ok");
+        res.put("supervisors",adminTaskSupervisors);
         return res;
     }
 
-    class AdminTaskSupervisor {
+    class AdminTaskSupervisor{
         private String addTime;
         private double benefit;
         private int superviseNum;
