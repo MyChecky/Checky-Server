@@ -11,6 +11,7 @@ import com.whu.checky.domain.User;
 import com.whu.checky.mapper.TaskSupervisorMapper;
 import com.whu.checky.service.CheckService;
 import com.whu.checky.service.TaskService;
+import com.whu.checky.service.TaskTypeService;
 import com.whu.checky.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -60,14 +61,15 @@ import java.util.List;
 public class TaskController {
 
     @Autowired
-    TaskService taskService;
+    private TaskService taskService;
     @Autowired
-    CheckService checkService;
-
+    private CheckService checkService;
     @Autowired
-    UserService userService;
+    private TaskTypeService taskTypeService;
     @Autowired
-    TaskSupervisorMapper taskSupervisorMapper;
+    private UserService userService;
+    @Autowired
+    private TaskSupervisorMapper taskSupervisorMapper;
 
 //    @PostMapping("/all")
 //    public JSONObject all(@RequestBody String body) {
@@ -101,6 +103,7 @@ public class TaskController {
         JSONObject object= (JSONObject) JSON.parse(body);
         String taskId=(String)object.get("taskId");
         Task task=taskService.queryTask(taskId);
+        task.setTypeContent(taskTypeService.QueryTaskType(task.getTypeId()).getTypeContent());
         res.put("state","ok");
         res.put("task",task);
         return res;

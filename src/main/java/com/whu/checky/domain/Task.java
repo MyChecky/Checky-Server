@@ -21,6 +21,9 @@ public class Task {
     }
 
     private String typeId;
+    //2019/8/28
+    @TableField(exist = false)
+    private String typeContent;
 
     private String taskTitle;
 
@@ -185,5 +188,13 @@ public class Task {
 
     public void setCheckNum(Integer checkNum) {
         this.checkNum = checkNum;
+    }
+
+    public String getTypeContent() {
+        return typeContent;
+    }
+
+    public void setTypeContent(String typeContent) {
+        this.typeContent = typeContent;
     }
 }
