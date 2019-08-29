@@ -76,7 +76,7 @@ public class ReportController {
 
 
     class AdminReport{
-        private String objectId;
+
         private String reportContent;
         private String reportId;
         private String reportTime;
@@ -84,14 +84,6 @@ public class ReportController {
         private String userId;
         private String userName;
         private String objectId;
-
-        public String getObjectId() {
-            return objectId;
-        }
-
-        public void setObjectId(String objectId) {
-            this.objectId = objectId;
-        }
 
         public String getObjectId() {
             return objectId;
