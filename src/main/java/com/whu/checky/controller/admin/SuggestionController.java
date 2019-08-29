@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/admin/suggestion")
@@ -75,7 +76,10 @@ public class SuggestionController {
         JSONObject res=new JSONObject();
         JSONObject object= (JSONObject) JSON.parse(jsonstr);
         String suggestionId=object.getString("suggestionId");
-        TaskType taskType= JSON.parseObject(object.getString("taskType"),new TypeReference<TaskType>(){});
+        String typeContent=object.getString("typeContent");
+        TaskType taskType=new TaskType();
+        taskType.setTypeContent(typeContent);
+        taskType.setTypeId(UUID.randomUUID().toString());
         if(suggestionService.deleteSuggestion(suggestionId)==1&&taskTypeService.addTaskType(taskType)==1) {
             res.put("state","ok");
         }else {
