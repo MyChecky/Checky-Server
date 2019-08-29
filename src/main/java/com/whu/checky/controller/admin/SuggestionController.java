@@ -35,7 +35,7 @@ public class SuggestionController {
     public JSONObject all(@RequestBody String jsonstr){
         JSONObject res=new JSONObject();
         JSONObject object= (JSONObject) JSON.parse(jsonstr);
-        int currentPage=(Integer) object.get("page");
+        int currentPage = (Integer) object.get("page");
         Page<Suggestion> page=new Page<>(currentPage,5);
         List<AdminSuggestion> adminSuggestions=new ArrayList<AdminSuggestion>();
         List<Suggestion> suggestions=suggestionService.displaySuggestions(page);

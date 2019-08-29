@@ -29,7 +29,7 @@ public class EssayController {
     public JSONObject all(@RequestBody String jsonstr){
         JSONObject res=new JSONObject();
         JSONObject object= (JSONObject) JSON.parse(jsonstr);
-        int currentPage=(Integer) object.get("page");
+        int currentPage = (Integer) object.get("page");
         Page<Essay> page=new Page<>(currentPage,5);
         List<AdminEssay> adminEssays=new ArrayList<AdminEssay>();
         List<Essay> essays=essayService.displayEssay(page);
