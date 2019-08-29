@@ -49,4 +49,9 @@ public class ReportServiceImpl implements ReportService {
                 page,
                 new EntityWrapper<Report>().orderBy("report_time",true));
     }
+
+    @Override
+    public int updateState(String reportId, String result) {
+        return reportMapper.updateState(reportId,result);
+    }
 }

@@ -35,8 +35,8 @@ public class AppealServiceImpl implements AppealService {
     }
 
     @Override
-    public void updateAppeal() {
-
+    public int updateAppeal(String appealId,String result) {
+        return mapper.updateState(appealId,result);
     }
 
     @Override

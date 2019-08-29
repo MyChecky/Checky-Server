@@ -2,10 +2,13 @@ package com.whu.checky.controller.admin;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.whu.checky.domain.Suggestion;
+import com.whu.checky.domain.TaskType;
 import com.whu.checky.domain.User;
 import com.whu.checky.service.SuggestionService;
+import com.whu.checky.service.TaskTypeService;
 import com.whu.checky.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -23,6 +26,8 @@ public class SuggestionController {
     @Autowired
     private SuggestionService suggestionService;
     @Autowired
+    private TaskTypeService taskTypeService;
+    @Autowired
     private UserService userService;
 
     //展示动态
@@ -34,7 +39,8 @@ public class SuggestionController {
         Page<Suggestion> page=new Page<>(currentPage,5);
         List<AdminSuggestion> adminSuggestions=new ArrayList<AdminSuggestion>();
         List<Suggestion> suggestions=suggestionService.displaySuggestions(page);
-        for (Suggestion suggestion:suggestions){
+        for (int i = 0;i<suggestions.size();i++){
+            Suggestion suggestion=suggestions.get(i);
             AdminSuggestion adminSuggestion=new AdminSuggestion();
             User user=userService.queryUser(suggestion.getUserId());
             adminSuggestion.setSuggestionContent(suggestion.getSuggestionContent());
@@ -42,12 +48,43 @@ public class SuggestionController {
             adminSuggestion.setSuggestionTime(suggestion.getSuggestionTime());
             adminSuggestion.setUserId(user.getUserId());
             adminSuggestion.setUserName(user.getUserName());
-            suggestions.add(suggestion);
+            adminSuggestions.add(adminSuggestion);
         }
         res.put("state","ok");
         res.put("suggestions",adminSuggestions);
         return res;
     }
+
+    //否决建议
+    @RequestMapping("/deny")
+    public JSONObject deny(@RequestBody String jsonstr){
+        JSONObject res=new JSONObject();
+        JSONObject object= (JSONObject) JSON.parse(jsonstr);
+        String suggestionId=object.getString("suggestionId");
+        if(suggestionService.deleteSuggestion(suggestionId)==1) {
+            res.put("state","ok");
+        }else {
+            res.put("state","fail");
+        }
+        return res;
+    }
+
+    //通过建议
+    @RequestMapping("/pass")
+    public JSONObject pass(@RequestBody String jsonstr){
+        JSONObject res=new JSONObject();
+        JSONObject object= (JSONObject) JSON.parse(jsonstr);
+        String suggestionId=object.getString("suggestionId");
+        TaskType taskType= JSON.parseObject(object.getString("taskType"),new TypeReference<TaskType>(){});
+        if(suggestionService.deleteSuggestion(suggestionId)==1&&taskTypeService.addTaskType(taskType)==1) {
+            res.put("state","ok");
+        }else {
+            res.put("state","fail");
+        }
+        return res;
+    }
+
+
 
 
     class AdminSuggestion{

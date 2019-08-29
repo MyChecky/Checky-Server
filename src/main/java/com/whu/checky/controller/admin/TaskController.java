@@ -90,6 +90,9 @@ public class TaskController {
             resp.put("type", "userId");
         }
         List<Task> taskList = taskService.query(params, p);
+        for(Task task:taskList){
+            task.setTypeContent(taskTypeService.QueryTaskType(task.getTypeId()).getTypeContent());
+        }
         resp.put("tasks", taskList);
         if (p != null) resp.put("tasksSize", p.getTotal());
         resp.put("state", "ok");

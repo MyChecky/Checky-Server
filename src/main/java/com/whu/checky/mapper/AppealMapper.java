@@ -10,5 +10,5 @@ import java.util.List;
 @Mapper
 @Component("AppealMapper")
 public interface AppealMapper extends BaseMapper<Appeal> {
-
+int updateState(String appealId,String result);
 }

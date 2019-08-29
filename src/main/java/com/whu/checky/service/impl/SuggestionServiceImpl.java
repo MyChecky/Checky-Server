@@ -38,4 +38,9 @@ public class SuggestionServiceImpl implements SuggestionService {
                 page,
                 new EntityWrapper<Suggestion>().orderBy("suggestion_time",true));
     }
+
+    @Override
+    public int deleteSuggestion(String suggestionId) {
+        return suggestionMapper.deleteById(suggestionId);
+    }
 }

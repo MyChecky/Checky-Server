@@ -18,4 +18,7 @@ public interface ReportService {
     Report queryReportById(String reportId);
     //管理员查看所有申诉
     List<Report> displayReports(Page<Report> page);
+
+    //对举报进行处理举报
+    int updateState(String reportId,String result);
 }

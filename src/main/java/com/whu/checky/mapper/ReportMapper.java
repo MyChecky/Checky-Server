@@ -11,5 +11,6 @@ import java.util.List;
 @Component(value = "reportMapper")
 public interface ReportMapper extends BaseMapper<Report> {
     List<Report> getReportList();
+    int updateState(String reportId, String result);
 
 }

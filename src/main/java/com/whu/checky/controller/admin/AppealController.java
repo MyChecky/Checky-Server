@@ -53,6 +53,21 @@ public class AppealController {
         return res;
     }
 
+    //处理申诉
+    @PostMapping("/process")
+    public JSONObject process(@RequestBody String body) {
+        JSONObject res=new JSONObject();
+        JSONObject object= (JSONObject) JSON.parse(body);
+        String appealId=object.getString("appealId");
+        String result=object.getString("result");
+        if(appealService.updateAppeal(appealId,result)==1) {
+            res.put("state","ok");
+        }else {
+            res.put("state","fail");
+        }
+        return res;
+    }
+
 
     class AdminAppeal{
         private String appealContent;

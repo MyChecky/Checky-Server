@@ -32,6 +32,17 @@ public class UserController {
         return resp;
     }
 
+    @PostMapping("/queryByKeyWord")
+    HashMap<String,Object> queryUserByKeyWord(@RequestBody String body){
+        int page = JSON.parseObject(body).getInteger("page");
+        String keyWord=JSON.parseObject(body).getString("keyword");
+        List<User> userList=userService.queryUsers(page,keyWord);
+        HashMap<String,Object> resp = new HashMap<>();
+        resp.put("state","ok");
+        resp.put("users",userList);
+        return resp;
+    }
+
     @PostMapping("/modify")
     HashMap<String,Object> modifyUser(@RequestBody String body){
         JSONObject json = JSON.parseObject(body);

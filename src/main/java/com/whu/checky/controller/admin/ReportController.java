@@ -60,6 +60,21 @@ public class ReportController {
         return res;
     }
 
+    //处理申诉
+    @PostMapping("/process")
+    public JSONObject process(@RequestBody String body) {
+        JSONObject res=new JSONObject();
+        JSONObject object= (JSONObject) JSON.parse(body);
+        String reportId=object.getString("reportId");
+        String result=object.getString("result");
+        if(reportService.updateState(reportId,result)==1) {
+            res.put("state","ok");
+        }else {
+            res.put("state","fail");
+        }
+        return res;
+    }
+
 
     class AdminReport{
         private String objectId;

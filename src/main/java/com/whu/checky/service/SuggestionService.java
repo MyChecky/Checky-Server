@@ -17,4 +17,6 @@ public interface SuggestionService {
     List<Suggestion> ListSuggestion();
     //管理员查看所有建议
     List<Suggestion> displaySuggestions(Page<Suggestion> page);
+    int deleteSuggestion(String suggestionId);
+
 }

@@ -4,4 +4,10 @@
     <select id="getReportList" resultType="Report">
         SELECT  * FROM REPORT
     </select>
+
+    <update id="updateState">
+    update report
+    set process_result=#{result}
+    where report_id=#{reportId}
+</update>
 </mapper>
