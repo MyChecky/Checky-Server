@@ -3,12 +3,13 @@
 <mapper namespace="com.whu.checky.mapper.EssayMapper">
     <select id="queryEssaysByUserName" resultType="com.whu.checky.domain.Essay">
         SELECT essay_id AS essayId,user_id AS userId,essay_content AS essayContent,essay_time AS essayTime,like_num
-AS likeNum,comment_num AS commentNum,version,longtitude,latitude FROM essay ORDER BY essay_time DESC
-        FROM `essay`
-        WHERE user_id IN
-        (select user_id
-        from user
-        where  user_name LIKE #{username})
+                AS likeNum,comment_num AS commentNum,version,longtitude,latitude
+    FROM `essay`
+WHERE user_id IN
+    (select user_id
+    from user
+    where  user_name LIKE #{username})
+         ORDER BY essay_time DESC
     </select>
 
 
