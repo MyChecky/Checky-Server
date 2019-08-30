@@ -8,7 +8,7 @@
 WHERE user_id IN
     (select user_id
     from user
-    where  user_name LIKE #{username})
+    where  user_name LIKE "%"#{username}"%")
          ORDER BY essay_time DESC
     </select>
 

@@ -19,7 +19,7 @@ AS reportType,process_result AS processResult,process_time AS processTime FROM r
         WHERE user_id IN
         (select user_id
         from user
-        where  user_name LIKE #{username})
+        where  user_name LIKE "%"#{username}"%")
         ORDER BY report_time
     </select>
 </mapper>

@@ -33,5 +33,6 @@ public interface MoneyService {
     List<MoneyFlow> querySystemScopeMoneyFlow(String startDate,String endDate);*/
 
     HashMap<String, Object> getGraphData(String year);
+
     List<MoneyFlow> queryMoneyFlowByUserName(String username);
 }
