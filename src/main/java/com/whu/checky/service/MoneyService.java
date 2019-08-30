@@ -3,6 +3,7 @@ package com.whu.checky.service;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.whu.checky.domain.MoneyFlow;
 
+import java.util.HashMap;
 import java.util.List;
 
 public interface MoneyService {
@@ -30,4 +31,6 @@ public interface MoneyService {
     List<MoneyFlow> queryUserScopeMoneyFlow(String startDate,String endDate,String userId);
 /*    //查看一段日期内系统的所有流水
     List<MoneyFlow> querySystemScopeMoneyFlow(String startDate,String endDate);*/
+
+    HashMap<String, Object> getGraphData(String year);
 }

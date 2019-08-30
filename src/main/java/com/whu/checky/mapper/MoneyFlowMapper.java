@@ -14,7 +14,12 @@ import java.util.List;
 @Mapper
 @Component("moneyFlowMapper")
 public interface MoneyFlowMapper extends BaseMapper<MoneyFlow> {
-    List<MoneyFlow> queryAllScopeMoneyFlow(String startDate, String endDate);
+    @Select("SELECT flow_id as `flowId`, from_user_id as `fromUserId`," +
+            "                  to_user_id as `toUserId`, flow_money as `flowMoney`, flow_time as `flowTime`,  \n" +
+            "                   task_id as `taskId` FROM moneyflow\n" +
+            "        WHERE flow_time\n" +
+            "        between date (#{startDate}) and date (#{endDate})")
+    List<MoneyFlow> queryAllScopeMoneyFlow(@Param("startDate") String startDate, @Param("endDate") String endDate);
     List<MoneyFlow> queryUserScopeMoneyFlow(String startDate, String endDate, String userId);
 
     String moneyFlowsWithNameSql = "SELECT flow_id as `flowId`, from_user_id as `fromUserId`,\n" +

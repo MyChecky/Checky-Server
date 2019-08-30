@@ -14,14 +14,14 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.HashMap;
 
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("/admin/moneyFlows")
 @Component("AdminMoneyController")
 public class MoneyController {
 
     @Autowired
     MoneyService moneyService;
 
-    @PostMapping("/moneyFlows")
+    @PostMapping("/")
     public HashMap<String, Object> all(@RequestBody String body) {
         JSONObject json = JSONObject.parseObject(body);
         int page = json.getInteger("page");
@@ -45,4 +45,13 @@ public class MoneyController {
         return resp;
     }
 
+    @PostMapping("/graph")
+    public HashMap<String, Object> graph(@RequestBody String body) {
+        JSONObject json = JSONObject.parseObject(body);
+        String year = json.getString("year");
+        HashMap<String, Object> ret = moneyService.getGraphData(year);
+        ret.put("state", "ok");
+        return ret;
+
+    }
 }
