@@ -13,6 +13,9 @@ public interface CheckService {
     //查询打卡
     List<Check> queryCheck(String column, String checkId);
 
+    //查询具体的某一条打卡
+    Check queryCheckById(String checkId);
+
     List<Check> queryCheckByUserId(String userId, Page<Check> page);
 
     void getCheckHistory();

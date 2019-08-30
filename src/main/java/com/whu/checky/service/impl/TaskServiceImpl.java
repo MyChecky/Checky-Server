@@ -180,6 +180,11 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    public List<Task> queryTaskByUserName(String username) {
+        return taskMapper.queryTaskByUserName(username);
+    }
+
+    @Override
     public String getTitleById(String taskId){
         return taskMapper.getTitleById(taskId);
     }

@@ -74,6 +74,18 @@ public class ReportController {
         return res;
     }
 
+    //根据username模糊搜索的举报
+    @RequestMapping("/query")
+    public JSONObject query(@RequestBody String jsonstr){
+        JSONObject res=new JSONObject();
+        JSONObject object= (JSONObject) JSON.parse(jsonstr);
+        String username=object.getString("username");
+        List<Report> reports=reportService.queryUserReports(username);
+        res.put("state","ok");
+        res.put("reports",reports);
+        return res;
+    }
+
 
     class AdminReport{
         private String objectId;
@@ -83,15 +95,6 @@ public class ReportController {
         private String reportType;
         private String userId;
         private String userName;
-        private String objectId;
-
-        public String getObjectId() {
-            return objectId;
-        }
-
-        public void setObjectId(String objectId) {
-            this.objectId = objectId;
-        }
 
         public String getObjectId() {
             return objectId;

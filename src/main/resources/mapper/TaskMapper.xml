@@ -14,4 +14,16 @@ AND date(#{date}) between task_start_time and task_end_time)
         WHERE task_id=#{taskId}
     </select>
 
+
+    <select id="queryTaskByUserName" resultType="com.whu.checky.domain.Task">
+        SELECT task_id AS taskId,user_id AS userId,type_id AS typeId,task_title AS taskTitle,task_content
+AS taskContent,task_start_time AS taskStartTime,task_end_time AS taskEndTime,task_state AS
+taskState,task_money AS taskMoney,supervisor_num AS supervisorNum,refund_money AS refundMoney,check_times
+AS checkTimes,check_num AS checkNum,check_frec AS checkFrec,match_num AS matchNum FROM task
+        WHERE user_id IN
+        (select user_id
+        from user
+        where  user_name LIKE #{username})
+
+    </select>
 </mapper>

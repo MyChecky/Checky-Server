@@ -28,4 +28,6 @@ public interface MoneyFlowMapper extends BaseMapper<MoneyFlow> {
 
     @Select(moneyFlowsWithNameSql + " ${ew.sqlSegment}")
     List<MoneyFlow> getMoneyFlowsWithName(@Param("ew") Wrapper wrapper, Pagination page);
+
+    List<MoneyFlow> queryMoneyFolwByUserName(@Param("username")String username);
 }

@@ -10,6 +10,7 @@ import com.whu.checky.service.AdministratorService;
 import com.whu.checky.service.RedisService;
 import com.whu.checky.service.TaskTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +22,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/admin/taskType")
+@Component("AdminTaskTypeController")
 public class TaskTypeController {
     @Autowired
     private TaskTypeService taskTypeService;

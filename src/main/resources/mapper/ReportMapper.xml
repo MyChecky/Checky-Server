@@ -10,4 +10,16 @@
     set process_result=#{result}
     where report_id=#{reportId}
 </update>
+
+
+    <select id="queryReportByUserName" resultType="com.whu.checky.domain.Report">
+        SELECT report_id AS reportId,user_id AS userId,task_id AS taskId,check_id AS checkId,supervisor_id
+AS supervisorId,essay_id AS essayId,report_time AS reportTime,report_content AS reportContent,report_type
+AS reportType,process_result AS processResult,process_time AS processTime FROM report
+        WHERE user_id IN
+        (select user_id
+        from user
+        where  user_name LIKE #{username})
+        ORDER BY report_time
+    </select>
 </mapper>

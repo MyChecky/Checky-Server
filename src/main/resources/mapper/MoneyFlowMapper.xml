@@ -13,5 +13,17 @@
         AND (to_user_id = #{userid} OR from_user_id=#{userid})
     </select>
 
+    <select id="queryMoneyFlowByUserName" resultType="com.whu.checky.domain.MoneyFlow">
+        SELECT flow_id AS flowId,from_user_id AS fromUserId,to_user_id AS toUserId,task_id AS taskId,flow_money
+AS flowMoney,flow_time AS flowTime FROM moneyflow
+        WHERE to_user_id IN
+        (select user_id
+        from user
+        where  user_name LIKE #{username}) OR
+         from_user_id  IN
+        (select user_id
+        from user
+        where  user_name LIKE #{username})
 
+    </select>
 </mapper>

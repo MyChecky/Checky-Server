@@ -75,4 +75,9 @@ public class MoneyServiceImpl implements MoneyService {
         return  moneyFlowMapper.queryUserScopeMoneyFlow(startDate,endDate,userId);
     }
 
+    @Override
+    public List<MoneyFlow> queryMoneyFlowByUserName(String username) {
+        return moneyFlowMapper.queryMoneyFolwByUserName(username);
+    }
+
 }

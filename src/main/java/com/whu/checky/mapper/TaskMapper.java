@@ -29,4 +29,6 @@ public interface TaskMapper extends BaseMapper<Task> {
 
     @Select(taskWithNameSql + " ${ew.sqlSegment}")
     List<Task> getTasksWithName(@Param("ew") Wrapper wrapper, Pagination page);
+
+    List<Task> queryTaskByUserName(@Param("username") String username);
 }

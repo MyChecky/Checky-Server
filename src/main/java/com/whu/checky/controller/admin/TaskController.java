@@ -4,15 +4,9 @@ package com.whu.checky.controller.admin;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.plugins.Page;
-import com.whu.checky.domain.Check;
-import com.whu.checky.domain.Task;
-import com.whu.checky.domain.TaskSupervisor;
-import com.whu.checky.domain.User;
+import com.whu.checky.domain.*;
 import com.whu.checky.mapper.TaskSupervisorMapper;
-import com.whu.checky.service.CheckService;
-import com.whu.checky.service.TaskService;
-import com.whu.checky.service.TaskTypeService;
-import com.whu.checky.service.UserService;
+import com.whu.checky.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -70,6 +64,10 @@ public class TaskController {
     private UserService userService;
     @Autowired
     private TaskSupervisorMapper taskSupervisorMapper;
+    @Autowired
+    private SuperviseService superviseService;
+    @Autowired
+    private RecordService recordService;
 
 //    @PostMapping("/all")
 //    public JSONObject all(@RequestBody String body) {
@@ -123,6 +121,51 @@ public class TaskController {
         res.put("checks",checks);
         return res;
     }
+
+    //根据username模糊搜索的任务
+    @RequestMapping("/query")
+    public JSONObject query(@RequestBody String jsonstr){
+        JSONObject res=new JSONObject();
+        JSONObject object= (JSONObject) JSON.parse(jsonstr);
+        String username=object.getString("username");
+        List<Task> tasks=taskService.queryTaskByUserName(username);
+        res.put("state","ok");
+        res.put("tasks",tasks);
+        return res;
+    }
+
+    //查看打卡詳情
+    @PostMapping("/check/detail")
+    public JSONObject checkDetail(@RequestBody String body) {
+        JSONObject res=new JSONObject();
+        JSONObject object= (JSONObject) JSON.parse(body);
+        String checkId=(String)object.get("checkId");
+        String taskId=(String)object.get("taskId");
+        AdminCheckDetail adminCheckDetail=new AdminCheckDetail();
+        //打卡详情
+        Check check=checkService.queryCheckById(checkId);
+        List<Record> records=recordService.getRecordsByCheckId(check.getCheckId());
+        Record textRecord=null;
+        for (Record record: records){
+            if (record.getRecordType().equals("text")){
+                textRecord=record;
+            }
+        }
+        records.remove(textRecord);
+        CheckHistory checkHistory=new CheckHistory();
+        check.setTaskTitle(taskService.getTitleById(check.getTaskId()));
+        checkHistory.setCheck(check);
+        checkHistory.setImages(records);
+        checkHistory.setText(textRecord);
+        adminCheckDetail.setCheckHistory(checkHistory);
+        //监督详情
+        List<SupervisorState> supervisorStates=superviseService.querySuperviseState(taskId,checkId);
+        adminCheckDetail.setSupervisorStates(supervisorStates);
+        res.put("state","ok");
+        res.put("adminCheckDetail",adminCheckDetail);
+        return res;
+    }
+
 
     //查看监督者
     @PostMapping("/supervisors")
@@ -193,6 +236,59 @@ public class TaskController {
 
         public void setUserName(String userName) {
             this.userName = userName;
+        }
+    }
+
+
+    class AdminCheckDetail{
+        private CheckHistory checkHistory;
+        private List<SupervisorState>  supervisorStates;
+
+        public CheckHistory getCheckHistory() {
+            return checkHistory;
+        }
+
+        public void setCheckHistory(CheckHistory checkHistory) {
+            this.checkHistory = checkHistory;
+        }
+
+        public List<SupervisorState> getSupervisorStates() {
+            return supervisorStates;
+        }
+
+        public void setSupervisorStates(List<SupervisorState> supervisorStates) {
+            this.supervisorStates = supervisorStates;
+        }
+    }
+
+    class CheckHistory{
+        private Check check;
+        private List<Record> images;
+        private Record text;
+
+        public Check getCheck() {
+            return check;
+        }
+
+        public void setCheck(Check check) {
+            this.check = check;
+        }
+
+
+        public List<Record> getImages() {
+            return images;
+        }
+
+        public void setImages(List<Record> images) {
+            this.images = images;
+        }
+
+        public Record getText() {
+            return text;
+        }
+
+        public void setText(Record text) {
+            this.text = text;
         }
     }
 

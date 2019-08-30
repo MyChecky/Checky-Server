@@ -54,4 +54,9 @@ public class ReportServiceImpl implements ReportService {
     public int updateState(String reportId, String result) {
         return reportMapper.updateState(reportId,result);
     }
+
+    @Override
+    public List<Report> queryReportByUserName(String username) {
+        return reportMapper.queryReportByUserName(username);
+    }
 }

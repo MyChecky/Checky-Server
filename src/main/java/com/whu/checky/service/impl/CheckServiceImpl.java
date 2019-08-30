@@ -33,6 +33,11 @@ public class CheckServiceImpl implements CheckService {
     }
 
     @Override
+    public Check queryCheckById(String checkId) {
+        return mapper.selectById(checkId);
+    }
+
+    @Override
     public List<Check> queryCheckByUserId(String userId, Page<Check> page) {
         return mapper.selectPage(page,
                 new EntityWrapper<Check>()

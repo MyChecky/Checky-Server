@@ -68,6 +68,18 @@ public class AppealController {
         return res;
     }
 
+    //根据username模糊搜索的申诉
+    @RequestMapping("/query")
+    public JSONObject query(@RequestBody String jsonstr){
+        JSONObject res=new JSONObject();
+        JSONObject object= (JSONObject) JSON.parse(jsonstr);
+        String username=object.getString("username");
+        List<Appeal> appeals=appealService.queryAppealByUserName(username);
+        res.put("state","ok");
+        res.put("appeals",appeals);
+        return res;
+    }
+
 
     class AdminAppeal{
         private String appealContent;

@@ -55,6 +55,32 @@ public class EssayController {
         return res;
     }
 
+    //根据username模糊搜索的动态
+    @RequestMapping("/query")
+    public JSONObject query(@RequestBody String jsonstr){
+        JSONObject res=new JSONObject();
+        JSONObject object= (JSONObject) JSON.parse(jsonstr);
+        String username=object.getString("username");
+        List<AdminEssay> adminEssays=new ArrayList<AdminEssay>();
+        List<Essay> essays=essayService.queryEssaysByUserName(username);
+        for (Essay essay:essays){
+            List<Record> records=recordService.getRecordsByEssayId(essay.getEssayId());
+            AdminEssay adminEssay=new AdminEssay();
+            User user=userService.queryUser(essay.getUserId());
+            adminEssay.setCommentNum(essay.getCommentNum());
+            adminEssay.setEssayContent(essay.getEssayContent());
+            adminEssay.setEssayId(essay.getEssayId());
+            adminEssay.setEssayTime(essay.getEssayTime());
+            adminEssay.setLikeNum(essay.getLikeNum());
+            adminEssay.setUserName(user.getUserName());
+            adminEssay.setImg(records);
+            adminEssays.add(adminEssay);
+        }
+        res.put("state","ok");
+        res.put("essays",adminEssays);
+        return res;
+    }
+
 
     class AdminEssay{
         private int commentNum;

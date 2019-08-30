@@ -23,4 +23,5 @@ public interface TaskService {
 List<Task> query(HashMap<String, String> params, Page page);
 
     int getTasksNum(HashMap<String, String> params);
+    List<Task> queryTaskByUserName(String username);
 }

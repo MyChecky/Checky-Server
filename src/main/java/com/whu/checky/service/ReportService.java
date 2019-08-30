@@ -21,4 +21,6 @@ public interface ReportService {
 
     //对举报进行处理举报
     int updateState(String reportId,String result);
+
+    List<Report> queryReportByUserName(String username);
 }

@@ -21,6 +21,9 @@ public interface EssayService {
     //展示动态
     Essay queryEssayById(String essayId);
 
+    //展示动态
+    List<Essay> queryEssaysByUserName(String username);
+
 
 
 }

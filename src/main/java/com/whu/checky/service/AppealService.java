@@ -3,6 +3,7 @@ package com.whu.checky.service;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.whu.checky.domain.Appeal;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -17,5 +18,7 @@ public interface AppealService {
     List<Appeal> queryAppealFromUser(String userId);
     //管理员查看所有申诉
     List<Appeal> displayAppeals(Page<Appeal> page);
+    //根据用户名检索
+    List<Appeal> queryAppealByUserName(String username);
 
 }

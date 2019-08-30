@@ -56,5 +56,10 @@ public class AppealServiceImpl implements AppealService {
                 new EntityWrapper<Appeal>().orderBy("appeal_time",true));
     }
 
+    @Override
+    public List<Appeal> queryAppealByUserName(String username) {
+        return mapper.queryAppealByUserName(username);
+    }
+
 
 }
