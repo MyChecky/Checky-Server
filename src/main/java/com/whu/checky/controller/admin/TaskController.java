@@ -158,6 +158,8 @@ public class TaskController {
         checkHistory.setImages(records);
         checkHistory.setText(textRecord);
         adminCheckDetail.setCheckHistory(checkHistory);
+        User user=userService.queryUser(check.getUserId());
+        adminCheckDetail.setUserName(user.getUserName());
         //监督详情
         List<SupervisorState> supervisorStates=superviseService.querySuperviseState(taskId,checkId);
         adminCheckDetail.setSupervisorStates(supervisorStates);
@@ -243,6 +245,7 @@ public class TaskController {
     class AdminCheckDetail{
         private CheckHistory checkHistory;
         private List<SupervisorState>  supervisorStates;
+        private String userName;
 
         public CheckHistory getCheckHistory() {
             return checkHistory;
@@ -258,6 +261,14 @@ public class TaskController {
 
         public void setSupervisorStates(List<SupervisorState> supervisorStates) {
             this.supervisorStates = supervisorStates;
+        }
+
+        public String getUserName() {
+            return userName;
+        }
+
+        public void setUserName(String userName) {
+            this.userName = userName;
         }
     }
 

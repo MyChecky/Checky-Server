@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.whu.checky.domain.MoneyFlow;
-import com.whu.checky.domain.Report;
 import com.whu.checky.service.MoneyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -48,6 +47,15 @@ public class MoneyController {
         return resp;
     }
 
+    @PostMapping("/graph")
+    public HashMap<String, Object> graph(@RequestBody String body) {
+        JSONObject json = JSONObject.parseObject(body);
+        String year = json.getString("year");
+        HashMap<String, Object> ret = moneyService.getGraphData(year);
+        ret.put("state", "ok");
+        return ret;
+
+    }
 
     //根据username模糊搜索的申诉
     @RequestMapping("/query")

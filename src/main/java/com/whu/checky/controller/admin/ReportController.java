@@ -56,6 +56,7 @@ public class ReportController {
         }
         res.put("state","ok");
         res.put("reports",adminReports);
+        res.put("reportsSize", page.getTotal());
         return res;
     }
 
@@ -88,21 +89,13 @@ public class ReportController {
 
 
     class AdminReport{
-        private String objectId;
+
         private String reportContent;
         private String reportId;
         private String reportTime;
         private String reportType;
         private String userId;
         private String userName;
-
-        public String getObjectId() {
-            return objectId;
-        }
-
-        public void setObjectId(String objectId) {
-            this.objectId = objectId;
-        }
 
         public String getReportContent() {
             return reportContent;

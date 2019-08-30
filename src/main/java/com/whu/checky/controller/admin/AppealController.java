@@ -50,6 +50,7 @@ public class AppealController {
         }
         res.put("state","ok");
         res.put("appeals",adminAppeals);
+        res.put("appealsSize", page.getTotal());
         return res;
     }
 
