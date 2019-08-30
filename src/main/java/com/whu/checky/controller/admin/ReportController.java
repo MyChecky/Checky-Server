@@ -56,6 +56,7 @@ public class ReportController {
         }
         res.put("state","ok");
         res.put("reports",adminReports);
+        res.put("reportsSize", page.getTotal());
         return res;
     }
 
