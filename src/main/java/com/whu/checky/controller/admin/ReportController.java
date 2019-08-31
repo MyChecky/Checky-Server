@@ -96,6 +96,7 @@ public class ReportController {
         private String reportType;
         private String userId;
         private String userName;
+        private String objectId;
 
         public String getReportContent() {
             return reportContent;
@@ -143,6 +144,14 @@ public class ReportController {
 
         public void setUserName(String userName) {
             this.userName = userName;
+        }
+
+        public String getObjectId() {
+            return objectId;
+        }
+
+        public void setObjectId(String objectId) {
+            this.objectId = objectId;
         }
     }
 
