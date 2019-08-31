@@ -14,8 +14,9 @@ public interface TaskTypeService {
 //    Suggestion QuerySuggestion(String suggestionId);
     //查询所有的打卡类型
     List<TaskType> ListAllTaskType();
-    //查询所有的打卡类型
-    List<TaskType> QueryTaskType(String typeContent);
+    //使用ID查询某条TaskType
+    TaskType QueryTaskType(String typeId);
     //删除打卡类型
     Integer DeleteTaskType(String typeId);
+    //
 }

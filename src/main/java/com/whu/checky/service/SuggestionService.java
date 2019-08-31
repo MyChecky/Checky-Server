@@ -1,5 +1,6 @@
 package com.whu.checky.service;
 
+import com.baomidou.mybatisplus.plugins.Page;
 import com.whu.checky.domain.Suggestion;
 import com.whu.checky.domain.TaskType;
 
@@ -14,4 +15,8 @@ public interface SuggestionService {
     Suggestion QuerySuggestion(String suggestionId);
     //查询所有的建议
     List<Suggestion> ListSuggestion();
+    //管理员查看所有建议
+    List<Suggestion> displaySuggestions(Page<Suggestion> page);
+    int deleteSuggestion(String suggestionId);
+
 }

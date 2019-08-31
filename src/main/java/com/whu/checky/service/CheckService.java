@@ -13,6 +13,9 @@ public interface CheckService {
     //查询打卡
     List<Check> queryCheck(String column, String checkId);
 
+    //查询具体的某一条打卡
+    Check queryCheckById(String checkId);
+
     List<Check> queryCheckByUserId(String userId, Page<Check> page);
 
     void getCheckHistory();
@@ -22,6 +25,8 @@ public interface CheckService {
     void deleteCheck(String checkId);
 
     Check getCheckByTask(String taskId,String date);
+
+    List<Check> getTaskChecks(String taskId);
 
     void updatePassSuperviseCheck(String checkId);
 

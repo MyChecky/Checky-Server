@@ -1,17 +1,18 @@
 package com.whu.checky.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.whu.checky.domain.Task;
+import com.whu.checky.mapper.TaskMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -20,15 +21,12 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
-
-import static org.junit.Assert.*;
 
 //@Transactional
 @RunWith(SpringRunner.class)
@@ -165,5 +163,22 @@ public class TaskControllerTest {
         System.out.println("after---------------------post");
         String result = mvcResult.getResponse().getContentAsString();
         System.out.println("==========结果为：==========\n" + result + "\n");
+    }
+
+    @Autowired
+    TaskMapper taskMapper;
+
+    @Test
+    public void getTasks() throws Exception {
+        Wrapper<Task> wrapper = new EntityWrapper<>();
+
+//        wrapper.eq("user_id","oM2yQ4jR0La_jZ8hyxkERsqNTh_8");
+//        wrapper.eq("user_id","oM2yQ4jR0La_jZ8hyxkERsqNTh_8");
+//        System.out.println(wrapper.getSqlSegment());
+        List<Task> taskList = taskMapper.getTasksWithName(wrapper, new Page<>(0, 4));
+        for (Task t : taskList) {
+            System.out.println(t.getUserId());
+            System.out.println(t.getUserName());
+        }
     }
 }

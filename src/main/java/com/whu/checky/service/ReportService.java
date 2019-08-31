@@ -1,5 +1,6 @@
 package com.whu.checky.service;
 
+import com.baomidou.mybatisplus.plugins.Page;
 import com.whu.checky.domain.Report;
 
 import java.util.List;
@@ -15,4 +16,11 @@ public interface ReportService {
     List<Report> queryUserReports(String userId);
     //查看具体的某个举报
     Report queryReportById(String reportId);
+    //管理员查看所有申诉
+    List<Report> displayReports(Page<Report> page);
+
+    //对举报进行处理举报
+    int updateState(String reportId,String result);
+
+    List<Report> queryReportByUserName(String username);
 }

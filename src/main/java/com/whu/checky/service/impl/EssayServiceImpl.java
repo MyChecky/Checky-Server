@@ -55,4 +55,9 @@ public class EssayServiceImpl implements EssayService {
     public Essay queryEssayById(String essayId) {
         return essayMapper.selectById(essayId);
     }
+
+    @Override
+    public List<Essay> queryEssaysByUserName(String username) {
+        return essayMapper.queryEssaysByUserName(username);
+    }
 }

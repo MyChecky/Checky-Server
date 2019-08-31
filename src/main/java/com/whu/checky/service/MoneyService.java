@@ -1,5 +1,6 @@
 package com.whu.checky.service;
 
+import com.baomidou.mybatisplus.plugins.Page;
 import com.whu.checky.domain.MoneyFlow;
 
 import java.util.HashMap;
@@ -18,12 +19,20 @@ public interface MoneyService {
     MoneyFlow queryMoneyFlow(String flowId);
     //查询某个用户的所有流水
     List<MoneyFlow> queryUserMoneyFlow(String userId);
+
+    List<MoneyFlow> queryUserMoneyFlow(String userId, Page page);
     //查询所有的流水
     List<MoneyFlow> queryAllMoneyFlow();
+
+    List<MoneyFlow> queryAllMoneyFlow(Page page);
     //查看一段日期内系统的所有流水
     List<MoneyFlow> queryAllScopeMoneyFlow(String startDate,String endDate);
     //查看一段日期内某个用户的所有流水
     List<MoneyFlow> queryUserScopeMoneyFlow(String startDate,String endDate,String userId);
 /*    //查看一段日期内系统的所有流水
     List<MoneyFlow> querySystemScopeMoneyFlow(String startDate,String endDate);*/
+
+    HashMap<String, Object> getGraphData(String year);
+
+    List<MoneyFlow> queryMoneyFlowByUserName(String username);
 }

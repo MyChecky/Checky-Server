@@ -1,17 +1,27 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.whu.checky.mapper.MoneyFlowMapper">
-    <select id="queryAllScopeMoneyFlow" resultType="com.whu.checky.domain.MoneyFlow">
-        SELECT * FROM moneyflow
-        WHERE flow_time
-        between date (#{startDate}) and date (#{endDate})
-    </select>
+    <!--<select id="queryAllScopeMoneyFlow" resultType="com.whu.checky.domain.MoneyFlow">-->
+    <!---->
+    <!--</select>-->
 
-    <select id="queryUserScopeMoneyFlow" resultType="com.whu.checky.domain.Task">
+    <select id="queryUserScopeMoneyFlow" resultType="com.whu.checky.domain.MoneyFlow">
         SELECT * FROM moneyflow
         WHERE (flow_time between date (#{startDate}) and date (#{endDate}))
         AND (to_user_id = #{userid} OR from_user_id=#{userid})
     </select>
 
+    <select id="queryMoneyFlowByUserName" resultType="com.whu.checky.domain.MoneyFlow">
+        SELECT flow_id AS flowId,from_user_id AS fromUserId,to_user_id AS toUserId,task_id AS taskId,flow_money
+AS flowMoney,flow_time AS flowTime FROM moneyflow
+        WHERE to_user_id IN
+        (select user_id
+        from user
+        where  user_name LIKE "%"#{username}"%") OR
+         from_user_id  IN
+        (select user_id
+        from user
+        where  user_name LIKE "%"#{username}"%")
 
+    </select>
 </mapper>

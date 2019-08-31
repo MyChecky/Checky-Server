@@ -6,10 +6,7 @@ import com.whu.checky.domain.User;
 import com.whu.checky.mapper.UserMapper;
 import com.whu.checky.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +25,18 @@ public class UserController {
         HashMap<String,Object> resp = new HashMap<>();
         resp.put("state","ok");
         resp.put("usersSize",userService.getAllUsersNum());
+        resp.put("users",userList);
+        return resp;
+    }
+
+    @RequestMapping("/queryByKeyWord")
+    HashMap<String,Object> queryUserByKeyWord(@RequestBody String body){
+        JSONObject object= (JSONObject) JSON.parseObject(body).get("params");
+        int page = object.getInteger("page");
+        String keyWord=object.getString("keyword");
+        List<User> userList=userService.queryUsers(page,keyWord);
+        HashMap<String,Object> resp = new HashMap<>();
+        resp.put("state","ok");
         resp.put("users",userList);
         return resp;
     }

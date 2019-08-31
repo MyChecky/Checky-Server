@@ -19,4 +19,6 @@ public interface UserService {
 
     int getAllUsersNum();
 
+    List<User> queryUsers(int page,String keyword);
+
 }
