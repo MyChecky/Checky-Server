@@ -19,8 +19,8 @@ import java.util.UUID;
 @RequestMapping("/wechat")
 public class WechatController {
 
-    private String wxspAppid="wx4b2f117b30cebf29";
-    private String wxspSecret="0d5252f3d3f436db67909d50f2dbefd9";
+    private String wxspAppid="wx5f1aa0197013dad6";
+    private String wxspSecret="0b82e68c443bcc8ba76b3c9eeb327cf5";
 
     @Autowired
     private ObjectMapper mapper;
