@@ -41,6 +41,8 @@ public class WechatController {
         String url = "https://api.weixin.qq.com/sns/jscode2session?"+params;// 微信接口 用于查询oponid
         String response = restTemplate.getForObject(url,String.class);
 
+
+
         JsonNode node = this.mapper.readTree(response);
         String openid = node.get("openid").asText();
         String sessionKey = node.get("session_key").asText();
