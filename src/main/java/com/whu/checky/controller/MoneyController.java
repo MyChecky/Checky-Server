@@ -55,7 +55,7 @@ public class MoneyController {
             flow.setFlowMoney(record.getFlowMoney());
             flow.setFlowTime(record.getFlowTime());
             flow.setTaskTitle(taskService.queryTask(record.getTaskId()).getTaskTitle());
-            if (record.getFromUserId().equals(userId)) {
+            if(record.getFlowIO().equals("O")){ //not num 0, but letter O
                 flow.setType("cost");
             }else {
                 flow.setType("income");

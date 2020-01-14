@@ -39,8 +39,10 @@ public class MoneyControllerTest {
         ObjectMapper mapper=new ObjectMapper();
         MoneyFlow moneyFlow = new MoneyFlow();
         moneyFlow.setFlowId(UUID.randomUUID().toString());
-        moneyFlow.setFromUserId("0");
-        moneyFlow.setToUserId("0");
+        moneyFlow.setUserID("000");
+        moneyFlow.setIfTest(1);
+        moneyFlow.setFlowIO("O");
+        moneyFlow.setFlowType("pay");
         moneyFlow.setFlowMoney(0.0);
         moneyFlow.setFlowTime("2019-07-17 14:21:56");
         String json=mapper.writeValueAsString(moneyFlow);

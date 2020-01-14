@@ -45,6 +45,10 @@ public class Report {
      * 处理时间
      */
     private String processTime;
+    /**
+     * 被举报人ID
+     */
+    private String userReportedID;
 
     public String getReportId() {
         return reportId;
@@ -132,5 +136,13 @@ public class Report {
 
     public void setProcessTime(String processTime) {
         this.processTime = processTime;
+    }
+
+    public String getUserReportedID() {
+        return userReportedID;
+    }
+
+    public void setUserReportedID(String userReportedID) {
+        this.userReportedID = userReportedID;
     }
 }

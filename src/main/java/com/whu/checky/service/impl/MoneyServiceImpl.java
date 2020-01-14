@@ -98,7 +98,7 @@ public class MoneyServiceImpl implements MoneyService {
         for (MoneyFlow m : moneyFlowList) {
             try {
                 int month = sdf.parse(m.getFlowTime()).getMonth();
-                if (m.getToUserId().equals("System")) {
+                if(m.getFlowIO().equals("O")) {// not num 0 here
                     incomeList.set(month - 1, m.getFlowMoney() + incomeList.get(month - 1));
                 } else {
                     refundList.set(month - 1, m.getFlowMoney() + incomeList.get(month - 1));

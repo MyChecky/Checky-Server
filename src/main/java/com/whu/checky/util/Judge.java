@@ -135,8 +135,10 @@ public class Judge {
                 record.setFlowId(UUID.randomUUID().toString());
                 record.setFlowMoney(t.getTaskMoney());
                 record.setFlowTime(sdf.format(new Date()));
-                record.setFromUserId("system");
-                record.setToUserId(t.getUserId());
+                record.setUserID(t.getUserId());
+                record.setIfTest(1);//这里暂时写死了,后面结合小程序完善
+                record.setFlowIO("I");
+                record.setFlowType("refund");
                 moneyFlowMapper.insert(record);
                 //更新账户余额
                 User user = userMapper.selectById(t.getUserId());
@@ -154,8 +156,10 @@ public class Judge {
                     record.setFlowId(UUID.randomUUID().toString());
                     record.setFlowMoney(pair.getValue());
                     record.setFlowTime(sdf.format(new Date()));
-                    record.setFromUserId("system");
-                    record.setToUserId(pair.getKey());
+                    record.setUserID(t.getUserId());
+                    record.setIfTest(1);//这里暂时写死了,后面结合小程序完善
+                    record.setFlowIO("I");
+                    record.setFlowType("benefit");
                     moneyFlowMapper.insert(record);
 
                     User user = userMapper.selectById(pair.getKey());

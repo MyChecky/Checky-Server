@@ -30,6 +30,10 @@ public class Comment {
      */
     @TableField(exist = false)
     private String userAvatar;
+    /**
+     * 评论类型
+     */
+    private String commentType;
 
     public String getCommentId() {
         return commentId;
@@ -85,6 +89,14 @@ public class Comment {
 
     public void setCommentContent(String commentContent) {
         this.commentContent = commentContent;
+    }
+
+    public String getCommentType() {
+        return commentType;
+    }
+
+    public void setCommentType(String commentType) {
+        this.commentType = commentType;
     }
 }
 

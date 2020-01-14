@@ -15,6 +15,10 @@ public class Administrator implements Serializable {
 
     private String sessionId;
 
+    private String userTel;
+
+    private String userEmail;
+
     public String getSessionId() {
         return sessionId;
     }
@@ -45,5 +49,21 @@ public class Administrator implements Serializable {
 
     public void setUserPassword(String userPassword) {
         this.userPassword = userPassword;
+    }
+
+    public String getUserTel() {
+        return userTel;
+    }
+
+    public void setUserTel(String userTel) {
+        this.userTel = userTel;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
     }
 }

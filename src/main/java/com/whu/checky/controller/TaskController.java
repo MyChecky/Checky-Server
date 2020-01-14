@@ -48,8 +48,10 @@ public class TaskController {
             //微信支付相关
             //在Money表当中插入一条用户交付押金的记录
             MoneyFlow moneyFlow=new MoneyFlow();
-            moneyFlow.setToUserId("System");
-            moneyFlow.setFromUserId(task.getUserId());
+            moneyFlow.setUserID(task.getUserId());
+            moneyFlow.setIfTest(1);//这里暂时写死了,后面结合小程序完善
+            moneyFlow.setFlowIO("O");
+            moneyFlow.setFlowType("pay");
             moneyFlow.setFlowMoney(task.getTaskMoney());
             moneyFlow.setTaskId(task.getTaskId());
             moneyFlow.setFlowTime(ft.format(new Date()));

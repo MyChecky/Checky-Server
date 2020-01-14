@@ -12,14 +12,6 @@ public class Task {
     @TableField(exist = false)
     private String userName;
 
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
     private String typeId;
     //2019/8/28
     @TableField(exist = false)
@@ -38,7 +30,6 @@ public class Task {
     private String taskEndTime;
     /**
      * 任务状态
-     * success：任务完成    fail：任务未完成    during：任务进行中 nomatch 任务未建立匹配关系
      */
     private String taskState="nomatch";
     /**
@@ -67,8 +58,58 @@ public class Task {
      * 7位，对应周日至周六，哪一位为1，代表那一天需要打卡
      */
     private String checkFrec;
-
+    /**
+     * 已匹配的监督者的数目
+     */
     private int matchNum;
+    /**
+     *  押金是否为试玩金额
+     */
+    private int ifTest;
+    /**
+     *  系统分成
+     */
+    private double systemBenifit;
+    /**
+     * 认证通过的次数
+     */
+    private int checkPass=0;
+    /**
+     * 最低认证通过率
+     */
+    private double minPass;
+    /**
+     * 实际认证完成率
+     */
+    private double realPass;
+    /**
+     * 每次打卡最小认证通过人数/比例
+     */
+    private double minCheck;
+    /**
+     * 最小认证类型
+     */
+    private String minCheckType;
+    /**
+     * 组团策略
+     */
+    private int supervisorType=0;
+    /**
+     * 是否考虑地域
+     */
+    private int ifArea=0;
+    /**
+     * 是否考虑爱好
+     */
+    private int ifHobby=0;
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
 
     public int getMatchNum() {
         return matchNum;
@@ -196,5 +237,85 @@ public class Task {
 
     public void setTypeContent(String typeContent) {
         this.typeContent = typeContent;
+    }
+
+    public int getIfTest() {
+        return ifTest;
+    }
+
+    public void setIfTest(int ifTest) {
+        this.ifTest = ifTest;
+    }
+
+    public double getSystemBenifit() {
+        return systemBenifit;
+    }
+
+    public void setSystemBenifit(double systemBenifit) {
+        this.systemBenifit = systemBenifit;
+    }
+
+    public int getCheckPass() {
+        return checkPass;
+    }
+
+    public void setCheckPass(int checkPass) {
+        this.checkPass = checkPass;
+    }
+
+    public double getMinPass() {
+        return minPass;
+    }
+
+    public void setMinPass(double minPass) {
+        this.minPass = minPass;
+    }
+
+    public double getRealPass() {
+        return realPass;
+    }
+
+    public void setRealPass(double realPass) {
+        this.realPass = realPass;
+    }
+
+    public double getMinCheck() {
+        return minCheck;
+    }
+
+    public void setMinCheck(double minCheck) {
+        this.minCheck = minCheck;
+    }
+
+    public String getMinCheckType() {
+        return minCheckType;
+    }
+
+    public void setMinCheckType(String minCheckType) {
+        this.minCheckType = minCheckType;
+    }
+
+    public int getSupervisorType() {
+        return supervisorType;
+    }
+
+    public void setSupervisorType(int supervisorType) {
+        this.supervisorType = supervisorType;
+    }
+
+    public int getIfArea() {
+        return ifArea;
+    }
+
+    public void setIfArea(int ifArea) {
+        this.ifArea = ifArea;
+    }
+
+    public int getIfHobby() {
+        return ifHobby;
+    }
+
+    public void setIfHobby(int ifHobby) {
+        this.ifHobby = ifHobby;
     }
 }

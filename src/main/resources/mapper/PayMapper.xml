@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.whu.checky.mapper.PayMapper">
+    <select id="getPayById" resultType="com.whu.checky.domain.Pay">
+        SELECT PAY_ID as payId, PAY_ORDERINFO as payOrderInfo, PAY_USERID as
+        payUserId, PAY_MONEY as payMoney, PAY_TYPE as payType, PAY_TIME as
+         payTime WHERE payId = #{payId}
+    </select>
+</mapper>

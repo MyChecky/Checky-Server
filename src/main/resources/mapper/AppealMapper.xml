@@ -13,7 +13,7 @@ AS appealTime,appeal_content AS appealContent,process_result AS processResult,pr
 AS processTime FROM appeal
         WHERE user_id IN
         (select user_id
-        from user
+        from `user`
         where  user_name LIKE "%"#{username}"%")
         ORDER BY appeal_time
 DESC
