@@ -16,7 +16,7 @@ Spring:
     driver-class-name: net.sf.log4jdbc.DriverSpy
     hikari:
       max-lifetime: 60000
-      maximum-pool-size: 20
+      maximum-pool-size: 10
       idle-timeout: 60000
       connection-timeout: 60000
       validation-timeout: 3000
