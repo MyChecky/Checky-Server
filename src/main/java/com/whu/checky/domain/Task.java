@@ -31,7 +31,7 @@ public class Task {
     /**
      * 任务状态
      */
-    private String taskState="nomatch";
+    private String taskState="save";
     /**
      * 任务押金
      */
