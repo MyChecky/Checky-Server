@@ -31,7 +31,7 @@ public class User implements Serializable{
     /**
      * 试玩余额，默认100.0
      */
-    private Double tsetMoney=100.0;
+    private Double testMoney =100.0;
     /**
      * 用户发布的任务数
      */
@@ -211,12 +211,12 @@ public class User implements Serializable{
     public void setUserMoney(Double userMoney) {
         this.userMoney = userMoney;
     }
-    public Double getTsetMoney() {
-        return tsetMoney;
+    public Double getTestMoney() {
+        return testMoney;
     }
 
-    public void setTsetMoney(Double tsetMoney) {
-        this.tsetMoney = tsetMoney;
+    public void setTestMoney(Double testMoney) {
+        this.testMoney = testMoney;
     }
 
     public String getSessionId() {

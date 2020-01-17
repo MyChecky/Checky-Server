@@ -13,8 +13,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 @Service("/moneyService")
@@ -98,7 +96,7 @@ public class MoneyServiceImpl implements MoneyService {
         for (MoneyFlow m : moneyFlowList) {
             try {
                 int month = sdf.parse(m.getFlowTime()).getMonth();
-                if(m.getFlowIO().equals("O")) {// not num 0 here
+                if(m.getFlowIo().equals("O")) {// not num 0 here
                     incomeList.set(month - 1, m.getFlowMoney() + incomeList.get(month - 1));
                 } else {
                     refundList.set(month - 1, m.getFlowMoney() + incomeList.get(month - 1));

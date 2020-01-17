@@ -41,7 +41,7 @@ public class MoneyControllerTest {
         moneyFlow.setFlowId(UUID.randomUUID().toString());
         moneyFlow.setUserID("000");
         moneyFlow.setIfTest(1);
-        moneyFlow.setFlowIO("O");
+        moneyFlow.setFlowIo("O");
         moneyFlow.setFlowType("pay");
         moneyFlow.setFlowMoney(0.0);
         moneyFlow.setFlowTime("2019-07-17 14:21:56");

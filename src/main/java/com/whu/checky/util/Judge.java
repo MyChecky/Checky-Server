@@ -137,7 +137,7 @@ public class Judge {
                 record.setFlowTime(sdf.format(new Date()));
                 record.setUserID(t.getUserId());
                 record.setIfTest(1);//这里暂时写死了,后面结合小程序完善
-                record.setFlowIO("I");
+                record.setFlowIo("I");
                 record.setFlowType("refund");
                 moneyFlowMapper.insert(record);
                 //更新账户余额
@@ -158,7 +158,7 @@ public class Judge {
                     record.setFlowTime(sdf.format(new Date()));
                     record.setUserID(t.getUserId());
                     record.setIfTest(1);//这里暂时写死了,后面结合小程序完善
-                    record.setFlowIO("I");
+                    record.setFlowIo("I");
                     record.setFlowType("benefit");
                     moneyFlowMapper.insert(record);
 

@@ -8,7 +8,7 @@ import com.baomidou.mybatisplus.annotations.TableName;
 public class MoneyFlow {
     @TableId
     private String flowId;
-    private String userID;
+    private String userId;
 
     @TableField(exist = false)
     private String userName = "";
@@ -19,7 +19,7 @@ public class MoneyFlow {
     /**
      * 进账出账，针对用户！
      */
-    private String flowIO;
+    private String flowIo;
     private Double flowMoney;
     /**
      * 流动类型
@@ -41,11 +41,11 @@ public class MoneyFlow {
     }
 
     public String getUserID() {
-        return userID;
+        return userId;
     }
 
     public void setUserID(String userID) {
-        this.userID = userID;
+        this.userId = userID;
     }
 
     public String getUserName() {
@@ -64,12 +64,12 @@ public class MoneyFlow {
         this.ifTest = ifTest;
     }
 
-    public String getFlowIO() {
-        return flowIO;
+    public String getFlowIo() {
+        return flowIo;
     }
 
-    public void setFlowIO(String flowIO) {
-        this.flowIO = flowIO;
+    public void setFlowIo(String flowIo) {
+        this.flowIo = flowIo;
     }
 
     public Double getFlowMoney() {

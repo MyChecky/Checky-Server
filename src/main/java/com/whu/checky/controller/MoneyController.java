@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 @RestController
@@ -55,7 +54,7 @@ public class MoneyController {
             flow.setFlowMoney(record.getFlowMoney());
             flow.setFlowTime(record.getFlowTime());
             flow.setTaskTitle(taskService.queryTask(record.getTaskId()).getTaskTitle());
-            if(record.getFlowIO().equals("O")){ //not num 0, but letter O
+            if(record.getFlowIo().equals("O")){ //not num 0, but letter O
                 flow.setType("cost");
             }else {
                 flow.setType("income");
