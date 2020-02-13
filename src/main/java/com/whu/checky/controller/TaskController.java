@@ -57,7 +57,6 @@ public class TaskController {
         return taskService.queryUserTasks(userId, null);
     }
 
-
     //查询属于某个用户的tasks
     @RequestMapping("/queryDayUserTasks")
     public List<Task> queryDayUserTasks(@RequestBody String jsonstr) {
@@ -102,7 +101,7 @@ public class TaskController {
         if (task != null) {
             String state = (String) object.get("state");
             task.setTaskState(state);
-            taskService.updataTask(task);
+            taskService.updateTask(task);
             return "updateTaskStateSuccess";
         } else {
             return "updateTaskStateFail";
@@ -155,7 +154,7 @@ public class TaskController {
         }
         // 已扣款，更改任务状态为待匹配nomatch
         task.setTaskState("nomatch");
-        int updateResult = taskService.updataTask(task);
+        int updateResult = taskService.updateTask(task);
         if (updateResult == 0) {
             //出现异常，用户新建任务保存并付款后，未能更待任务匹配监督者的状态
             return ("matchSupervisorError");
@@ -170,7 +169,7 @@ public class TaskController {
         moneyFlow.setTaskId(task.getTaskId());
         moneyFlow.setFlowTime(ft.format(new Date()));
         moneyFlow.setFlowId(UUID.randomUUID().toString());
-        int addMoneyRes = moneyService.addMoneyRecord(moneyFlow);
+        int addMoneyRes = moneyService.addTestMoneyRecord(moneyFlow);
         if (addMoneyRes == 1) {
             return "addTaskSuccess";
         } else {

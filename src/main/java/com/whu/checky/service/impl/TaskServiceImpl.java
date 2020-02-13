@@ -73,12 +73,12 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Integer delTask(String taskid) {
-        return taskMapper.deleteById(taskid);
+    public Integer delTask(String taskId) {
+        return taskMapper.deleteById(taskId);
     }
 
     @Override
-    public Integer updataTask(Task task) {
+    public Integer updateTask(Task task) {
         return taskMapper.updateById(task);
     }
 
@@ -118,19 +118,19 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task queryTask(String taskid) {
-        return taskMapper.selectById(taskid);
+    public Task queryTask(String taskId) {
+        return taskMapper.selectById(taskId);
     }
 
     @Override
-    public HashMap <String, Double> distribute(String taskid) {
+    public HashMap <String, Double> distribute(String taskId) {
         HashMap<String, Double> result = new HashMap <>();
         Date now = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
-        Task t = taskMapper.selectById(taskid);
+        Task t = taskMapper.selectById(taskId);
 
-        List<TaskSupervisor> supervisors = taskSupervisorMapper.selectList(new EntityWrapper <TaskSupervisor>().eq("task_id",taskid));
+        List<TaskSupervisor> supervisors = taskSupervisorMapper.selectList(new EntityWrapper <TaskSupervisor>().eq("task_id", taskId));
         supervisors.sort(Comparator.comparingInt(TaskSupervisor::getSuperviseNum));
 
         int length = supervisors.size();
