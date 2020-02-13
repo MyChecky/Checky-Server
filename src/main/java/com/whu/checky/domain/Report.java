@@ -48,7 +48,7 @@ public class Report {
     /**
      * 被举报人ID
      */
-    private String userReportedID;
+    private String userReportedId;
 
     public String getReportId() {
         return reportId;
@@ -138,11 +138,11 @@ public class Report {
         this.processTime = processTime;
     }
 
-    public String getUserReportedID() {
-        return userReportedID;
+    public String getUserReportedId() {
+        return userReportedId;
     }
 
-    public void setUserReportedID(String userReportedID) {
-        this.userReportedID = userReportedID;
+    public void setUserReportedId(String userReportedId) {
+        this.userReportedId = userReportedId;
     }
 }

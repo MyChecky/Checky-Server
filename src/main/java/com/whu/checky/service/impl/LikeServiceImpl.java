@@ -32,4 +32,9 @@ public class LikeServiceImpl implements LikeService {
     public EssayLike queryLike(String userId, String essayId) {
         return essayLikeMapper.queryLike(userId,essayId);
     }
+
+    @Override
+    public List<EssayLike> queryAllLikeByEssayId(String essayId) {
+        return essayLikeMapper.queryAllLikeByEssayId(essayId);
+    }
 }
