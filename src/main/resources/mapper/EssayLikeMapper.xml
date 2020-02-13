@@ -7,6 +7,12 @@
         WHERE user_id=#{userId} AND essay_id=#{essayId}
     </select>
 
+    <select id="queryAllLikeByEssayId" resultType="com.whu.checky.domain.EssayLike">
+        SELECT  user_id AS userId,essay_id AS essayId,add_time AS addTime
+        FROM `essaylike`
+        WHERE essay_id=#{essayId}
+    </select>
+
     <insert id="like">
         INSERT INTO `essaylike` ( user_id, essay_id, add_time )
         VALUES ( #{userId},#{essayId},#{addTime});
