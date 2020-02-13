@@ -6,9 +6,11 @@
     <!--</select>-->
 
     <select id="queryUserScopeMoneyFlow" resultType="com.whu.checky.domain.MoneyFlow">
-        SELECT * FROM moneyflow
+        SELECT flow_id AS `flowId`, user_id AS `userId`, flow_money AS `flowMoney`,
+        flow_time AS `flowTime`,  task_id AS `taskId`, if_test AS ifTest, flow_io AS flowIO,
+        flow_type AS flowType  From moneyflow
         WHERE (flow_time between date (#{startDate}) and date (#{endDate}))
-        AND (user_id=#{userid})
+        AND (user_id=#{userId})
     </select>
 
     <select id="queryMoneyFlowByUserName" resultType="com.whu.checky.domain.MoneyFlow">

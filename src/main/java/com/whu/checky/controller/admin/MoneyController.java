@@ -37,9 +37,9 @@ public class MoneyController {
         HashMap<String, String> params = new HashMap<>();
         if (json.containsKey("userId")) {
             resp.put("type", "userId");
-            resp.put("moneyFlows", moneyService.queryUserMoneyFlow(json.getString("userId"), p));
+            resp.put("moneyFlows", moneyService.queryUserTestMoneyFlow(json.getString("userId"), p));
         } else {
-            resp.put("moneyFlows", moneyService.queryAllMoneyFlow(p));
+            resp.put("moneyFlows", moneyService.queryAllTestMoneyFlow(p));
             resp.put("type", "all");
         }
         if (p != null) resp.put("moneyFlowsSize", p.getTotal());
@@ -51,7 +51,7 @@ public class MoneyController {
     public HashMap<String, Object> graph(@RequestBody String body) {
         JSONObject json = JSONObject.parseObject(body);
         String year = json.getString("year");
-        HashMap<String, Object> ret = moneyService.getGraphData(year);
+        HashMap<String, Object> ret = moneyService.getTestGraphData(year);
         ret.put("state", "ok");
         return ret;
 
@@ -63,7 +63,7 @@ public class MoneyController {
         JSONObject res=new JSONObject();
         JSONObject object= (JSONObject) JSON.parse(jsonstr);
         String username=object.getString("username");
-        List<MoneyFlow> moneyFlows=moneyService.queryMoneyFlowByUserName(username);
+        List<MoneyFlow> moneyFlows=moneyService.queryTestMoneyFlowByUserName(username);
         res.put("state","ok");
         res.put("moneyFlows",moneyFlows);
         return res;

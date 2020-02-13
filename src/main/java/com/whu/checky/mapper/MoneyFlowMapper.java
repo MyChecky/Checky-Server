@@ -14,7 +14,7 @@ import java.util.List;
 @Mapper
 @Component("moneyFlowMapper")
 public interface  MoneyFlowMapper extends BaseMapper<MoneyFlow> {
-    //这里还不知道改的对不对（试过能查）
+    //这里还不知道改的对不对
     @Select("SELECT flow_id as `flowId`, user_id as `userId`," +
             "       flow_money as `flowMoney`, flow_time as `flowTime`,  \n" +
             "       task_id as `taskId`, if_test as ifTest, flow_io as flowIO, \n" +
@@ -22,9 +22,17 @@ public interface  MoneyFlowMapper extends BaseMapper<MoneyFlow> {
             "        WHERE flow_time\n" +
             "        between date (#{startDate}) and date (#{endDate})")
     List<MoneyFlow> queryAllScopeMoneyFlow(@Param("startDate") String startDate, @Param("endDate") String endDate);
-    List<MoneyFlow> queryUserScopeMoneyFlow(String startDate, String endDate, String userId);
+    @Select("SELECT flow_id as `flowId`, user_id as `userId`," +
+            "       flow_money as `flowMoney`, flow_time as `flowTime`,  \n" +
+            "       task_id as `taskId`, if_test as ifTest, flow_io as flowIO, \n" +
+            "       flow_type as flowType FROM moneyflow\n" +
+            "        WHERE flow_time\n" +
+            "        between date (#{startDate}) and date (#{endDate})" +
+            "        AND (user_id=#{userId})")
+    List<MoneyFlow> queryUserScopeMoneyFlow(@Param("startDate") String startDate, @Param("endDate")String endDate,
+                                            @Param("userId")String userId);
 
-    //这里还不知道改的对不对（试过能查）
+    //这里还不知道改的对不对
     String moneyFlowsWithNameSql = "SELECT flow_id AS `flowId`, f.user_id AS `userId`, flow_money AS `flowMoney`, \n" +
             "flow_time AS `flowTime`, task_id AS `taskId`, user_name AS userName \n" +
             "FROM (SELECT moneyflow.*,user.user_name AS `userName` FROM moneyflow,\n" +

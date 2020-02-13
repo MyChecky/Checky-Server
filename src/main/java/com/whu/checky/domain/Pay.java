@@ -7,9 +7,9 @@ import com.baomidou.mybatisplus.annotations.TableName;
 @TableName("pay")
 public class Pay {
     @TableId
-    private String payID;
-    private String payOrderInfo;
-    private String payUserId;
+    private String payId;
+    private String payOrderinfo;
+    private String payUserid;
 
     @TableField(exist = false)
     private String payUserName = "";
@@ -17,29 +17,38 @@ public class Pay {
     private String payType;
     private String payTime;
     private double payMoney;
+    private String payState;
 
-    public String getPayID() {
-        return payID;
+    public String getPayState() {
+        return payState;
     }
 
-    public void setPayID(String payID) {
-        this.payID = payID;
+    public void setPayState(String payState) {
+        this.payState = payState;
     }
 
-    public String getPayOrderInfo() {
-        return payOrderInfo;
+    public String getPayId() {
+        return payId;
     }
 
-    public void setPayOrderInfo(String payOrderInfo) {
-        this.payOrderInfo = payOrderInfo;
+    public void setPayId(String payID) {
+        this.payId = payID;
     }
 
-    public String getPayUserId() {
-        return payUserId;
+    public String getPayOrderinfo() {
+        return payOrderinfo;
     }
 
-    public void setPayUserId(String payUserId) {
-        this.payUserId = payUserId;
+    public void setPayOrderinfo(String payOrderInfo) {
+        this.payOrderinfo = payOrderInfo;
+    }
+
+    public String getPayUserid() {
+        return payUserid;
+    }
+
+    public void setPayUserid(String payUserid) {
+        this.payUserid = payUserid;
     }
 
     public String getPayUserName() {

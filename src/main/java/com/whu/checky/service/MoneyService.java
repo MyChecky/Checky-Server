@@ -2,6 +2,7 @@ package com.whu.checky.service;
 
 import com.baomidou.mybatisplus.plugins.Page;
 import com.whu.checky.domain.MoneyFlow;
+import com.whu.checky.domain.Pay;
 
 import java.util.HashMap;
 import java.util.List;
@@ -14,25 +15,31 @@ public interface MoneyService {
 //    //打卡失败系统分成给监督者
 //    void Systemdistribute();
     //添加流水记录
-    int addMoneyRecord(MoneyFlow moneyFlow);
+    int addTestMoneyRecord(MoneyFlow moneyFlow);
+    int addTrueMoneyRecord(Pay pay);
     //查询具体的某一条流水
-    MoneyFlow queryMoneyFlow(String flowId);
+    MoneyFlow queryTestMoneyFlow(String flowId);
     //查询某个用户的所有流水
-    List<MoneyFlow> queryUserMoneyFlow(String userId);
-
-    List<MoneyFlow> queryUserMoneyFlow(String userId, Page page);
+    List<MoneyFlow> queryUserTestMoneyFlow(String userId);
+    List<Pay> queryUserTrueMoneyFlow(String userId);
+    List<MoneyFlow> queryUserTestMoneyFlow(String userId, Page page);
     //查询所有的流水
-    List<MoneyFlow> queryAllMoneyFlow();
-
-    List<MoneyFlow> queryAllMoneyFlow(Page page);
+    List<MoneyFlow> queryAllTestMoneyFlow();
+    List<MoneyFlow> queryAllTestMoneyFlow(Page page);
     //查看一段日期内系统的所有流水
-    List<MoneyFlow> queryAllScopeMoneyFlow(String startDate,String endDate);
+    List<MoneyFlow> queryAllTestScopeMoneyFlow(String startDate, String endDate);
     //查看一段日期内某个用户的所有流水
-    List<MoneyFlow> queryUserScopeMoneyFlow(String startDate,String endDate,String userId);
+    List<MoneyFlow> queryUserTestScopeMoneyFlow(String startDate, String endDate, String userId);
+    List<Pay> queryUserTrueScopeMoneyPay(String startDate, String endDate, String userId);
 /*    //查看一段日期内系统的所有流水
     List<MoneyFlow> querySystemScopeMoneyFlow(String startDate,String endDate);*/
 
-    HashMap<String, Object> getGraphData(String year);
+    HashMap<String, Object> getTestGraphData(String year);
 
-    List<MoneyFlow> queryMoneyFlowByUserName(String username);
+    List<MoneyFlow> queryTestMoneyFlowByUserName(String username);
+
+    // 更改流水（目前用到的是支付状态与取现状态）
+    int updateTrueMoneyPay(Pay pay);
+    // 微信支付用
+    String commitData(String openId, String payId, int total_fee);
 }
