@@ -1,7 +1,6 @@
 package com.whu.checky.domain;
 
 import com.baomidou.mybatisplus.annotations.TableId;
-import org.springframework.data.annotation.Id;
 
 public class Essay {
     @TableId
@@ -39,6 +38,15 @@ public class Essay {
      * 纬度
      */
     private String latitude;
+    private int ifDelete;
+
+    public int getIfDelete() {
+        return ifDelete;
+    }
+
+    public void setIfDelete(int ifDelete) {
+        this.ifDelete = ifDelete;
+    }
 
     public String getEssayId() {
         return essayId;
