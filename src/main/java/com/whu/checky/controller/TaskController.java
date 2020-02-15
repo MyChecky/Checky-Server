@@ -9,6 +9,7 @@ import com.whu.checky.domain.User;
 import com.whu.checky.service.MoneyService;
 import com.whu.checky.service.TaskService;
 import com.whu.checky.service.UserService;
+import com.whu.checky.util.Match;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -152,8 +153,12 @@ public class TaskController {
                 return "noEnoughUserMoney";
             }
         }
-        // 已扣款，更改任务状态为待匹配nomatch
-        task.setTaskState("nomatch");
+        // 已扣款，更改任务状态
+        if(new Match().matchSupervisorForOneTask(task)){
+            task.setTaskState("during");
+        }else{
+            task.setTaskState("nomatch");
+        }
         int updateResult = taskService.updateTask(task);
         if (updateResult == 0) {
             //出现异常，用户新建任务保存并付款后，未能更待任务匹配监督者的状态

@@ -86,6 +86,40 @@ public class Match {
         }
     }
 
+    // 似乎不能static
+    public boolean matchSupervisorForOneTask(Task task){
+        List<User> userList = userMapper.selectList(new EntityWrapper<User>()
+                .orderBy("supervise_num", true)
+                .orderBy("supervise_num_min", false)
+                .last("limit 70")
+        );
+
+        String taskId = task.getTaskId();
+        for (int i = 0; i < task.getSupervisorNum() && i < userList.size(); i++) {
+            // 这里做hobby, area, supervisorType的判别
+            // 三个的值都是，0:随机,1:相似爱好/相近地域/熟人，2:不同爱好/不同地域/陌生人
+            TaskSupervisor temp = new TaskSupervisor();
+            User user = userList.get(i);
+            temp.setAddTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+            temp.setTaskId(taskId);
+            temp.setSupervisorId(user.getUserId());
+            taskSupervisorMapper.insert(temp);
+            user.setSuperviseNum(user.getSuperviseNum() + 1);
+            userMapper.updateById(user);
+            // 该任务对应的已匹配的监督者的数目加一
+            // （matchNum:实际已匹配的数目，supervisorNum:任务发布时要求的监督者数目）
+            task.setMatchNum(task.getMatchNum() + 1);
+        }
+        userList.sort(new Comparator<User>() {
+            @Override
+            public int compare(User o1, User o2) {
+                return o1.getSuperviseNum() - o2.getSuperviseNum();
+            }
+        });
+
+        return task.getSupervisorNum() == task.getMatchNum();
+    }
+
 
     @Scheduled(cron = "${jobs.match.cron}")
     public void matchSupervisorBySimilarity() {

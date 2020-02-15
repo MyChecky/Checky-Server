@@ -142,13 +142,18 @@ public class Judge {
                 record.setFlowMoney(t.getTaskMoney());
                 record.setFlowTime(sdf.format(new Date()));
                 record.setUserID(t.getUserId());
-                record.setIfTest(1);//这里暂时写死了,后面结合小程序完善
+                record.setIfTest(t.getIfTest());
                 record.setFlowIo("I");
                 record.setFlowType("refund");
+                record.setTaskId(t.getTaskId());
                 moneyFlowMapper.insert(record);
-                //更新账户余额
+                // 根据是否试玩，更新账户余额
                 User user = userMapper.selectById(t.getUserId());
-                user.setUserMoney(user.getUserMoney()+t.getTaskMoney());
+                if(t.getIfTest() == 1){
+                    user.setTestMoney(user.getTestMoney()+t.getTaskMoney());
+                }else{
+                    user.setUserMoney(user.getUserMoney()+t.getTaskMoney());
+                }
                 userMapper.updateById(user);
             }
             else if(count-timeoutDay<=t.getCheckTimes()) {
@@ -163,13 +168,18 @@ public class Judge {
                     record.setFlowMoney(pair.getValue());
                     record.setFlowTime(sdf.format(new Date()));
                     record.setUserID(t.getUserId());
-                    record.setIfTest(1);//这里暂时写死了,后面结合小程序完善
+                    record.setIfTest(t.getIfTest());
                     record.setFlowIo("I");
                     record.setFlowType("benefit");
+                    record.setTaskId(t.getTaskId());
                     moneyFlowMapper.insert(record);
 
                     User user = userMapper.selectById(pair.getKey());
-                    user.setUserMoney(user.getUserMoney()+pair.getValue());
+                    if(t.getIfTest() == 1){
+                        user.setTestMoney(user.getTestMoney()+t.getTaskMoney());
+                    }else{
+                        user.setUserMoney(user.getUserMoney()+t.getTaskMoney());
+                    }
                     userMapper.updateById(user);
                 }
             }
