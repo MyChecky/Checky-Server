@@ -46,15 +46,11 @@ public class Match {
 
     private Random rand = new Random();
 
-<<<<<<< HEAD
-//    暂时先做简单的匹配，思路为从数据库取出未匹配任务
-//    取出用户记录并按监督次数排序
-//    暂时只选取前三个建立监督关系，不足则取所有
-=======
+
     // 暂时先做简单的匹配，思路为从数据库取出未匹配任务
     // 取出用户记录并按监督次数排序
     // 暂时只选取前三个建立监督关系，不足则取所有
->>>>>>> 6a080a025d2047c62e11c6686b233db6fc15b7ac
+
     @Deprecated
     public void matchSupervisor() {
         List<Task> taskList = taskMapper.selectList(new EntityWrapper<Task>()
