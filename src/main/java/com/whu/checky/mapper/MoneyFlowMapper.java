@@ -13,20 +13,30 @@ import java.util.List;
 
 @Mapper
 @Component("moneyFlowMapper")
-public interface MoneyFlowMapper extends BaseMapper<MoneyFlow> {
-    @Select("SELECT flow_id as `flowId`, from_user_id as `fromUserId`," +
-            "                  to_user_id as `toUserId`, flow_money as `flowMoney`, flow_time as `flowTime`,  \n" +
-            "                   task_id as `taskId` FROM moneyflow\n" +
+public interface  MoneyFlowMapper extends BaseMapper<MoneyFlow> {
+    //这里还不知道改的对不对
+    @Select("SELECT flow_id as `flowId`, user_id as `userId`," +
+            "       flow_money as `flowMoney`, flow_time as `flowTime`,  \n" +
+            "       task_id as `taskId`, if_test as ifTest, flow_io as flowIO, \n" +
+            "       flow_type as flowType FROM moneyflow\n" +
             "        WHERE flow_time\n" +
             "        between date (#{startDate}) and date (#{endDate})")
     List<MoneyFlow> queryAllScopeMoneyFlow(@Param("startDate") String startDate, @Param("endDate") String endDate);
-    List<MoneyFlow> queryUserScopeMoneyFlow(String startDate, String endDate, String userId);
+    @Select("SELECT flow_id as `flowId`, user_id as `userId`," +
+            "       flow_money as `flowMoney`, flow_time as `flowTime`,  \n" +
+            "       task_id as `taskId`, if_test as ifTest, flow_io as flowIO, \n" +
+            "       flow_type as flowType FROM moneyflow\n" +
+            "        WHERE flow_time\n" +
+            "        between date (#{startDate}) and date (#{endDate})" +
+            "        AND (user_id=#{userId})")
+    List<MoneyFlow> queryUserScopeMoneyFlow(@Param("startDate") String startDate, @Param("endDate")String endDate,
+                                            @Param("userId")String userId);
 
-    String moneyFlowsWithNameSql = "SELECT flow_id as `flowId`, from_user_id as `fromUserId`,\n" +
-            "       to_user_id as `toUserId`, flow_money as `flowMoney`, flow_time as `flowTime`, fromUserName as `fromUserName`,\n" +
-            "       task_id as `taskId`,user.user_name as `toUserName` FROM\n" +
-            "  (SELECT moneyflow.*,user.user_name as `fromUserName`\n" +
-            "   from moneyflow,user where moneyflow.from_user_id=user.user_id) as f,user where f.to_user_id=user.user_id";
+    //这里还不知道改的对不对
+    String moneyFlowsWithNameSql = "SELECT flow_id AS `flowId`, f.user_id AS `userId`, flow_money AS `flowMoney`, \n" +
+            "flow_time AS `flowTime`, task_id AS `taskId`, user_name AS userName \n" +
+            "FROM (SELECT moneyflow.*,user.user_name AS `userName` FROM moneyflow,\n" +
+            "USER WHERE moneyflow.user_id=user.user_id) AS f,USER;";
 
     @Select(moneyFlowsWithNameSql + " ${ew.sqlSegment}")
     List<MoneyFlow> getMoneyFlowsWithName(@Param("ew") Wrapper wrapper);

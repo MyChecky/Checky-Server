@@ -4,11 +4,13 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.whu.checky.domain.Report;
+import com.whu.checky.service.CheckService;
+import com.whu.checky.service.EssayService;
+import com.whu.checky.service.RecordService;
 import com.whu.checky.service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.text.SimpleDateFormat;
@@ -23,6 +25,15 @@ public class ReportController {
     @Autowired
     private ReportService reportService;
 
+    @Autowired
+    private EssayService essayService;
+
+    @Autowired
+    private CheckService checkService;
+
+    @Autowired
+    private RecordService recordService;
+
     private SimpleDateFormat dateFormat= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     @RequestMapping("/addReport")
@@ -30,6 +41,15 @@ public class ReportController {
         Report report= JSON.parseObject(jsonstr,new TypeReference<Report>(){});
         report.setReportId(UUID.randomUUID().toString());
         report.setReportTime(dateFormat.format(new Date()));
+
+        String essayId = report.getEssayId();
+        String userReportedId = essayService.queryEssayById(essayId).getUserId();
+        report.setUserReportedId(userReportedId);
+        String checkId = recordService.getRecordsByEssayId(essayId).get(0).getCheckId();
+        report.setCheckId(checkId);
+        String taskId = checkService.queryCheckById(checkId).getTaskId();
+        report.setTaskId(taskId);
+
         int result=reportService.addReport(report);
         JSONObject object=new JSONObject();
         if(result==1){

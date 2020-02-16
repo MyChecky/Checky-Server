@@ -22,6 +22,10 @@ public class Administrator implements Serializable {
     //邮箱
     private String email;
 
+    private String userTel;
+
+    private String userEmail;
+
     public String getSessionId() {
         return sessionId;
     }
@@ -54,6 +58,7 @@ public class Administrator implements Serializable {
         this.userPassword = userPassword;
     }
 
+<<<<<<< HEAD
     public List<String> getPermissions() {
         return permissions;
     }
@@ -73,5 +78,21 @@ public class Administrator implements Serializable {
     }
     public void setEmail(String email){
         this.email=email;
+=======
+    public String getUserTel() {
+        return userTel;
+    }
+
+    public void setUserTel(String userTel) {
+        this.userTel = userTel;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+>>>>>>> 6a080a025d2047c62e11c6686b233db6fc15b7ac
     }
 }

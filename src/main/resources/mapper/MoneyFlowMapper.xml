@@ -6,22 +6,19 @@
     <!--</select>-->
 
     <select id="queryUserScopeMoneyFlow" resultType="com.whu.checky.domain.MoneyFlow">
-        SELECT * FROM moneyflow
+        SELECT flow_id AS `flowId`, user_id AS `userId`, flow_money AS `flowMoney`,
+        flow_time AS `flowTime`,  task_id AS `taskId`, if_test AS ifTest, flow_io AS flowIO,
+        flow_type AS flowType  From moneyflow
         WHERE (flow_time between date (#{startDate}) and date (#{endDate}))
-        AND (to_user_id = #{userid} OR from_user_id=#{userid})
+        AND (user_id=#{userId})
     </select>
 
     <select id="queryMoneyFlowByUserName" resultType="com.whu.checky.domain.MoneyFlow">
-        SELECT flow_id AS flowId,from_user_id AS fromUserId,to_user_id AS toUserId,task_id AS taskId,flow_money
+        SELECT flow_id AS flowId,user_id AS userId, task_id AS taskId,flow_money
 AS flowMoney,flow_time AS flowTime FROM moneyflow
-        WHERE to_user_id IN
-        (select user_id
-        from user
-        where  user_name LIKE "%"#{username}"%") OR
-         from_user_id  IN
+        WHERE user_id IN
         (select user_id
         from user
         where  user_name LIKE "%"#{username}"%")
-
     </select>
 </mapper>

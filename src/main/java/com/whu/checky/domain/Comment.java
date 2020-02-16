@@ -2,7 +2,6 @@ package com.whu.checky.domain;
 
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
-import org.springframework.data.annotation.Id;
 
 public class Comment {
     @TableId
@@ -30,6 +29,18 @@ public class Comment {
      */
     @TableField(exist = false)
     private String userAvatar;
+    /**
+     * 评论类型
+     */
+    private int ifDelete;
+
+    public int getIfDelete() {
+        return ifDelete;
+    }
+
+    public void setIfDelete(int ifDelete) {
+        this.ifDelete = ifDelete;
+    }
 
     public String getCommentId() {
         return commentId;
@@ -86,5 +97,6 @@ public class Comment {
     public void setCommentContent(String commentContent) {
         this.commentContent = commentContent;
     }
+
 }
 

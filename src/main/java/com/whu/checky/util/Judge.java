@@ -41,6 +41,12 @@ public class Judge {
     @Autowired
     UserMapper userMapper;
 
+    @Autowired
+    TaskSupervisorMapper taskSupervisorMapper;
+
+    @Autowired
+    AppealMapper appealMapper;
+
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
 
@@ -135,12 +141,19 @@ public class Judge {
                 record.setFlowId(UUID.randomUUID().toString());
                 record.setFlowMoney(t.getTaskMoney());
                 record.setFlowTime(sdf.format(new Date()));
-                record.setFromUserId("system");
-                record.setToUserId(t.getUserId());
+                record.setUserID(t.getUserId());
+                record.setIfTest(t.getIfTest());
+                record.setFlowIo("I");
+                record.setFlowType("refund");
+                record.setTaskId(t.getTaskId());
                 moneyFlowMapper.insert(record);
-                //更新账户余额
+                // 根据是否试玩，更新账户余额
                 User user = userMapper.selectById(t.getUserId());
-                user.setUserMoney(user.getUserMoney()+t.getTaskMoney());
+                if(t.getIfTest() == 1){
+                    user.setTestMoney(user.getTestMoney()+t.getTaskMoney());
+                }else{
+                    user.setUserMoney(user.getUserMoney()+t.getTaskMoney());
+                }
                 userMapper.updateById(user);
             }
             else if(count-timeoutDay<=t.getCheckTimes()) {
@@ -154,12 +167,19 @@ public class Judge {
                     record.setFlowId(UUID.randomUUID().toString());
                     record.setFlowMoney(pair.getValue());
                     record.setFlowTime(sdf.format(new Date()));
-                    record.setFromUserId("system");
-                    record.setToUserId(pair.getKey());
+                    record.setUserID(t.getUserId());
+                    record.setIfTest(t.getIfTest());
+                    record.setFlowIo("I");
+                    record.setFlowType("benefit");
+                    record.setTaskId(t.getTaskId());
                     moneyFlowMapper.insert(record);
 
                     User user = userMapper.selectById(pair.getKey());
-                    user.setUserMoney(user.getUserMoney()+pair.getValue());
+                    if(t.getIfTest() == 1){
+                        user.setTestMoney(user.getTestMoney()+t.getTaskMoney());
+                    }else{
+                        user.setUserMoney(user.getUserMoney()+t.getTaskMoney());
+                    }
                     userMapper.updateById(user);
                 }
             }
@@ -171,6 +191,155 @@ public class Judge {
         }
     }
 
+    boolean supervisorPass(String checkId, String supervisorId) {
+        boolean isPass = true;
 
+        List<Supervise> supervises = superviseMapper.selectList(new EntityWrapper<Supervise>()
+            .eq("check_id", checkId)
+            .eq("supervisor_id", supervisorId)
+        );
 
+        String status = "unknown";
+
+        if(supervises != null && supervises.size() > 0) {
+            Supervise supervise = supervises.get(0);
+
+            status = supervise.getSuperviseState();
+
+            if(status == "pass") {
+                isPass = true;
+            } else if(status == "deny") {
+                isPass = false;
+            } else if(status == "unknown") {
+                isPass = true;
+    
+                Check check = checkMapper.selectById(checkId);
+                String taskId = check.getTaskId();
+
+                List<TaskSupervisor> supervisors = taskSupervisorMapper.selectList(new EntityWrapper<TaskSupervisor>()
+                    .eq("task_id", taskId)
+                    .eq("supervisor_id", supervisorId)
+                );
+                TaskSupervisor supervisor = supervisors.get(0);
+
+                int badNum = supervisor.getBadNum();
+                badNum += 1;
+                supervisor.setBadNum(badNum);
+                taskSupervisorMapper.updateById(supervisor);
+            }
+        }        
+
+        return isPass;
+    }
+
+    public void checkin() {
+        Date today = new Date();
+        String todayStr = sdf.format(today);
+
+        Date yesterday = new Date(today.getTime()- 24 * 60 * 60 * 1000);
+        String yesterdayStr = sdf.format(yesterday);
+
+        List<Check> checks = checkMapper.selectList(new EntityWrapper<Check>()
+            .between("check_time", yesterdayStr, todayStr)
+            .eq("check_state", "unknown")
+        );
+
+        for(Check check : checks) {
+            String checkId = check.getCheckId();
+
+            String taskId = check.getTaskId();
+            List<TaskSupervisor> supervisors = taskSupervisorMapper.selectList(new EntityWrapper<TaskSupervisor>()
+                .eq("task_id", taskId)
+            );
+
+            int numPasses = check.getPassNum();
+            int numSupers = check.getSuperviseNum();
+
+            for(TaskSupervisor supervisor : supervisors) {
+                String supervisorId = supervisor.getSupervisorId();
+                boolean isPass = supervisorPass(checkId, supervisorId);
+
+                if(isPass) {
+                    numPasses += 1;
+                }
+
+                numSupers += 1;
+            }
+
+            check.setPassNum(numPasses);
+            check.setSuperviseNum(numSupers);
+
+            Task task = taskMapper.selectById(taskId);
+
+            String checkType = task.getMinCheckType();
+            if(checkType == "proportion") {
+                double proportion = task.getMinCheck();
+                double proportionCur = (double)numPasses / numSupers;
+                
+                String resultState = "pass";
+                if(proportionCur >= proportion) {
+                    resultState = "pass";
+                } else {
+                    resultState = "deny";
+                }
+                
+                check.setCheckState(resultState);
+            } else if(checkType == "number") {
+                double minPasses = task.getMinCheck();
+
+                String resultState = "pass";
+                if(numPasses >= minPasses) {
+                    resultState = "pass";
+                } else {
+                    resultState = "deny";
+                }
+
+                check.setCheckState(resultState);
+            }
+
+            checkMapper.updateById(check);
+        }
+    }
+
+    public void checkTaskSuccess() {
+        Date today = new Date();
+        String todayStr = sdf.format(today);
+
+        Date yesterday = new Date(today.getTime()- 24 * 60 * 60 * 1000);
+        String yesterdayStr = sdf.format(yesterday);
+
+        List<Task> tasks = taskMapper.selectList(new EntityWrapper<Task>()
+            .between("task_end_time", yesterdayStr, todayStr)
+            .eq("task_state", "during")
+        );
+
+        for(Task task : tasks) {
+            String taskId = task.getTaskId();
+
+            List<Appeal> appeals = appealMapper.selectList(new EntityWrapper<Appeal>()
+                .eq("task_id", taskId)
+                .isNull("process_time")
+            );
+
+            if(appeals == null && appeals.size() == 0) {
+                int numPasses = task.getCheckPass();
+                int numShould = task.getCheckTimes();
+
+                double rate = (double)numPasses / numShould;
+                double minRate = task.getMinPass();
+                
+                String finalStates = "success";
+                if(rate >= minRate) {
+                    finalStates = "success";
+                } else {
+                    finalStates = "fail";
+                }
+                task.setTaskState(finalStates);
+
+                task.setRealPass(rate);
+
+                taskMapper.updateById(task);
+            }
+        }
+    }
 }

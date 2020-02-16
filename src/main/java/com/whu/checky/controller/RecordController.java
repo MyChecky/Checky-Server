@@ -30,12 +30,13 @@ public class RecordController {
         for (Record record: records){
             if (record.getRecordType().equals("text")){
                 textRecord=record;
+            }else {
+                record.setRecordType(record.getRecordType().substring(0, 5));
             }
-
         }
         records.remove(textRecord);
-        res.put("text",textRecord);
-        res.put("image",records);
+        res.put("textRecord",textRecord);
+        res.put("fileRecords",records);
 
         return res;
     }

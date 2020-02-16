@@ -8,38 +8,29 @@ import com.baomidou.mybatisplus.annotations.TableName;
 public class MoneyFlow {
     @TableId
     private String flowId;
-
-    private String fromUserId;
-
-    @TableField(exist = false)
-    private String fromUserName = "";
-
-    private String toUserId;
-
-    public String getToUserName() {
-        return toUserName;
-    }
-
-    public void setToUserName(String toUserName) {
-        this.toUserName = toUserName;
-    }
+    private String userId;
 
     @TableField(exist = false)
-    private String toUserName = "";
-
-    public String getFromUserName() {
-        return fromUserName;
-    }
-
-    public void setFromUserName(String fromUserName) {
-        this.fromUserName = fromUserName;
-    }
-
-    private String taskId;
-
+    private String userName = "";
+    /**
+     * 是否试玩金额
+     */
+    private int ifTest;
+    /**
+     * 进账出账，针对用户！
+     */
+    private String flowIo;
     private Double flowMoney;
-
+    /**
+     * 流动类型
+     */
+    private String flowType;
     private String flowTime;
+    private String taskId;
+    /**
+     * 补充说明
+     */
+    private String remark;
 
     public String getFlowId() {
         return flowId;
@@ -49,28 +40,36 @@ public class MoneyFlow {
         this.flowId = flowId;
     }
 
-    public String getFromUserId() {
-        return fromUserId;
+    public String getUserID() {
+        return userId;
     }
 
-    public void setFromUserId(String fromUserId) {
-        this.fromUserId = fromUserId;
+    public void setUserID(String userID) {
+        this.userId = userID;
     }
 
-    public String getToUserId() {
-        return toUserId;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setToUserId(String toUserId) {
-        this.toUserId = toUserId;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
-    public String getTaskId() {
-        return taskId;
+    public int getIfTest() {
+        return ifTest;
     }
 
-    public void setTaskId(String taskId) {
-        this.taskId = taskId;
+    public void setIfTest(int ifTest) {
+        this.ifTest = ifTest;
+    }
+
+    public String getFlowIo() {
+        return flowIo;
+    }
+
+    public void setFlowIo(String flowIo) {
+        this.flowIo = flowIo;
     }
 
     public Double getFlowMoney() {
@@ -81,11 +80,35 @@ public class MoneyFlow {
         this.flowMoney = flowMoney;
     }
 
+    public String getFlowType() {
+        return flowType;
+    }
+
+    public void setFlowType(String floeType) {
+        this.flowType = floeType;
+    }
+
     public String getFlowTime() {
         return flowTime;
     }
 
     public void setFlowTime(String flowTime) {
         this.flowTime = flowTime;
+    }
+
+    public String getTaskId() {
+        return taskId;
+    }
+
+    public void setTaskId(String taskId) {
+        this.taskId = taskId;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 }

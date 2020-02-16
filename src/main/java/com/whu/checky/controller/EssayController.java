@@ -37,88 +37,108 @@ public class EssayController {
     @Autowired
     private UploadConfig uploadConfig;
 
-    @Autowired
-    private FileService fileService;
+//    @Autowired
+//    private FileService fileService;
 
-    private SimpleDateFormat dateFormat= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
     //发表动态
     @RequestMapping("/addEssay")
-    public JSONObject addEssay(@RequestBody String jsonstr){
-        Essay essay= JSON.parseObject(jsonstr,new TypeReference<Essay>(){});
-        essay.setEssayId(UUID.randomUUID().toString());
+    public JSONObject addEssay(@RequestBody String jsonstr) {
+        JSONObject object = (JSONObject) JSON.parse(jsonstr);
+        String userId = (String) object.get("userId");
+        String essayContent = (String) object.get("essayContent");
+//        String checkId = (String) object.get("checkId");
+        String longitude = (String) object.get("longitude");
+        String latitude = (String) object.get("latitude");
+
+        // 在Essay表添加记录
+        Essay essay = new Essay();
+        String essayId = UUID.randomUUID().toString();
+        essay.setEssayId(essayId);
         essay.setEssayTime(dateFormat.format(new Date()));
-        int result=essayService.addEssay(essay);
-        JSONObject object=new JSONObject();
-        if(result==1){
-            object.put("state","OK");
-            object.put("essayId",essay.getEssayId());
-            //插入成功
-        }else {
-            object.put("state","FAIL");
-            //插入失败
+        essay.setLatitude(latitude);
+        essay.setLongtitude(longitude);
+        essay.setUserId(userId);
+        essay.setEssayContent(essayContent);
+        int result = essayService.addEssay(essay);
+        // 在record表相关记录添加essayId信息
+        // 似乎因为上传时间过慢导致此时查询record时，找不到文件类型的记录，在文件上传里做了补充
+//        List<Record> records = recordService.getRecordsByCheckId(checkId);
+//        for (Record record : records) {
+//            record.setEssayId(essayId);
+//            recordService.updateRecord(record);
+//        }
+        JSONObject ans = new JSONObject();
+        if (result == 1) {
+            ans.put("state", "OK");
+            ans.put("essayId", essay.getEssayId());  // 插入成功
+        } else {
+            ans.put("state", "FAIL"); // 插入失败
         }
-        return object;
+        return ans;
     }
 
     //删除动态
     @RequestMapping("/deleteEssay")
-    public JSONObject deleteEssay(@RequestBody String jsonstr){
-        JSONObject object= (JSONObject) JSON.parse(jsonstr);
-        String essayId= (String)object.get("essayId");
-//        List<Record> records=recordService.getRecordsByEssayId(essayId);
-//        for (Record record:records){
-//            recordService.deleteRecordById(record.getRecordId());
-//        }
-//        List<Comment> comments=commentService.queryCommentByEssayId(essayId);
-//        for (Comment comment:comments){
-//            commentService.deleteComment(comment.getCommentId());
-//        }
-////        List<EssayLike> likes=likeService.(essayId);
-//        for (Comment comment:comments){
-//            commentService.deleteComment(comment.getCommentId());
-//        }
-        int result=essayService.deleteEssay(essayId);
-        JSONObject res=new JSONObject();
-        if(result==1){
-            object.put("state","OK");
-            //插入成功
-        }else {
-            object.put("state","FAIL");
-            //插入失败
+    public List<EssayAndRecord> deleteEssay(@RequestBody String jsonstr) {
+        JSONObject object = (JSONObject) JSON.parse(jsonstr);
+        String essayId = (String) object.get("essayId");
+        String userId = (String) object.get("userId");
+        // 此处不确定，举报的文章是否给予立即删除？-->在某用户被举报后，恰好删除了动态，管理就看不到内容了！
+        // 目前是给予删除
+        List<Record> records = recordService.getRecordsByEssayId(essayId);
+        for (Record record : records) {
+            record.setEssayId(null);
+            recordService.deleteRecordById(record.getRecordId());
+            recordService.addRecord(record);
         }
-        return res;
+        List<Comment> comments = commentService.queryCommentByEssayId(essayId);
+        for (Comment comment : comments) {
+            commentService.deleteComment(comment.getCommentId());
+        }
+        List<EssayLike> likes = likeService.queryAllLikeByEssayId(essayId);
+        for (EssayLike essayLike: likes){
+            likeService.UnLike(essayLike.getUserId(), essayLike.getEssayId());
+        }
+        int result = essayService.deleteEssay(essayId);
+        if(result == 1){
+            List<EssayAndRecord> res = new ArrayList<>();
+            List<Essay> essays = essayService.queryUserEssays(userId);
+            for (Essay essay : essays) {
+                EssayAndRecord essayAndRecord = getEssayAndRecord(essay);
+                res.add(essayAndRecord);
+            }
+            return res;
+        }else{
+            return null;
+        }
     }
 
     //修改动态
     public void modifyEassy(@RequestBody String jsonstr) {
-        Essay essay= JSON.parseObject(jsonstr,new TypeReference<Essay>(){});
+        Essay essay = JSON.parseObject(jsonstr, new TypeReference<Essay>() {
+        });
         essay.setEssayId(UUID.randomUUID().toString());
-        int result=essayService.modifyEssay(essay);
-        if(result==1){
+        int result = essayService.modifyEssay(essay);
+        if (result == 1) {
             //删除成功
-        }else {
+        } else {
             //删除失败
         }
-
     }
-
 
     //查看自己的动态
     @RequestMapping("/queryUserEssays")
     public List<EssayAndRecord> queryUserEssays(@RequestBody String jsonstr) {
-        JSONObject object= (JSONObject) JSON.parse(jsonstr);
-        String userId= (String)object.get("userId");
-        User publisher=userService.queryUser(userId);
-        List<EssayAndRecord> res=new ArrayList<EssayAndRecord>();
-        List<Essay> essays=essayService.queryUserEssays(userId);
-        for (Essay essay:essays){
-            List<Record> records=recordService.getRecordsByEssayId(essay.getEssayId());
-            EssayAndRecord essayAndRecord=new EssayAndRecord();
-            essayAndRecord.setUserId(publisher.getUserId());
-            essayAndRecord.setUserAvatar(publisher.getUserAvatar());
-            essayAndRecord.setUserName(publisher.getUserName());
-            essayAndRecord.setImg(records);
-            essayAndRecord.setEssay(essay);
+        JSONObject object = (JSONObject) JSON.parse(jsonstr);
+        String userId = (String) object.get("userId");
+        List<EssayAndRecord> res = new ArrayList<>();
+        List<Essay> essays = essayService.queryUserEssays(userId);
+        for (Essay essay : essays) {
+            EssayAndRecord essayAndRecord = getEssayAndRecord(essay);
             res.add(essayAndRecord);
         }
         return res;
@@ -127,80 +147,88 @@ public class EssayController {
     //查看单条动态
     @RequestMapping("/queryEssayById")
     public EssayAndRecord queryEssayById(@RequestBody String jsonstr) {
-        JSONObject object= (JSONObject) JSON.parse(jsonstr);
-        String essayId= (String)object.get("essayId");
-        String userId= (String)object.get("userId");
-        Essay essay=essayService.queryEssayById(essayId);
-        List<Record> records=recordService.getRecordsByEssayId(essay.getEssayId());
-        User publisher=userService.queryUser(essay.getUserId());
-        EssayAndRecord essayAndRecord=new EssayAndRecord();
-        essayAndRecord.setUserId(publisher.getUserId());
-        essayAndRecord.setUserAvatar(publisher.getUserAvatar());
-        essayAndRecord.setUserName(publisher.getUserName());
-        essayAndRecord.setImg(records);
-        essayAndRecord.setEssay(essay);
-        EssayLike essayLike=likeService.queryLike(userId,essay.getEssayId());
-        boolean like=essayLike!=null;
-        essayAndRecord.setLike(like);
+        JSONObject object = (JSONObject) JSON.parse(jsonstr);
+        String essayId = (String) object.get("essayId");
+//        String userId = (String) object.get("userId");
+        Essay essay = essayService.queryEssayById(essayId);
+        EssayAndRecord essayAndRecord = getEssayAndRecord(essay);
         return essayAndRecord;
     }
 
 
     //展示动态
     @RequestMapping("/displayEssay")
-    public List<EssayAndRecord> displayEssay(@RequestBody String jsonstr){
-        JSONObject object= (JSONObject) JSON.parse(jsonstr);
-        String userId= (String)object.get("userId");
-        int currentPage=(Integer) object.get("cPage");
-        Page<Essay> page=new Page<>(currentPage,5);
-        List<EssayAndRecord> res=new ArrayList<EssayAndRecord>();
-        List<Essay> essays=essayService.displayEssay(page);
-        for (Essay essay:essays){
-            List<Record> records=recordService.getRecordsByEssayId(essay.getEssayId());
-            User publisher=userService.queryUser(essay.getUserId());
-            EssayAndRecord essayAndRecord=new EssayAndRecord();
-            essayAndRecord.setUserId(publisher.getUserId());
-            essayAndRecord.setUserAvatar(publisher.getUserAvatar());
-            essayAndRecord.setUserName(publisher.getUserName());
-            essayAndRecord.setImg(records);
-            essayAndRecord.setEssay(essay);
-            //此处有问题还没有查询
-            EssayLike essayLike=likeService.queryLike(userId,essay.getEssayId());
-            boolean like=essayLike==null?false:true;
-            essayAndRecord.setLike(like);
+    public List<EssayAndRecord> displayEssay(@RequestBody String jsonstr) {
+        JSONObject object = (JSONObject) JSON.parse(jsonstr);
+//        String userId = (String) object.get("userId");
+        int currentPage = (Integer) object.get("cPage");
+        Page<Essay> page = new Page<>(currentPage, 5);
+        List<EssayAndRecord> res = new ArrayList<EssayAndRecord>();
+        List<Essay> essays = essayService.displayEssay(page);
+        for (Essay essay : essays) {
+            EssayAndRecord essayAndRecord = getEssayAndRecord(essay);
             res.add(essayAndRecord);
         }
         return res;
     }
 
+    // 要返回给前端的动态列表，多处调用
+    private EssayAndRecord getEssayAndRecord(Essay essay) {
+        List<Record> records = recordService.getRecordsByEssayId(essay.getEssayId());
+        for (int i = 0; i < records.size(); ) {
+            if (records.get(i).getRecordType().equals("text")) {
+                records.remove(i);
+            } else {
+                records.get(i).setRecordType(records.get(i).getRecordType().substring(0, 5));
+                i++;
+            }
+        }
+        User publisher = userService.queryUser(essay.getUserId());
+        EssayAndRecord essayAndRecord = new EssayAndRecord();
+        essayAndRecord.setUserId(publisher.getUserId());
+        essayAndRecord.setUserAvatar(publisher.getUserAvatar());
+        essayAndRecord.setUserName(publisher.getUserName());
+        essayAndRecord.setFileRecord(records);
+        essayAndRecord.setEssay(essay);
+//            List<EssayLike> essayLikes = likeService.queryAllLikeByEssayId(essay.getEssayId());
+//            essayAndRecord.setLikeNum(essayLikes.size());
+//            essayAndRecord.setCommentNum(commentService.queryCommentByEssayId(essay.getEssayId()).size());
+        EssayLike essayLike = likeService.queryLike(essay.getUserId(), essay.getEssayId());
+        boolean like = essayLike != null;
+        essayAndRecord.setLike(like);
+        return essayAndRecord;
+    }
+
     //点赞
     @RequestMapping("/like")
-    public JSONObject likeEssay(@RequestBody String jsonstr){
-        EssayLike essayLike= JSON.parseObject(jsonstr,new TypeReference<EssayLike>(){});
+    public JSONObject likeEssay(@RequestBody String jsonstr) {
+        EssayLike essayLike = JSON.parseObject(jsonstr, new TypeReference<EssayLike>() {
+        });
         essayLike.setAddTime(dateFormat.format(new Date()));
-        int res=likeService.Like(essayLike);
-        JSONObject object=new JSONObject();
-        if(res==1){
+        int res = likeService.Like(essayLike);
+        JSONObject object = new JSONObject();
+        if (res == 1) {
             //点赞成功
-             object.put("state","OK");
-        }else {
-            object.put("state","FAIL");
+            object.put("state", "OK");
+        } else {
+            object.put("state", "FAIL");
         }
         return object;
 
     }
+
     //取消点赞
     @RequestMapping("/unlike")
-    public JSONObject unLikeEssay(@RequestBody String jsonstr){
-        JSONObject data= (JSONObject) JSON.parse(jsonstr);
-        String essayId= (String)data.get("essayId");
-        String userId= (String)data.get("userId");
-        int res=likeService.UnLike(userId,essayId);
-        JSONObject object=new JSONObject();
-        if(res==1){
-            object.put("state","OK");
-        }else {
-            object.put("state","FAIL");
+    public JSONObject unLikeEssay(@RequestBody String jsonstr) {
+        JSONObject data = (JSONObject) JSON.parse(jsonstr);
+        String essayId = (String) data.get("essayId");
+        String userId = (String) data.get("userId");
+        int res = likeService.UnLike(userId, essayId);
+        JSONObject object = new JSONObject();
+        if (res == 1) {
+            object.put("state", "OK");
+        } else {
+            object.put("state", "FAIL");
         }
         return object;
 
@@ -208,38 +236,38 @@ public class EssayController {
 
     //评论
     @RequestMapping("/addComment")
-    public JSONObject addEssayComment(@RequestBody String jsonstr){
-        Comment comment= JSON.parseObject(jsonstr,new TypeReference<Comment>(){});
+    public JSONObject addEssayComment(@RequestBody String jsonstr) {
+        Comment comment = JSON.parseObject(jsonstr, new TypeReference<Comment>() {
+        });
         comment.setCommentId(UUID.randomUUID().toString());
         comment.setCommentTime(dateFormat.format(new Date()));
-        int res=commentService.addComment(comment);
-        JSONObject object=new JSONObject();
-        if(res==1){
+        int res = commentService.addComment(comment);
+        JSONObject object = new JSONObject();
+        if (res == 1) {
             //添加评论成功
-            List<Comment> comments=commentService.queryCommentByEssayId(comment.getEssayId());
-            object.put("state","OK");
-            object.put("comments",comments);
-        }else {
-            object.put("state","FAIL");
+            List<Comment> comments = commentService.queryCommentByEssayId(comment.getEssayId());
+            object.put("state", "OK");
+            object.put("comments", comments);
+        } else {
+            object.put("state", "FAIL");
         }
         return object;
     }
 
-
     //删除评论
     @RequestMapping("/delComment")
-    public JSONObject delEssayComment(@RequestBody String jsonstr){
-        JSONObject data= (JSONObject) JSON.parse(jsonstr);
-        String commentId= (String)data.get("commentId");
-        String essayId= (String)data.get("essayId");
-        int res=commentService.deleteComment(commentId);
-        JSONObject object=new JSONObject();
-        if(res==1){
-            List<Comment> comments=commentService.queryCommentByEssayId(essayId);
-            object.put("state","OK");
-            object.put("comments",comments);
-        }else {
-            object.put("state","FAIL");
+    public JSONObject delEssayComment(@RequestBody String jsonstr) {
+        JSONObject data = (JSONObject) JSON.parse(jsonstr);
+        String commentId = (String) data.get("commentId");
+        String essayId = (String) data.get("essayId");
+        int res = commentService.deleteComment(commentId);
+        JSONObject object = new JSONObject();
+        if (res == 1) {
+            List<Comment> comments = commentService.queryCommentByEssayId(essayId);
+            object.put("state", "OK");
+            object.put("comments", comments);
+        } else {
+            object.put("state", "FAIL");
         }
         return object;
     }
@@ -247,23 +275,20 @@ public class EssayController {
 
     //查看评论
     @RequestMapping("/queryComments")
-    public List<Comment> queryComment(@RequestBody String jsonstr){
-        JSONObject data= (JSONObject) JSON.parse(jsonstr);
-        String essayId= (String)data.get("essayId");
-        List<Comment> comments=commentService.queryCommentByEssayId(essayId);
+    public List<Comment> queryComment(@RequestBody String jsonstr) {
+        JSONObject data = (JSONObject) JSON.parse(jsonstr);
+        String essayId = (String) data.get("essayId");
+        List<Comment> comments = commentService.queryCommentByEssayId(essayId);
         return comments;
     }
 
 
     @PostMapping("/file/upload")
-    public HashMap<String,String> uploadFile(HttpServletRequest request, @RequestParam("file") MultipartFile[] files){
-
-        HashMap<String,String> response = new HashMap<>();
-
-        if(files!=null && files.length>=1) {
-
+    public HashMap<String, String> uploadFile(HttpServletRequest request, @RequestParam("file") MultipartFile[] files) {
+        HashMap<String, String> response = new HashMap<>();
+        if (files != null && files.length >= 1) {
             try {
-                for(MultipartFile file:files){
+                for (MultipartFile file : files) {
                     String contentType = request.getParameter("type");
 //                    String fileName = file.getOriginalFilename();
                     String type = FileUtil.getFileTypePostFix(file.getOriginalFilename());
@@ -271,38 +296,39 @@ public class EssayController {
 
                     String day = new SimpleDateFormat("yyyyMMdd").format(new Date());
 //                    String filePath = request.getSession().getServletContext().getRealPath("/");
-                    String filePath = uploadConfig.getUploadPath()  + contentType + "/" + day+ "/";
+                    String filePath = uploadConfig.getUploadPath() + contentType + "/" + day + "/";
 //                    System.out.println(filePath+fileName);
 
                     FileUtil.uploadFile(file.getBytes(), filePath, fileName);
                     Record record = new Record();
-                    record.setFileAddr(uploadConfig.getStaticPath() + "/" + contentType + "/" + day + "/"+fileName);
+                    record.setFileAddr(uploadConfig.getStaticPath() + "/" + contentType + "/" + day + "/" + fileName);
                     record.setRecordType(file.getContentType());
                     record.setEssayId(request.getParameter("essayId"));
-                    fileService.saveFile2Database(record);
+                    String recordId = UUID.randomUUID().toString().substring(0, 12);
+                    record.setRecordId(recordId);
+                    recordService.addRecord(record);
+//                    fileService.saveFile2Database(record);
 //                    response.put("recordId",recordId);
-                    response.put("state","ok");
+                    response.put("state", "ok");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                response.put("state","fail");
+                response.put("state", "fail");
             }
-
         }
         return response;
-
-
     }
-
-
 }
-class EssayAndRecord{
+
+class EssayAndRecord {
     private String userId;
     private String userAvatar;
     private String userName;
     private Essay essay;
-    private List<Record> img;
+    private List<Record> fileRecord;
     private boolean Like;
+//    private int likeNum;
+//    private int commentNum;
 
     public String getUserId() {
         return userId;
@@ -336,12 +362,12 @@ class EssayAndRecord{
         this.essay = essay;
     }
 
-    public List<Record> getImg() {
-        return img;
+    public List<Record> getFileRecord() {
+        return fileRecord;
     }
 
-    public void setImg(List<Record> img) {
-        this.img = img;
+    public void setFileRecord(List<Record> fileRecord) {
+        this.fileRecord = fileRecord;
     }
 
     public boolean getLike() {
@@ -351,5 +377,21 @@ class EssayAndRecord{
     public void setLike(boolean like) {
         Like = like;
     }
+
+//    public int getLikeNum() {
+//        return likeNum;
+//    }
+//
+//    public void setLikeNum(int likeNum) {
+//        this.likeNum = likeNum;
+//    }
+//
+//    public int getCommentNum() {
+//        return commentNum;
+//    }
+//
+//    public void setCommentNum(int commentNum) {
+//        this.commentNum = commentNum;
+//    }
 }
 

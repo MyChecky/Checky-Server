@@ -1,9 +1,6 @@
 package com.whu.checky.domain;
 
-
-
 import com.baomidou.mybatisplus.annotations.TableId;
-
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -31,6 +28,10 @@ public class User implements Serializable{
      * 用户余额
      */
     private Double userMoney;
+    /**
+     * 试玩余额，默认100.0
+     */
+    private Double testMoney =100.0;
     /**
      * 用户发布的任务数
      */
@@ -62,8 +63,31 @@ public class User implements Serializable{
     private double latitude=0.0;
 
     private String sessionId;
+    /**
+     *  用户信用.默认100
+     */
+    private int userCredit=100;
+    /**
+     *  用户爱好，“;”分隔
+     */
+    private String hobby;
+    /**
+     * 被举报总次数
+     */
+    private int reportedTotal=0;
+    /**
+     * 被举报通过总次数
+     */
+    private int reportedPassed=0;
+    /**
+     * 举报他任总次数
+     */
+    private int reportTotal=0;
+    /**
+     * 举报他人通过总次数
+     */
+    private int reportPassed=0;
 
-    private int userCredit;
 
     public void setLongtitude(double longtitude) {
         this.longtitude = longtitude;
@@ -187,6 +211,13 @@ public class User implements Serializable{
     public void setUserMoney(Double userMoney) {
         this.userMoney = userMoney;
     }
+    public Double getTestMoney() {
+        return testMoney;
+    }
+
+    public void setTestMoney(Double testMoney) {
+        this.testMoney = testMoney;
+    }
 
     public String getSessionId() {
         return sessionId;
@@ -194,5 +225,45 @@ public class User implements Serializable{
 
     public void setSessionId(String sessionId) {
         this.sessionId = sessionId;
+    }
+
+    public String getHobby() {
+        return hobby;
+    }
+
+    public void setHobby(String hobby) {
+        this.hobby = hobby;
+    }
+
+    public int getReportedTotal() {
+        return reportedTotal;
+    }
+
+    public void setReportedTotal(int reportedTotal) {
+        this.reportedTotal = reportedTotal;
+    }
+
+    public int getReportedPassed() {
+        return reportedPassed;
+    }
+
+    public void setReportedPassed(int reportedPassed) {
+        this.reportedPassed = reportedPassed;
+    }
+
+    public int getReportTotal() {
+        return reportTotal;
+    }
+
+    public void setReportTotal(int reportTotal) {
+        this.reportTotal = reportTotal;
+    }
+
+    public int getReportPassed() {
+        return reportPassed;
+    }
+
+    public void setReportPassed(int reportPassed) {
+        this.reportPassed = reportPassed;
     }
 }
