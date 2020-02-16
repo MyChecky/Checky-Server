@@ -19,8 +19,6 @@ public class Administrator implements Serializable {
     private List<String> permissions;
     //管理员所处部门
     private String department;
-    //邮箱
-    private String email;
 
     private String userTel;
 
@@ -58,7 +56,6 @@ public class Administrator implements Serializable {
         this.userPassword = userPassword;
     }
 
-<<<<<<< HEAD
     public List<String> getPermissions() {
         return permissions;
     }
@@ -73,12 +70,7 @@ public class Administrator implements Serializable {
     public void setDepartment(String department){
         this.department=department;
     }
-    public String getEmail(){
-        return email;
-    }
-    public void setEmail(String email){
-        this.email=email;
-=======
+
     public String getUserTel() {
         return userTel;
     }
@@ -93,6 +85,5 @@ public class Administrator implements Serializable {
 
     public void setUserEmail(String userEmail) {
         this.userEmail = userEmail;
->>>>>>> 6a080a025d2047c62e11c6686b233db6fc15b7ac
     }
 }
