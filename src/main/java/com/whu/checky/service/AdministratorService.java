@@ -19,4 +19,6 @@ public interface AdministratorService {
     List<Administrator> getAllAdmins(int page);
     //获取管理员数量
     int getAllAdminsnum();
+
+    List<Administrator> queryAdmins(int page,String keyword);
 }
