@@ -1,5 +1,6 @@
 package com.whu.checky.domain;
 
+import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 
 import java.io.Serializable;
@@ -16,8 +17,10 @@ public class Administrator implements Serializable {
 
     private String sessionId;
     //权限列表
+    @TableField(exist = false)
     private List<String> permissions;
     //管理员所处部门
+    @TableField(exist = false)
     private String department;
 
     private String userTel;
