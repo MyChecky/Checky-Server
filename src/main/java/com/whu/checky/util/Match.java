@@ -374,6 +374,41 @@ public class Match {
         return candidates;
     }
 
+    // helper function to determine a Task's corresponding MatchType
+    // according to specific fields in db
+    MatchType resolveMatchType(Task task) {
+        MatchType mt = new MatchType();
+
+        int supervisorType = task.getSupervisorType();
+        int ifArea = task.getIfArea();
+        int ifHobby = task.getIfHobby();
+
+        switch(supervisorType) {
+            case 0: {
+                mt.isRand = true;
+                break;
+            }
+            case 1: {
+                mt.isAcq = true;
+                break;
+            }
+            case 2: {
+                mt.isStrg = true;
+                break;
+            }
+        }
+
+        if(ifArea == 1) {
+            mt.isArea = true;
+        }
+
+        if(ifHobby == 1) {
+            mt.isHobby = true;
+        }
+
+        return mt;
+    }
+
     // @return's length might < num
     // caller should check it
     HashSet<String> match(String userId, MatchType type, int num) {
@@ -416,5 +451,9 @@ public class Match {
         }
 
         return supervisors;
+    }
+
+    public boolean matchSupervisorForOneTask(Task task) {
+        return true;
     }
 }
