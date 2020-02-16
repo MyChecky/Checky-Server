@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.whu.checky.domain.Task;
+
 import org.junit.Assert;
 
 @RunWith(SpringRunner.class)
@@ -15,6 +17,8 @@ public class MatchTest {
     Match cls;
 
     String testUserId = "oM2yQ4jR0La_jZ8hyxkERsqNTh_8";
+
+    String testTaskId = "eac6210e-8867-4ac4-a04d-ee227b0f6f65";
 
     @Test
     public void acqCandidateTest() throws Exception{
@@ -51,5 +55,11 @@ public class MatchTest {
         type.isHobby = true;
 
         Assert.assertEquals(5, cls.match(testUserId, type, 5).size());
+    }
+
+    @Test
+    public void matchSupervisorForOneTaskTest() throws Exception{
+        Task task = cls.taskMapper.selectById(testTaskId);
+        Assert.assertFalse(cls.matchSupervisorForOneTask(task));
     }
 }
