@@ -1,7 +1,9 @@
 package com.whu.checky.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.whu.checky.domain.Administrator;
+import com.whu.checky.domain.User;
 import com.whu.checky.mapper.AdministratorMapper;
 import com.whu.checky.service.AdministratorService;
 import com.whu.checky.service.RedisService;
@@ -19,7 +21,6 @@ public class AdministratorServiceImpl implements AdministratorService {
 
     @Autowired
     private RedisService redisService;
-
 
     @Override
     public int register(Administrator administrator) throws Exception {
@@ -46,15 +47,14 @@ public class AdministratorServiceImpl implements AdministratorService {
         } else if (!temp.get(0).getUserPassword().equals(administrator.getUserPassword())) {
             return 2;
         } else {
-            if(temp.get(0).getSessionId()!=null) redisService.delSessionId(temp.get(0).getSessionId());
+            if (temp.get(0).getSessionId() != null) redisService.delSessionId(temp.get(0).getSessionId());
             administrator.setUserId(temp.get(0).getUserId());
             mapper.updateById(administrator);
-            redisService.saveUserOrAdminBySessionId(administrator.getSessionId(),administrator);
+            redisService.saveUserOrAdminBySessionId(administrator.getSessionId(), administrator);
             return 0;
         }
 
     }
-
 
     @Override
     public boolean update(Administrator administrator) {
@@ -62,10 +62,21 @@ public class AdministratorServiceImpl implements AdministratorService {
         return true;
     }
 
-
     @Override
     public boolean deleteById(Administrator administrator) {
         mapper.deleteById(administrator);
         return false;
     }
+
+    @Override
+    public List<Administrator> getAllAdmins(int page) {
+        return mapper.selectPage(new Page<Administrator>(page, 1), new EntityWrapper<Administrator>().orderBy("user_id"));
+    }
+
+    @Override
+    public int getAllAdminsnum() {
+        return mapper.selectCount(new EntityWrapper<>());
+    }
+
+
 }

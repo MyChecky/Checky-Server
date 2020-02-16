@@ -3,17 +3,24 @@ package com.whu.checky.domain;
 import com.baomidou.mybatisplus.annotations.TableId;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class Administrator implements Serializable {
 
     @TableId
     private String userId;
-
+    //用户名
     private String userName;
-
+    //密码
     private String userPassword;
 
     private String sessionId;
+    //权限列表
+    private List<String> permissions;
+    //管理员所处部门
+    private String department;
+    //邮箱
+    private String email;
 
     public String getSessionId() {
         return sessionId;
@@ -45,5 +52,26 @@ public class Administrator implements Serializable {
 
     public void setUserPassword(String userPassword) {
         this.userPassword = userPassword;
+    }
+
+    public List<String> getPermissions() {
+        return permissions;
+    }
+
+    public void setPermissions(List<String> permissions) {
+        this.permissions = permissions;
+    }
+
+    public String getDepartment(){
+        return department;
+    }
+    public void setDepartment(String department){
+        this.department=department;
+    }
+    public String getEmail(){
+        return email;
+    }
+    public void setEmail(String email){
+        this.email=email;
     }
 }

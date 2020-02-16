@@ -3,6 +3,7 @@ package com.whu.checky.controller.admin;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.whu.checky.domain.Administrator;
+import com.whu.checky.domain.User;
 import com.whu.checky.mapper.AdministratorMapper;
 import com.whu.checky.service.AdministratorService;
 import com.whu.checky.service.RedisService;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -76,7 +78,6 @@ public class AdminController {
         return ans;
     }
 
-
     @PostMapping("logout")
     public HashMap<String,String> logout(@RequestBody String body){
         HashMap<String,String> ans = new HashMap<>();
@@ -88,10 +89,19 @@ public class AdminController {
         }catch (Exception e){
             ans.put("state","fail");
         }
-
         return ans;
     }
 
+    @PostMapping("/all")
+    public HashMap<String,Object> getAllAdmins(@RequestBody String body){
+        int page = JSON.parseObject(body).getInteger("page");
+        List<Administrator> adminList = administratorService.getAllAdmins(page);
+        HashMap<String,Object> resp = new HashMap<>();
+        resp.put("state","ok");
+        resp.put("adminsSize",administratorService.getAllAdminsnum());
+        resp.put("admins",adminList);
+        return resp;
+    }
 
     private Administrator parserJson2User(String body){
         //解析json获取登录信息

@@ -36,7 +36,7 @@ public class Match {
     private HashMap<String, User> tempUserList;
 
 
-    //    暂时先做简单的匹配，思路为从数据库取出未匹配任务
+//    暂时先做简单的匹配，思路为从数据库取出未匹配任务
 //    取出用户记录并按监督次数排序
 //    暂时只选取前三个建立监督关系，不足则取所有
     @Deprecated
