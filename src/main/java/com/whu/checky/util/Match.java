@@ -452,8 +452,4 @@ public class Match {
 
         return supervisors;
     }
-
-    public boolean matchSupervisorForOneTask(Task task) {
-        return true;
-    }
 }
