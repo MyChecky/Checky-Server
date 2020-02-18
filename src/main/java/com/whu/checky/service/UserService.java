@@ -1,6 +1,8 @@
 package com.whu.checky.service;
 
 import com.whu.checky.domain.User;
+import com.whu.checky.mapper.UserMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
@@ -21,4 +23,7 @@ public interface UserService {
 
     List<User> queryUsers(int page,String keyword);
 
+    List<User> getUserListForMatch();
+
+    List<User> queryUserByNickname(String nickname);
 }
