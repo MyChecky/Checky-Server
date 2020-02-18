@@ -9,6 +9,8 @@ import com.whu.checky.mapper.TaskMapper;
 import com.whu.checky.mapper.TaskSupervisorMapper;
 import com.whu.checky.mapper.UserFriendMapper;
 import com.whu.checky.mapper.UserMapper;
+import com.whu.checky.service.TaskService;
+import com.whu.checky.service.UserService;
 import javafx.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,6 +24,12 @@ import java.util.*;
 //匹配模块
 @Component
 public class Match {
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private TaskService taskService;
 
     @Autowired
     TaskMapper taskMapper;
@@ -90,11 +98,7 @@ public class Match {
 
     // 似乎不能static
     public boolean matchSupervisorForOneTask(Task task){
-        List<User> userList = userMapper.selectList(new EntityWrapper<User>()
-                .orderBy("supervise_num", true)
-                .orderBy("supervise_num_min", false)
-                .last("limit 70")
-        );
+        List<User> userList = userService.getUserListForMatch();
 
         String taskId = task.getTaskId();
         for (int i = 0; i < task.getSupervisorNum() && i < userList.size(); i++) {
@@ -112,6 +116,7 @@ public class Match {
             // （matchNum:实际已匹配的数目，supervisorNum:任务发布时要求的监督者数目）
             task.setMatchNum(task.getMatchNum() + 1);
         }
+        taskService.updateTask(task);
         userList.sort(new Comparator<User>() {
             @Override
             public int compare(User o1, User o2) {

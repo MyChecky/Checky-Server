@@ -24,6 +24,8 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/task")
 public class TaskController {
+    @Autowired
+    Match match;
 
     @Autowired
     private TaskService taskService;
@@ -154,11 +156,16 @@ public class TaskController {
             }
         }
         // 已扣款，更改任务状态
-        if(new Match().matchSupervisorForOneTask(task)){
-            task.setTaskState("during");
-        }else{
+        try{
+            if(match.matchSupervisorForOneTask(task)){
+                task.setTaskState("during");
+            }else{
+                task.setTaskState("nomatch");
+            }
+        }catch (Exception ex){
             task.setTaskState("nomatch");
         }
+
         int updateResult = taskService.updateTask(task);
         if (updateResult == 0) {
             //出现异常，用户新建任务保存并付款后，未能更待任务匹配监督者的状态

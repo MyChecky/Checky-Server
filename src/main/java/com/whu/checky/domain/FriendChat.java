@@ -3,9 +3,9 @@ package com.whu.checky.domain;
 public class FriendChat {
     private String sendId;
     private String receiverId;
-    private String chatTime;
-    private String chatContent;
-    private int ifRead;
+    private String chatTime="";
+    private String chatContent="";
+    private int ifRead=0;
 
     public String getSendId() {
         return sendId;

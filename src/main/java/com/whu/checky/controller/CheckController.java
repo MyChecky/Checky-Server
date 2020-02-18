@@ -5,15 +5,9 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.whu.checky.config.UploadConfig;
-import com.whu.checky.domain.Check;
-import com.whu.checky.domain.Essay;
-import com.whu.checky.domain.Record;
-import com.whu.checky.domain.Task;
-import com.whu.checky.service.CheckService;
-import com.whu.checky.service.EssayService;
+import com.whu.checky.domain.*;
+import com.whu.checky.service.*;
 //import com.whu.checky.service.FileService;
-import com.whu.checky.service.RecordService;
-import com.whu.checky.service.TaskService;
 import com.whu.checky.util.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -41,6 +35,9 @@ public class CheckController {
 
     @Autowired
     private RecordService recordService;
+
+    @Autowired
+    private ParameterService parameterService;
 
     @PostMapping("/addCheck")
     public HashMap<String, String> addCheck(@RequestBody String body) {
@@ -155,7 +152,8 @@ public class CheckController {
                     AlreadyChecks.add(ret);//已打卡且已判决该次打卡结果；应提供申诉按钮
             }
         }
-
+        int supOutDay = Integer.parseInt(parameterService.getValueByParam("time_out_day").getParamValue());
+        ans.put("supOutDay", supOutDay);
         ans.put("state", "ok");
         ans.put("toCheck", toChecks);
         ans.put("checked", AlreadyChecks);
