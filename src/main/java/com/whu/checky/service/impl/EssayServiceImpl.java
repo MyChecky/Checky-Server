@@ -43,6 +43,16 @@ public class EssayServiceImpl implements EssayService {
     }
 
     @Override
+    public List<Essay> displayEssay(String targetUserId, Page<Essay> page) {
+        return essayMapper.selectPage(
+                page,
+                new EntityWrapper<Essay>()
+                        .eq("user_id",targetUserId)
+                        .orderBy("essay_time",false)
+                        .orderBy("like_num"));
+    }
+
+    @Override
     public List<Essay> queryUserEssays(String userId) {
         return essayMapper.selectPage(
                 new Page<Essay>(1,10),

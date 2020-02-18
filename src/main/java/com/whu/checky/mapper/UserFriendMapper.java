@@ -10,4 +10,7 @@ import org.springframework.stereotype.Component;
 @Component(value = "userFriendMapper")
 public interface UserFriendMapper extends BaseMapper<UserFriend> {
     void addCooNum(@Param("fromUserId") String fromUserId,@Param("toUserId") String toUserId);
+
+    Integer updateUserFriend(@Param("fromUserId") String fromUserId, @Param("userId") String userId,
+                             @Param("addState") int addState);
 }

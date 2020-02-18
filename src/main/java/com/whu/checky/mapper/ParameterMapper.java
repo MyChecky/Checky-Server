@@ -10,5 +10,5 @@ import org.springframework.stereotype.Component;
 @Component(value = "ParameterMapper")
 public interface ParameterMapper extends BaseMapper<Parameter> {
     //还没写都要查什么，应该有这个
-    String getValueByParam(@Param("paramName")String paramName);
+    Parameter getValueByParam(@Param("paramName")String paramName);
 }

@@ -17,6 +17,8 @@ public interface EssayService {
     //展示动态
     List<Essay> displayEssay(Page<Essay> page);
     //展示动态
+    List<Essay> displayEssay(String targetUserId, Page<Essay> page);
+    //展示动态
     List<Essay> queryUserEssays(String userId);
     //展示动态
     Essay queryEssayById(String essayId);

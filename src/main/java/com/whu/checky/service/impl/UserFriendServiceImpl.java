@@ -28,22 +28,44 @@ public class UserFriendServiceImpl implements UserFriendService {
 
     @Override
     public void addCooNum(String fromUserId, String toUserId) {
-        userFriendMapper.addCooNum(fromUserId,toUserId);
+        userFriendMapper.addCooNum(fromUserId, toUserId);
     }
 
     @Override
     public List<UserFriend> queryUserFriends(String userId) {
-        List<UserFriend> friends=userFriendMapper.selectList(new EntityWrapper<UserFriend>()
-        .eq("from_user_id",userId)
-        .or()
-        .eq("to_user_id",userId));
-        for (UserFriend userFriend:friends){
-            if(userFriend.getToUserId().equals(userId)){
+        List<UserFriend> friends = userFriendMapper.selectList(new EntityWrapper<UserFriend>()
+                .eq("from_user_id", userId)
+                .or()
+                .eq("to_user_id", userId)
+                .and()
+                .eq("add_state", 1));
+        for (UserFriend userFriend : friends) {
+            if (userFriend.getToUserId().equals(userId)) {
                 userFriend.setFriendName(userMapper.getUsernameById(userFriend.getFromUserId()));
-            }else {
+                userFriend.setFriendAvatar(userMapper.getUserAvatarById(userFriend.getFromUserId()));
+            } else {
                 userFriend.setFriendName(userMapper.getUsernameById(userFriend.getToUserId()));
+                userFriend.setFriendAvatar(userMapper.getUserAvatarById(userFriend.getToUserId()));
             }
         }
         return friends;
+    }
+
+    @Override
+    public List<UserFriend> queryUserNewFriends(String userId) {
+        List<UserFriend> friends = userFriendMapper.selectList(new EntityWrapper<UserFriend>()
+                .eq("to_user_id", userId)
+                .and()
+                .eq("add_state", 0));
+        for (UserFriend userFriend : friends) {
+                userFriend.setFriendName(userMapper.getUsernameById(userFriend.getFromUserId()));
+                userFriend.setFriendAvatar(userMapper.getUserAvatarById(userFriend.getFromUserId()));
+        }
+        return friends;
+    }
+
+    @Override
+    public Integer updateUserFriend(String fromUserId, String userId, int addState) {
+        return userFriendMapper.updateUserFriend(fromUserId, userId, addState);
     }
 }

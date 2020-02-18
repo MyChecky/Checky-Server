@@ -8,11 +8,10 @@ import com.whu.checky.domain.TaskType;
 import com.whu.checky.service.SuggestionService;
 import com.whu.checky.service.TaskTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,6 +24,7 @@ public class SuggestionController {
     @Autowired
     private TaskTypeService taskTypeService;
 
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     //管理端用于新添类型的
     @PostMapping("/addSuggestion")
@@ -70,6 +70,26 @@ public class SuggestionController {
         return suggestionService.ListSuggestion();
     }
 
+    @RequestMapping("/userSuggest")
+    public JSONObject userSuggest(@RequestBody String jsonstr){
+        JSONObject object = (JSONObject) JSON.parse(jsonstr);
+        String userId = (String) object.get("userId");
+        String suggestionContent = (String) object.get("suggestionContent");
+        Suggestion suggestion = new Suggestion();
+        suggestion.setSuggestionId(UUID.randomUUID().toString());
+        suggestion.setUserId(userId);
+        suggestion.setSuggestionContent(suggestionContent);
+        suggestion.setSuggestionState("waiting");
+        suggestion.setSuggestionTime(dateFormat.format(new Date()));
+        int result = suggestionService.addSuggestion(suggestion);
 
+        JSONObject ans = new JSONObject();
+        if (result == 1) {
+            ans.put("state", "OK");
+        } else {
+            ans.put("state", "FAIL"); // 插入失败
+        }
+        return ans;
+    }
 
 }

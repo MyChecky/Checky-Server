@@ -18,4 +18,11 @@ public interface FriendChatMapper  extends BaseMapper<FriendChat> {
                                                 @Param("endDate") String endDate, @Param("userId") String userId);
     List<FriendChat> queryUserScopeReceiverChatById(@Param("startDate") String startDate,
                                                     @Param("endDate") String endDate, @Param("userId") String userId);
+    FriendChat queryLatestMessageByIds(@Param("userId1") String userId1, @Param("userId2") String userId2);
+    List<FriendChat> queryMsgsFromFriends(@Param("userId1") String userId1, @Param("userId2") String userId2);
+    List<FriendChat> queryMsgsFromFriendsByPage(@Param("userId1") String userId1, @Param("userId2") String userId2,
+                                          @Param("page") int page);
+
+    Integer updateFriendChatIfRead(@Param("sendId") String sendId, @Param("receiverId") String receiverId,
+                          @Param("chatTime") String chatTime, @Param("ifRead") int ifRead);
 }

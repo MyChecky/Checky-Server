@@ -54,4 +54,21 @@ public class UserServiceImpl implements UserService {
         return mapper.selectPage(new Page<User>(page,10),new EntityWrapper<User>().like("user_name",keyword
         ).orderBy("user_time"));
     }
+
+    @Override
+    public List<User> getUserListForMatch() {
+        return mapper.selectList(new EntityWrapper<User>()
+                .orderBy("supervise_num", true)
+                .orderBy("supervise_num_min", false)
+                .last("limit 70")
+        );
+    }
+
+    @Override
+    public List<User> queryUserByNickname(String nickname) {
+        return mapper.selectList(new EntityWrapper<User>()
+                .like("user_name", nickname)
+                .orderBy("user_time", true)
+        );
+    }
 }

@@ -12,6 +12,35 @@ public class UserFriend {
     private String addTime;
     @TableField(exist = false)
     private String friendName;
+    @TableField(exist = false)
+    private String friendAvatar;
+
+    private int add_state;
+    private String addContent;
+
+    public int getAdd_state() {
+        return add_state;
+    }
+
+    public void setAdd_state(int add_state) {
+        this.add_state = add_state;
+    }
+
+    public String getAddContent() {
+        return addContent;
+    }
+
+    public void setAddContent(String addContent) {
+        this.addContent = addContent;
+    }
+
+    public String getFriendAvatar() {
+        return friendAvatar;
+    }
+
+    public void setFriendAvatar(String friendAvatar) {
+        this.friendAvatar = friendAvatar;
+    }
 
     public String getToUserId() {
         return toUserId;
