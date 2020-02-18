@@ -84,5 +84,10 @@ public class AdministratorServiceImpl implements AdministratorService {
         ).orderBy("user_id"));
     }
 
+    @Override
+    public Administrator queryAdmin(String userId) {
+        return mapper.selectById(userId);
+    }
+
 
 }
