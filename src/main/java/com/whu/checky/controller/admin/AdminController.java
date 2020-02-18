@@ -103,6 +103,18 @@ public class AdminController {
         return resp;
     }
 
+    @RequestMapping("/queryByKeyWord")
+    HashMap<String,Object> queryUserByKeyWord(@RequestBody String body){
+        JSONObject object= (JSONObject) JSON.parseObject(body).get("params");
+        int page = object.getInteger("page");
+        String keyWord=object.getString("keyword");
+        List<Administrator> adminList=administratorService.queryAdmins(page,keyWord);
+        HashMap<String,Object> resp = new HashMap<>();
+        resp.put("state","ok");
+        resp.put("admins",adminList);
+        return resp;
+    }
+
     private Administrator parserJson2User(String body){
         //解析json获取登录信息
         JSONObject object = JSONObject.parseObject(body);

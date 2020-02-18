@@ -20,7 +20,6 @@ public class Administrator implements Serializable {
     @TableField(exist = false)
     private List<String> permissions;
     //管理员所处部门
-    @TableField(exist = false)
     private String department;
 
     private String userTel;
@@ -70,6 +69,7 @@ public class Administrator implements Serializable {
     public String getDepartment(){
         return department;
     }
+
     public void setDepartment(String department){
         this.department=department;
     }
