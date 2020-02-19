@@ -60,6 +60,7 @@ public class AdminController {
         //处理登录
         try{
             int result = administratorService.login(administrator);
+            String dept=administratorService.queryAdmin(administrator.getUserId()).getDepartment();
             if(result == 1)
                 message = "missusername";
             else if(result == 2)
@@ -67,6 +68,7 @@ public class AdminController {
             else{
                 ans.put("sessionKey",sessionKey);
                 ans.put("userId",administrator.getUserId());
+                ans.put("department",dept);
             }
         }
         catch (Exception ex){
@@ -115,6 +117,18 @@ public class AdminController {
         return resp;
     }
 
+    @PostMapping("/query")
+    HashMap<String,Object> queryAdmin(@RequestBody String body){
+        Administrator administrator = parserJson2User(body);
+        String userId=administrator.getUserId();
+        //String userId = JSONObject.parseObject(body).getString("userId");
+        Administrator admin = administratorService.queryAdmin(userId);
+        HashMap<String,Object> resp = new HashMap<>();
+        resp.put("state","ok");
+        resp.put("admin",admin);
+        resp.put("department",admin.getDepartment());
+        return resp;
+    }
     private Administrator parserJson2User(String body){
         //解析json获取登录信息
         JSONObject object = JSONObject.parseObject(body);
