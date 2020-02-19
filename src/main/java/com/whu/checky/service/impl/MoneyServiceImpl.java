@@ -49,8 +49,6 @@ public class MoneyServiceImpl implements MoneyService {
     public List<MoneyFlow> queryUserTestMoneyFlow(String userId) {
         return moneyFlowMapper.selectList(new EntityWrapper<MoneyFlow>()
                 .eq("user_id", userId)
-//                .or()
-//                .eq("from_user_id",userId)
                 .orderBy("flow_time", true));
     }
 
@@ -65,8 +63,6 @@ public class MoneyServiceImpl implements MoneyService {
     public List<MoneyFlow> queryUserTestMoneyFlow(String userId, Page page) {
         Wrapper<MoneyFlow> wrapper = new EntityWrapper<MoneyFlow>()
                 .eq("user_id", userId)
-//                .or()
-//                .eq("from_user_id", userId)
                 .orderBy("flow_time", true);
         if (page == null)
             return moneyFlowMapper.getMoneyFlowsWithName(wrapper);
