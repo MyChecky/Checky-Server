@@ -41,7 +41,8 @@ public class CheckServiceImpl implements CheckService {
     public List<Check> queryCheckByUserId(String userId, Page<Check> page) {
         return mapper.selectPage(page,
                 new EntityWrapper<Check>()
-                        .eq("user_id",userId).orderBy("check_time"));
+                        .eq("user_id",userId)
+                        .orderBy("check_time", false));
     }
 
 
