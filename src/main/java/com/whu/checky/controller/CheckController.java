@@ -95,13 +95,15 @@ public class CheckController {
             for (Record record : records) {
                 if (record.getRecordType().equals("text")) {
                     textRecord = record;
+                }else {
+                    record.setRecordType(record.getRecordType().substring(0, 5));
                 }
             }
             records.remove(textRecord);
             CheckHistory checkHistory = new CheckHistory();
             check.setTaskTitle(taskService.getTitleById(check.getTaskId()));
             checkHistory.setCheck(check);
-            checkHistory.setImages(records);
+            checkHistory.setFileRecord(records);
             checkHistory.setText(textRecord);
             res.add(checkHistory);
         }
@@ -338,8 +340,16 @@ class DayCheckAndTask {
 
 class CheckHistory {
     private Check check;
-    private List<Record> images;
+    private List<Record> fileRecord;
     private Record text;
+
+    public List<Record> getFileRecord() {
+        return fileRecord;
+    }
+
+    public void setFileRecord(List<Record> fileRecord) {
+        this.fileRecord = fileRecord;
+    }
 
     public Check getCheck() {
         return check;
@@ -347,15 +357,6 @@ class CheckHistory {
 
     public void setCheck(Check check) {
         this.check = check;
-    }
-
-
-    public List<Record> getImages() {
-        return images;
-    }
-
-    public void setImages(List<Record> images) {
-        this.images = images;
     }
 
     public Record getText() {
