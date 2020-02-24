@@ -117,9 +117,9 @@ public class MoneyServiceImpl implements MoneyService {
             try {
                 int month = sdf.parse(m.getFlowTime()).getMonth();
                 if (m.getFlowIo().equals("O")) {// not num 0 here
-                    incomeList.set(month - 1, m.getFlowMoney() + incomeList.get(month - 1));
+                    incomeList.set(month, m.getFlowMoney() + incomeList.get(month));
                 } else {
-                    refundList.set(month - 1, m.getFlowMoney() + incomeList.get(month - 1));
+                    refundList.set(month, m.getFlowMoney() + incomeList.get(month));
                 }
             } catch (ParseException e) {
                 e.printStackTrace();
