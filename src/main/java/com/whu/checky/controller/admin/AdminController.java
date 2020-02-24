@@ -98,6 +98,9 @@ public class AdminController {
     public HashMap<String,Object> getAllAdmins(@RequestBody String body){
         int page = JSON.parseObject(body).getInteger("page");
         List<Administrator> adminList = administratorService.getAllAdmins(page);
+        for(Administrator administrator: adminList){
+            administrator.setUserPassword(null);
+        }
         HashMap<String,Object> resp = new HashMap<>();
         resp.put("state","ok");
         resp.put("adminsSize",administratorService.getAllAdminsnum());
@@ -111,6 +114,9 @@ public class AdminController {
         int page = object.getInteger("page");
         String keyWord=object.getString("keyword");
         List<Administrator> adminList=administratorService.queryAdmins(page,keyWord);
+        for(Administrator administrator: adminList){
+            administrator.setUserPassword(null);
+        }
         HashMap<String,Object> resp = new HashMap<>();
         resp.put("state","ok");
         resp.put("admins",adminList);
@@ -123,6 +129,7 @@ public class AdminController {
         String userId=administrator.getUserId();
         //String userId = JSONObject.parseObject(body).getString("userId");
         Administrator admin = administratorService.queryAdmin(userId);
+        admin.setUserPassword(null);
         HashMap<String,Object> resp = new HashMap<>();
         resp.put("state","ok");
         resp.put("admin",admin);
