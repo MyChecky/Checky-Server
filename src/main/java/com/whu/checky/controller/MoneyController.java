@@ -191,7 +191,7 @@ public class MoneyController {
         double[] displayMoneyOut = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
         double[] displayMoneyIn = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
         List<Pay> PayRecords = moneyService.queryUserTrueMoneyFlow(userId);
-        List<MoneyFlow> MoneyRecords = moneyService.queryUserTestMoneyFlow(userId);
+        List<MoneyFlow> MoneyRecords = moneyService.queryUserMoneyFlow(userId);
         for (MoneyFlow record : MoneyRecords) {
             String[] recordDates = record.getFlowTime().split("-");
             if (Integer.parseInt(recordDates[0]) == year) { // 在查询年份的范围内

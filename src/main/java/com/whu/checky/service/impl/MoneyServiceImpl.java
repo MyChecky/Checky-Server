@@ -46,7 +46,7 @@ public class MoneyServiceImpl implements MoneyService {
     }
 
     @Override
-    public List<MoneyFlow> queryUserTestMoneyFlow(String userId) {
+    public List<MoneyFlow> queryUserMoneyFlow(String userId) {
         return moneyFlowMapper.selectList(new EntityWrapper<MoneyFlow>()
                 .eq("user_id", userId)
                 .orderBy("flow_time", true));
@@ -60,7 +60,7 @@ public class MoneyServiceImpl implements MoneyService {
     }
 
     @Override
-    public List<MoneyFlow> queryUserTestMoneyFlow(String userId, Page page) {
+    public List<MoneyFlow> queryUserMoneyFlow(String userId, Page page) {
         Wrapper<MoneyFlow> wrapper = new EntityWrapper<MoneyFlow>()
                 .eq("user_id", userId)
                 .orderBy("flow_time", true);
@@ -71,14 +71,14 @@ public class MoneyServiceImpl implements MoneyService {
     }
 
     @Override
-    public List<MoneyFlow> queryAllTestMoneyFlow() {
+    public List<MoneyFlow> queryAllMoneyFlow() {
         return moneyFlowMapper.selectList(new EntityWrapper<MoneyFlow>()
                 .orderBy("flow_time", true))
                 ;
     }
 
     @Override
-    public List<MoneyFlow> queryAllTestMoneyFlow(Page page) {
+    public List<MoneyFlow> queryAllMoneyFlow(Page page) {
         Wrapper<MoneyFlow> wrapper = new EntityWrapper<MoneyFlow>()
                 .orderBy("flow_time", true);
 
@@ -87,7 +87,7 @@ public class MoneyServiceImpl implements MoneyService {
     }
 
     @Override
-    public List<MoneyFlow> queryAllTestScopeMoneyFlow(String startDate, String endDate) {
+    public List<MoneyFlow> queryAllScopeMoneyFlow(String startDate, String endDate) {
         return moneyFlowMapper.queryAllScopeMoneyFlow(startDate, endDate);
     }
 
@@ -102,41 +102,57 @@ public class MoneyServiceImpl implements MoneyService {
     }
 
     @Override
-    public HashMap<String, Object> getTestGraphData(String year) {
-        List<MoneyFlow> moneyFlowList = queryAllTestScopeMoneyFlow(year + "-01-01", year + "-12-31");
-        List<Double> incomeList = new ArrayList<Double>();
-        List<Double> refundList = new ArrayList<>();
-        List<Double> benefitList = new ArrayList<>();
+    public HashMap<String, Object> getAllGraphData(String year) {
+        List<MoneyFlow> moneyFlowList = queryAllScopeMoneyFlow(year + "-01-01", year + "-12-31");
+        List<Double> testIncomeList = new ArrayList<Double>();
+        List<Double> testRefundList = new ArrayList<>();
+        List<Double> testBenefitList = new ArrayList<>();
+        List<Double> trueIncomeList = new ArrayList<Double>();
+        List<Double> trueRefundList = new ArrayList<>();
+        List<Double> trueBenefitList = new ArrayList<>();
         for (int i = 0; i < 12; i++) {
-            incomeList.add(0.0);
-            refundList.add(0.0);
-            benefitList.add(0.0);
+            testIncomeList.add(0.0);
+            testRefundList.add(0.0);
+            testBenefitList.add(0.0);
+            trueIncomeList.add(0.0);
+            trueRefundList.add(0.0);
+            trueBenefitList.add(0.0);
         }
 
         for (MoneyFlow m : moneyFlowList) {
             try {
                 int month = sdf.parse(m.getFlowTime()).getMonth();
-                if (m.getFlowIo().equals("O")) {// not num 0 here
-                    incomeList.set(month, m.getFlowMoney() + incomeList.get(month));
+                if (m.getFlowIo().equals("O")) {// no
+                    if (m.getIfTest() == 0)// t num 0 here
+                        trueIncomeList.set(month, m.getFlowMoney() + trueIncomeList.get(month));
+                    else
+                        testIncomeList.set(month, m.getFlowMoney() + testIncomeList.get(month));
                 } else {
-                    refundList.set(month, m.getFlowMoney() + incomeList.get(month));
+                    if (m.getIfTest() == 0)// t num 0 here
+                        trueRefundList.set(month, m.getFlowMoney() + trueRefundList.get(month));
+                    else
+                        testRefundList.set(month, m.getFlowMoney() + testRefundList.get(month));
                 }
             } catch (ParseException e) {
                 e.printStackTrace();
             }
         }
         for (int i = 0; i < 12; i++) {
-            benefitList.set(i, incomeList.get(i) - refundList.get(i));
+            testBenefitList.set(i, testIncomeList.get(i) - testRefundList.get(i));
+            trueBenefitList.set(i, trueIncomeList.get(i) - trueRefundList.get(i));
         }
         HashMap<String, Object> ret = new HashMap<>();
-        ret.put("income", incomeList);
-        ret.put("refund", refundList);
-        ret.put("benefit", benefitList);
+        ret.put("testIncomeList", testIncomeList);
+        ret.put("testRefundList", testRefundList);
+        ret.put("testBenefitList", testBenefitList);
+        ret.put("trueIncomeList", trueIncomeList);
+        ret.put("trueRefundList", trueRefundList);
+        ret.put("trueBenefitList", trueBenefitList);
         return ret;
     }
 
     @Override
-    public List<MoneyFlow> queryTestMoneyFlowByUserName(String username) {
+    public List<MoneyFlow> queryMoneyFlowByUserName(String username) {
         return moneyFlowMapper.queryMoneyFolwByUserName(username);
     }
 

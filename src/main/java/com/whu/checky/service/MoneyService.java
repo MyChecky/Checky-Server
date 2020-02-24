@@ -14,32 +14,33 @@ public interface MoneyService {
 //    void SystemPayback();
 //    //打卡失败系统分成给监督者
 //    void Systemdistribute();
+
+    // 这是wechat用的
     //添加流水记录
     int addTestMoneyRecord(MoneyFlow moneyFlow);
     int addTrueMoneyRecord(Pay pay);
     //查询具体的某一条流水
     MoneyFlow queryTestMoneyFlow(String flowId);
     //查询某个用户的所有流水
-    List<MoneyFlow> queryUserTestMoneyFlow(String userId);
+    List<MoneyFlow> queryUserMoneyFlow(String userId);
     List<Pay> queryUserTrueMoneyFlow(String userId);
-    List<MoneyFlow> queryUserTestMoneyFlow(String userId, Page page);
-    //查询所有的流水
-    List<MoneyFlow> queryAllTestMoneyFlow();
-    List<MoneyFlow> queryAllTestMoneyFlow(Page page);
-    //查看一段日期内系统的所有流水
-    List<MoneyFlow> queryAllTestScopeMoneyFlow(String startDate, String endDate);
     //查看一段日期内某个用户的所有流水
     List<MoneyFlow> queryUserTestScopeMoneyFlow(String startDate, String endDate, String userId);
     List<Pay> queryUserTrueScopeMoneyPay(String startDate, String endDate, String userId);
 /*    //查看一段日期内系统的所有流水
     List<MoneyFlow> querySystemScopeMoneyFlow(String startDate,String endDate);*/
-
-    HashMap<String, Object> getTestGraphData(String year);
-
-    List<MoneyFlow> queryTestMoneyFlowByUserName(String username);
-
     // 更改流水（目前用到的是支付状态与取现状态）
     int updateTrueMoneyPay(Pay pay);
     // 微信支付用
     String commitData(String openId, String payId, int total_fee);
+
+    // 这是admin用的
+    //查询所有的流水
+    List<MoneyFlow> queryAllMoneyFlow();
+    List<MoneyFlow> queryAllMoneyFlow(Page page);
+    List<MoneyFlow> queryUserMoneyFlow(String userId, Page page);
+    HashMap<String, Object> getAllGraphData(String year);
+    List<MoneyFlow> queryMoneyFlowByUserName(String username);
+    //查看一段日期内系统的所有流水
+    List<MoneyFlow> queryAllScopeMoneyFlow(String startDate, String endDate);
 }
