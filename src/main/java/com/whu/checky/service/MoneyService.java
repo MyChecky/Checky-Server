@@ -43,4 +43,6 @@ public interface MoneyService {
     List<MoneyFlow> queryMoneyFlowByUserName(String username);
     //查看一段日期内系统的所有流水
     List<MoneyFlow> queryAllScopeMoneyFlow(String startDate, String endDate);
+    List<Pay> rechargeList(int page, int pageSize, String dateType);
+    List<Pay> rechargeUser(int page, String userId, int pageSize, String dateType);
 }

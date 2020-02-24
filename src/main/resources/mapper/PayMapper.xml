@@ -1,12 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.whu.checky.mapper.PayMapper">
-    <select id="getPayById" resultType="com.whu.checky.domain.Pay">
-        SELECT PAY_ID as payId, PAY_ORDERINFO as payOrderinfo, PAY_USERID as
-        payUserid, PAY_MONEY as payMoney, PAY_TYPE as payType, PAY_TIME as
-         payTime, PAY_STATE as payState WHERE payId = #{payId}
-    </select>
-
     <select id="queryUserScopePay" resultType="com.whu.checky.domain.Pay">
         SELECT PAY_ID AS payId, PAY_ORDERINFO AS payOrderinfo, PAY_USERID AS payUserid,
         PAY_MONEY AS payMoney, PAY_TYPE AS payType, PAY_TIME AS  payTime,
@@ -14,4 +8,32 @@
         WHERE (pay_time between date (#{startDate}) and date (#{endDate}))
         AND (pay_userid=#{userId})
     </select>
+
+    <select id="rechargeList" resultType="com.whu.checky.domain.Pay">
+        SELECT PAY_ID AS payId, PAY_ORDERINFO AS payOrderinfo, PAY_USERID AS payUserid,
+        PAY_MONEY AS payMoney, PAY_TYPE AS payType, PAY_TIME AS  payTime, PAY_STATE AS payState
+        FROM pay ORDER BY pay_time
+        <if test="dateType == 'DESC'">
+            DESC
+        </if>
+        <if test="dateType == 'ASC'">
+            ASC
+        </if>
+        LIMIT #{page},#{pageSize}
+    </select>
+
+    <select id="rechargeUser" resultType="com.whu.checky.domain.Pay">
+        SELECT PAY_ID AS payId, PAY_ORDERINFO AS payOrderinfo, PAY_USERID AS payUserid,
+        PAY_MONEY AS payMoney, PAY_TYPE AS payType, PAY_TIME AS  payTime,
+        PAY_STATE AS payState FROM pay
+        WHERE pay_userid=#{userId} ORDER BY pay_time
+        <if test="dateType == 'DESC'">
+            DESC
+        </if>
+        <if test="dateType == 'ASC'">
+            ASC
+        </if>
+        LIMIT #{page},#{pageSize}
+    </select>
+
 </mapper>

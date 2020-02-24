@@ -20,4 +20,10 @@ public interface PayMapper extends BaseMapper<Pay> {
             "        AND (pay_userid=#{userId})")
     List<Pay> queryUserScopePay(@Param("startDate")String startDate, @Param("endDate")String endDate,
                                 @Param("userId")String userId);
+
+    List<Pay> rechargeList(@Param("page")int page, @Param("pageSize")int pageSize,
+                           @Param("dateType")String dateType);
+
+    List<Pay> rechargeUser(@Param("page")int page, @Param("userId")String userId,
+                           @Param("pageSize")int pageSize, @Param("dateType")String dateType);
 }

@@ -92,6 +92,16 @@ public class MoneyServiceImpl implements MoneyService {
     }
 
     @Override
+    public List<Pay> rechargeList(int page, int pageSize, String dateType) {
+        return payMapper.rechargeList(page, pageSize, dateType);
+    }
+
+    @Override
+    public List<Pay> rechargeUser(int page, String userId, int pageSize, String dateType) {
+        return payMapper.rechargeUser(page, userId, pageSize, dateType);
+    }
+
+    @Override
     public List<MoneyFlow> queryUserTestScopeMoneyFlow(String startDate, String endDate, String userId) {
         return moneyFlowMapper.queryUserScopeMoneyFlow(startDate, endDate, userId);
     }
