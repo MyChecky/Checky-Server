@@ -62,7 +62,9 @@ public class SuggestionController {
         JSONObject res=new JSONObject();
         JSONObject object= (JSONObject) JSON.parse(jsonstr);
         String suggestionId=object.getString("suggestionId");
-        if(suggestionService.deleteSuggestion(suggestionId)==1) {
+        Suggestion suggestion = suggestionService.QuerySuggestion(suggestionId);
+        suggestion.setSuggestionState("deny");
+        if(suggestionService.updateSuggestionByKeyId(suggestion)==1) {
             res.put("state","ok");
         }else {
             res.put("state","fail");
@@ -76,16 +78,27 @@ public class SuggestionController {
         JSONObject res=new JSONObject();
         JSONObject object= (JSONObject) JSON.parse(jsonstr);
         String suggestionId=object.getString("suggestionId");
-        String typeContent=object.getString("typeContent");
-        TaskType taskType=new TaskType();
-        taskType.setTypeContent(typeContent);
-        taskType.setTypeId(UUID.randomUUID().toString());
-        if(suggestionService.deleteSuggestion(suggestionId)==1&&taskTypeService.addTaskType(taskType)==1) {
+        Suggestion suggestion = suggestionService.QuerySuggestion(suggestionId);
+        suggestion.setSuggestionState("pass");
+        if(suggestionService.updateSuggestionByKeyId(suggestion)==1) {
             res.put("state","ok");
         }else {
             res.put("state","fail");
         }
         return res;
+//        JSONObject res=new JSONObject();
+//        JSONObject object= (JSONObject) JSON.parse(jsonstr);
+//        String suggestionId=object.getString("suggestionId");
+//        String typeContent=object.getString("typeContent");
+//        TaskType taskType=new TaskType();
+//        taskType.setTypeContent(typeContent);
+//        taskType.setTypeId(UUID.randomUUID().toString());
+//        if(suggestionService.deleteSuggestion(suggestionId)==1&&taskTypeService.addTaskType(taskType)==1) {
+//            res.put("state","ok");
+//        }else {
+//            res.put("state","fail");
+//        }
+//        return res;
     }
 
 

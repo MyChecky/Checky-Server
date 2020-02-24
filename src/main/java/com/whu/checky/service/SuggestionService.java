@@ -9,6 +9,8 @@ import java.util.List;
 public interface SuggestionService {
     //新加一条打卡建议
     Integer addSuggestion(Suggestion suggestion);
+    // 更新建议
+    Integer updateSuggestionByKeyId(Suggestion suggestion);
     //对一条打卡建议进行处理
     Integer updataSuggestion(String suggestionid,String finalState);
     //对打卡建议进行查询

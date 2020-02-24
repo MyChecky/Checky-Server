@@ -19,6 +19,11 @@ public class SuggestionServiceImpl implements SuggestionService {
     }
 
     @Override
+    public Integer updateSuggestionByKeyId(Suggestion suggestion) {
+        return suggestionMapper.updateById(suggestion);
+    }
+
+    @Override
     public Integer updataSuggestion(String suggestionid,String finalState) {
         return suggestionMapper.updateState(suggestionid,finalState);
     }
