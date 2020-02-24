@@ -52,6 +52,7 @@ public class ReportController {
             adminReport.setUserId(report.getUserId());
             adminReport.setUserName(user.getUserName());
             adminReport.setObjectId(report.getEssayId());
+            adminReport.setReportState(report.getProcessResult());
             adminReports.add(adminReport);
         }
         res.put("state","ok");
@@ -97,6 +98,15 @@ public class ReportController {
         private String userId;
         private String userName;
         private String objectId;
+        private String reportState;
+
+        public String getReportState() {
+            return reportState;
+        }
+
+        public void setReportState(String reportState) {
+            this.reportState = reportState;
+        }
 
         public String getReportContent() {
             return reportContent;

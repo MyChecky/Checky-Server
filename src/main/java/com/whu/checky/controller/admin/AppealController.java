@@ -46,6 +46,7 @@ public class AppealController {
             adminAppeal.setTaskId(appeal.getTaskId());
             adminAppeal.setUserId(appeal.getUserId());
             adminAppeal.setUserName(user.getUserName());
+            adminAppeal.setAppealState(appeal.getProcessResult());
             adminAppeals.add(adminAppeal);
         }
         res.put("state","ok");
@@ -90,6 +91,15 @@ public class AppealController {
         private String taskId;
         private String userId;
         private String userName;
+        private String appealState;
+
+        public String getAppealState() {
+            return appealState;
+        }
+
+        public void setAppealState(String appealState) {
+            this.appealState = appealState;
+        }
 
         public String getAppealContent() {
             return appealContent;
