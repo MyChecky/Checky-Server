@@ -24,11 +24,11 @@ public class RechargeController {
     MoneyService moneyService;
 
     // 建议后期增加 排序方式/每页显示数量。。。
-    // 查询充值列表 注意page为1开始，不是0
+    // 查询充值列表 注意page为0开始，不是1
     @PostMapping("/rechargeList")
     public HashMap<String, Object> rechargeList(@RequestBody String body) {
         JSONObject json = JSONObject.parseObject(body);
-        int page = json.getInteger("page") - 1;
+        int page = json.getInteger("page");
 
         int pageSize = 5;
         String dateType = "DESC"; //dateType为 大写DESC或ASC
@@ -40,11 +40,11 @@ public class RechargeController {
         return resp;
     }
 
-    // 查询某人充值列表 注意page为1开始，不是0
+    // 查询某人充值列表 注意page为0开始，不是1
     @PostMapping("/rechargeUser")
     public HashMap<String, Object> rechargeUser(@RequestBody String body) {
         JSONObject json = JSONObject.parseObject(body);
-        int page = json.getInteger("page") - 1;
+        int page = json.getInteger("page");
         String userId = json.getString("userId");
 
         int pageSize = 5;
