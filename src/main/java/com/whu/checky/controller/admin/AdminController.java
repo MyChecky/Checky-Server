@@ -8,10 +8,7 @@ import com.whu.checky.mapper.AdministratorMapper;
 import com.whu.checky.service.AdministratorService;
 import com.whu.checky.service.RedisService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -46,6 +43,29 @@ public class AdminController {
 
         //
         return message;
+    }
+
+    @PostMapping("/updateAdmin")
+    public HashMap<String, String> updateAdmin(@RequestBody String body){
+        JSONObject object = JSONObject.parseObject(body);
+        String userId = object.getString("userId");
+        String userName = object.getString("userName");
+        String userTel = object.getString("userTel");
+        String userEmail = object.getString("userEmail");
+        String department = object.getString("department");
+        Administrator administrator = administratorService.queryAdmin(userId);
+        administrator.setUserName(userName);
+        administrator.setUserTel(userTel);
+        administrator.setUserEmail(userEmail);
+        administrator.setDepartment(department);
+        int updateState = administratorService.update(administrator);
+
+        HashMap<String,String> ans = new HashMap<>();
+        if(updateState == 1)
+            ans.put("state", "ok");
+        else
+            ans.put("state", "fail");
+        return ans;
     }
 
     @PostMapping("/login")

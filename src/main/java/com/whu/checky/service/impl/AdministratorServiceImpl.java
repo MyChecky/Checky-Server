@@ -57,9 +57,8 @@ public class AdministratorServiceImpl implements AdministratorService {
     }
 
     @Override
-    public boolean update(Administrator administrator) {
-        mapper.updateById(administrator);
-        return true;
+    public int update(Administrator administrator) {
+        return mapper.updateById(administrator);
     }
 
     @Override

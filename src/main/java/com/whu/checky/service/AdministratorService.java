@@ -12,7 +12,7 @@ public interface AdministratorService {
     //管理员登录
     int login(Administrator administrator) throws Exception;
     //修改管理员信息
-    boolean update(Administrator administrator);
+    int update(Administrator administrator);
     //删除管理员
     boolean deleteById(Administrator administrator);
     //获取管理员列表
