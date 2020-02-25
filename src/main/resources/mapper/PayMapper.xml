@@ -10,9 +10,11 @@
     </select>
 
     <select id="rechargeList" resultType="com.whu.checky.domain.Pay">
-        SELECT PAY_ID AS payId, PAY_ORDERINFO AS payOrderinfo, PAY_USERID AS payUserid,
-        PAY_MONEY AS payMoney, PAY_TYPE AS payType, PAY_TIME AS  payTime, PAY_STATE AS payState
-        FROM pay ORDER BY pay_time
+        SELECT PAY_ID AS payId, PAY_ORDERINFO AS payOrderinfo, PAY_USERID AS payUserid, PAY_MONEY AS payMoney,
+        PAY_TYPE AS payType, PAY_TIME AS  payTime, PAY_STATE AS payState, payUserName AS payUserName
+        FROM    (SELECT pay.*, user.user_name AS `payUserName`
+                FROM pay, `user` WHERE pay.PAY_USERID=user.user_id) AS pay_user
+        ORDER BY pay_time
         <if test="dateType == 'DESC'">
             DESC
         </if>
@@ -23,9 +25,10 @@
     </select>
 
     <select id="rechargeUser" resultType="com.whu.checky.domain.Pay">
-        SELECT PAY_ID AS payId, PAY_ORDERINFO AS payOrderinfo, PAY_USERID AS payUserid,
-        PAY_MONEY AS payMoney, PAY_TYPE AS payType, PAY_TIME AS  payTime,
-        PAY_STATE AS payState FROM pay
+        SELECT PAY_ID AS payId, PAY_ORDERINFO AS payOrderinfo, PAY_USERID AS payUserid, PAY_MONEY AS payMoney,
+        PAY_TYPE AS payType, PAY_TIME AS  payTime, PAY_STATE AS payState, payUserName AS payUserName
+        FROM    (SELECT pay.*, user.user_name AS `payUserName`
+                FROM pay, `user` WHERE pay.PAY_USERID=user.user_id) AS pay_user
         WHERE pay_userid=#{userId} ORDER BY pay_time
         <if test="dateType == 'DESC'">
             DESC
