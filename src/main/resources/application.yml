@@ -28,7 +28,7 @@ mybatis-plus:
 
 
 xcloud:
-  uploadPath: E:/attach_file/wxChecky/img/
+  uploadPath: E:/attach_file/wxChecky/
   staticPath: resources
 
 
