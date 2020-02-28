@@ -57,6 +57,10 @@ public class EssayController {
         List<Essay> essays = essayService.displayEssay(page);
         for (Essay essay : essays) {
             List<Record> records = recordService.getRecordsByEssayId(essay.getEssayId());
+            for (Record record : records) {
+                if (!record.getRecordType().equals("text"))
+                    record.setRecordType(record.getRecordType().substring(0, 5));
+            }
             AdminEssay adminEssay = new AdminEssay();
             User user = userService.queryUser(essay.getUserId());
             adminEssay.setCommentNum(essay.getCommentNum());
@@ -83,6 +87,10 @@ public class EssayController {
         List<Essay> essays = essayService.queryEssaysByUserName(username);
         for (Essay essay : essays) {
             List<Record> records = recordService.getRecordsByEssayId(essay.getEssayId());
+            for (Record record : records) {
+                if (!record.getRecordType().equals("text"))
+                    record.setRecordType(record.getRecordType().substring(0, 5));
+            }
             AdminEssay adminEssay = new AdminEssay();
             User user = userService.queryUser(essay.getUserId());
             adminEssay.setCommentNum(essay.getCommentNum());
