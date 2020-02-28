@@ -21,16 +21,16 @@ public class MoneyController {
     MoneyService moneyService;
 
     @PostMapping("/user")
-    HashMap<String,Object> queryUser(@RequestBody String body){
+    HashMap<String, Object> queryUser(@RequestBody String body) {
         String userId = JSONObject.parseObject(body).getString("userId");
         int page = JSONObject.parseObject(body).getInteger("page");
         int pageSize = 5;
         String dateType = "DESC"; //dateType为 大写DESC或ASC
 
         List<MoneyFlow> moneyFlow = moneyService.queryUserMoneyFlowWithName(page, userId, pageSize, dateType);
-        HashMap<String,Object> resp = new HashMap<>();
-        resp.put("state","ok");
-        resp.put("moneyFlow",moneyFlow);
+        HashMap<String, Object> resp = new HashMap<>();
+        resp.put("state", "ok");
+        resp.put("moneyFlow", moneyFlow);
         return resp;
     }
 
@@ -38,23 +38,13 @@ public class MoneyController {
     public HashMap<String, Object> all(@RequestBody String body) {
         JSONObject json = JSONObject.parseObject(body);
         int page = json.getInteger("page");
-        Page<MoneyFlow> p = null;
+        int pageSize = 5;
+        String dateType = "DESC"; //dateType为 大写DESC或ASC
 
-        if (page != -1) {
-            p = new Page<>(page, 5);
-        }
-
+        List<MoneyFlow> moneyFlow = moneyService.queryAllMoneyFlows(page, pageSize, dateType);
         HashMap<String, Object> resp = new HashMap<>();
-        HashMap<String, String> params = new HashMap<>();
-        if (json.containsKey("userId")) {
-            resp.put("type", "userId");
-            resp.put("moneyFlows", moneyService.queryUserMoneyFlow(json.getString("userId"), p));
-        } else {
-            resp.put("moneyFlows", moneyService.queryAllMoneyFlow(p));
-            resp.put("type", "all");
-        }
-        if (p != null) resp.put("moneyFlowsSize", p.getTotal());
         resp.put("state", "ok");
+        resp.put("moneyFlow", moneyFlow);
         return resp;
     }
 
@@ -70,13 +60,13 @@ public class MoneyController {
 
     //根据username模糊搜索的申诉
     @RequestMapping("/query")
-    public JSONObject query(@RequestBody String jsonstr){
-        JSONObject res=new JSONObject();
-        JSONObject object= (JSONObject) JSON.parse(jsonstr);
-        String username=object.getString("username");
-        List<MoneyFlow> moneyFlows=moneyService.queryMoneyFlowByUserName(username);
-        res.put("state","ok");
-        res.put("moneyFlows",moneyFlows);
+    public JSONObject query(@RequestBody String jsonstr) {
+        JSONObject res = new JSONObject();
+        JSONObject object = (JSONObject) JSON.parse(jsonstr);
+        String username = object.getString("username");
+        List<MoneyFlow> moneyFlows = moneyService.queryMoneyFlowByUserName(username);
+        res.put("state", "ok");
+        res.put("moneyFlows", moneyFlows);
         return res;
     }
 

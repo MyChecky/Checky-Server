@@ -59,32 +59,32 @@ public class MoneyServiceImpl implements MoneyService {
                 .orderBy("pay_time", true));
     }
 
-    @Override
-    public List<MoneyFlow> queryUserMoneyFlow(String userId, Page page) {
-        Wrapper<MoneyFlow> wrapper = new EntityWrapper<MoneyFlow>()
-                .eq("user_id", userId)
-                .orderBy("flow_time", true);
-        if (page == null)
-            return moneyFlowMapper.getMoneyFlowsWithName(wrapper);
-        else
-            return moneyFlowMapper.getMoneyFlowsWithName(wrapper, page);
-    }
-
-    @Override
-    public List<MoneyFlow> queryAllMoneyFlow() {
-        return moneyFlowMapper.selectList(new EntityWrapper<MoneyFlow>()
-                .orderBy("flow_time", true))
-                ;
-    }
-
-    @Override
-    public List<MoneyFlow> queryAllMoneyFlow(Page page) {
-        Wrapper<MoneyFlow> wrapper = new EntityWrapper<MoneyFlow>()
-                .orderBy("flow_time", true);
-
-        if (page != null) return moneyFlowMapper.getMoneyFlowsWithName(wrapper, page);
-        else return moneyFlowMapper.getMoneyFlowsWithName(wrapper);
-    }
+//    @Override
+//    public List<MoneyFlow> queryUserMoneyFlow(String userId, Page page) {
+//        Wrapper<MoneyFlow> wrapper = new EntityWrapper<MoneyFlow>()
+//                .eq("user_id", userId)
+//                .orderBy("flow_time", true);
+//        if (page == null)
+//            return moneyFlowMapper.getMoneyFlowsWithName(wrapper);
+//        else
+//            return moneyFlowMapper.getMoneyFlowsWithName(wrapper, page);
+//    }
+//
+//    @Override
+//    public List<MoneyFlow> queryAllMoneyFlow() {
+//        return moneyFlowMapper.selectList(new EntityWrapper<MoneyFlow>()
+//                .orderBy("flow_time", true))
+//                ;
+//    }
+//
+//    @Override
+//    public List<MoneyFlow> queryAllMoneyFlow(Page page) {
+//        Wrapper<MoneyFlow> wrapper = new EntityWrapper<MoneyFlow>()
+//                .orderBy("flow_time", true);
+//
+//        if (page != null) return moneyFlowMapper.getMoneyFlowsWithName(wrapper, page);
+//        else return moneyFlowMapper.getMoneyFlowsWithName(wrapper);
+//    }
 
     @Override
     public List<MoneyFlow> queryAllScopeMoneyFlow(String startDate, String endDate) {
@@ -104,6 +104,11 @@ public class MoneyServiceImpl implements MoneyService {
     @Override
     public List<MoneyFlow> queryUserMoneyFlowWithName(int page, String userId, int pageSize, String dateType) {
         return moneyFlowMapper.queryUserMoneyFlowWithName(page, userId, pageSize, dateType);
+    }
+
+    @Override
+    public List<MoneyFlow> queryAllMoneyFlows(int page, int pageSize, String dateType) {
+        return moneyFlowMapper.queryAllMoneyFlows(page, pageSize, dateType);
     }
 
     @Override

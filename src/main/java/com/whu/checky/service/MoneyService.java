@@ -35,15 +35,21 @@ public interface MoneyService {
     String commitData(String openId, String payId, int total_fee);
 
     // 这是admin用的
-    //查询所有的流水
-    List<MoneyFlow> queryAllMoneyFlow();
-    List<MoneyFlow> queryAllMoneyFlow(Page page);
-    List<MoneyFlow> queryUserMoneyFlow(String userId, Page page);
+//    List<MoneyFlow> queryAllMoneyFlow();
+//    List<MoneyFlow> queryAllMoneyFlow(Page page);
+//    List<MoneyFlow> queryUserMoneyFlow(String userId, Page page);
+    // 查询年度流水数据，供图表显示
     HashMap<String, Object> getAllGraphData(String year);
+    // 根据用户名模糊查询流水记录
     List<MoneyFlow> queryMoneyFlowByUserName(String username);
     //查看一段日期内系统的所有流水
     List<MoneyFlow> queryAllScopeMoneyFlow(String startDate, String endDate);
+    // 是以page查全部人的冲值变化
     List<Pay> rechargeList(int page, int pageSize, String dateType);
+    // 是以page和userId查某人的充值记录
     List<Pay> rechargeUser(int page, String userId, int pageSize, String dateType);
+    // 是以page和userId查某人的资金流动
     List<MoneyFlow> queryUserMoneyFlowWithName(int page, String userId, int pageSize, String dateType);
+    // 以page查全部人的资金流动
+    List<MoneyFlow> queryAllMoneyFlows(int page, int pageSize, String dateType);
 }

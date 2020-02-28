@@ -37,4 +37,20 @@
         </if>
         LIMIT #{page},#{pageSize}
     </select>
+
+    <select id="queryAllMoneyFlows" resultType="com.whu.checky.domain.MoneyFlow">
+        SELECT flow_id AS `flowId`, user_id AS `userId`, flow_money AS `flowMoney`,
+        flow_time AS `flowTime`,  task_id AS `taskId`, if_test AS ifTest, flow_io AS flowIO,
+        flow_type AS flowType, flow_user.userName AS userName
+        From (SELECT moneyFlow.*, user.user_name AS `userName`
+        FROM moneyFlow, `user` WHERE moneyFlow.user_id=user.user_id) AS flow_user
+        ORDER BY flow_time
+        <if test="dateType == 'DESC'">
+            DESC
+        </if>
+        <if test="dateType == 'ASC'">
+            ASC
+        </if>
+        LIMIT #{page},#{pageSize}
+    </select>
 </mapper>

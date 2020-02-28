@@ -32,21 +32,23 @@ public interface  MoneyFlowMapper extends BaseMapper<MoneyFlow> {
     List<MoneyFlow> queryUserScopeMoneyFlow(@Param("startDate") String startDate, @Param("endDate")String endDate,
                                             @Param("userId")String userId);
 
-    //这里还不知道改的对不对
-    String moneyFlowsWithNameSql = "SELECT flow_id AS `flowId`, f.user_id AS `userId`, flow_money AS `flowMoney`, \n" +
-            "flow_time AS `flowTime`, task_id AS `taskId` \n" +
-            ", userName AS `userName`, flow_io AS `flowIo`, flow_type AS `flowType`, remark AS `remark` \n"+
-            "FROM (SELECT moneyflow.*,user.user_name AS `userName` FROM moneyflow,\n" +
-            "USER WHERE moneyflow.user_id=user.user_id) AS f";
-
-    @Select(moneyFlowsWithNameSql + " ${ew.sqlSegment}")
-    List<MoneyFlow> getMoneyFlowsWithName(@Param("ew") Wrapper wrapper);
-
-    @Select(moneyFlowsWithNameSql + " ${ew.sqlSegment}")
-    List<MoneyFlow> getMoneyFlowsWithName(@Param("ew") Wrapper wrapper, Pagination page);
+//    String moneyFlowsWithNameSql = "SELECT flow_id AS `flowId`, f.user_id AS `userId`, flow_money AS `flowMoney`, \n" +
+//            "flow_time AS `flowTime`, task_id AS `taskId` \n" +
+//            ", userName AS `userName`, flow_io AS `flowIo`, flow_type AS `flowType`, remark AS `remark` \n"+
+//            "FROM (SELECT moneyflow.*,user.user_name AS `userName` FROM moneyflow,\n" +
+//            "USER WHERE moneyflow.user_id=user.user_id) AS f";
+//
+//    @Select(moneyFlowsWithNameSql + " ${ew.sqlSegment}")
+//    List<MoneyFlow> getMoneyFlowsWithName(@Param("ew") Wrapper wrapper);
+//
+//    @Select(moneyFlowsWithNameSql + " ${ew.sqlSegment}")
+//    List<MoneyFlow> getMoneyFlowsWithName(@Param("ew") Wrapper wrapper, Pagination page);
 
     List<MoneyFlow> queryMoneyFolwByUserName(@Param("username")String username);
 
     List<MoneyFlow> queryUserMoneyFlowWithName(@Param("page")int page, @Param("userId")String userId,
                                                @Param("pageSize")int pageSize, @Param("dateType")String dateType);
+
+    List<MoneyFlow> queryAllMoneyFlows(@Param("page")int page, @Param("pageSize")int pageSize,
+                                       @Param("dateType")String dateType);
 }
