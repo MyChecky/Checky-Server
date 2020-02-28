@@ -45,4 +45,5 @@ public interface MoneyService {
     List<MoneyFlow> queryAllScopeMoneyFlow(String startDate, String endDate);
     List<Pay> rechargeList(int page, int pageSize, String dateType);
     List<Pay> rechargeUser(int page, String userId, int pageSize, String dateType);
+    List<MoneyFlow> queryUserMoneyFlowWithName(int page, String userId, int pageSize, String dateType);
 }

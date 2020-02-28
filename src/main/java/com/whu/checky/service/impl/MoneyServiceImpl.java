@@ -102,6 +102,11 @@ public class MoneyServiceImpl implements MoneyService {
     }
 
     @Override
+    public List<MoneyFlow> queryUserMoneyFlowWithName(int page, String userId, int pageSize, String dateType) {
+        return moneyFlowMapper.queryUserMoneyFlowWithName(page, userId, pageSize, dateType);
+    }
+
+    @Override
     public List<MoneyFlow> queryUserTestScopeMoneyFlow(String startDate, String endDate, String userId) {
         return moneyFlowMapper.queryUserScopeMoneyFlow(startDate, endDate, userId);
     }

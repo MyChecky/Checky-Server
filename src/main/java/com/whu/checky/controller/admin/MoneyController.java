@@ -7,10 +7,7 @@ import com.whu.checky.domain.MoneyFlow;
 import com.whu.checky.service.MoneyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -22,6 +19,20 @@ public class MoneyController {
 
     @Autowired
     MoneyService moneyService;
+
+    @PostMapping("/user")
+    HashMap<String,Object> queryUser(@RequestBody String body){
+        String userId = JSONObject.parseObject(body).getString("userId");
+        int page = JSONObject.parseObject(body).getInteger("page");
+        int pageSize = 5;
+        String dateType = "DESC"; //dateType为 大写DESC或ASC
+
+        List<MoneyFlow> moneyFlow = moneyService.queryUserMoneyFlowWithName(page, userId, pageSize, dateType);
+        HashMap<String,Object> resp = new HashMap<>();
+        resp.put("state","ok");
+        resp.put("moneyFlow",moneyFlow);
+        return resp;
+    }
 
     @PostMapping("/all")
     public HashMap<String, Object> all(@RequestBody String body) {
