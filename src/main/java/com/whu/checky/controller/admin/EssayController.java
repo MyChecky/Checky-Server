@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
+
 @RestController
 @RequestMapping("/admin/essay")
 @Component("AdminEssayController")
@@ -28,19 +29,36 @@ public class EssayController {
     @Autowired
     private RecordService recordService;
 
+    //假删除动态
+    @RequestMapping("/delete")
+    public JSONObject deleteEssayById(@RequestBody String jsonstr) {
+        JSONObject res = new JSONObject();
+        JSONObject object = (JSONObject) JSON.parse(jsonstr);
+        String essayId = (String) object.get("essayId");
+        Essay essay = essayService.queryEssayById(essayId);
+        essay.setIfDelete(1);
+        int deleteResult = essayService.updateEssay(essay);
+        if (deleteResult == 1)
+            res.put("state", "ok");
+        else
+            res.put("state", "fail");
+        return res;
+
+    }
+
     //展示动态
     @RequestMapping("/all")
-    public JSONObject all(@RequestBody String jsonstr){
-        JSONObject res=new JSONObject();
-        JSONObject object= (JSONObject) JSON.parse(jsonstr);
+    public JSONObject all(@RequestBody String jsonstr) {
+        JSONObject res = new JSONObject();
+        JSONObject object = (JSONObject) JSON.parse(jsonstr);
         int currentPage = (Integer) object.get("page");
-        Page<Essay> page=new Page<>(currentPage,5);
-        List<AdminEssay> adminEssays=new ArrayList<AdminEssay>();
-        List<Essay> essays=essayService.displayEssay(page);
-        for (Essay essay:essays){
-            List<Record> records=recordService.getRecordsByEssayId(essay.getEssayId());
-            AdminEssay adminEssay=new AdminEssay();
-            User user=userService.queryUser(essay.getUserId());
+        Page<Essay> page = new Page<>(currentPage, 5);
+        List<AdminEssay> adminEssays = new ArrayList<AdminEssay>();
+        List<Essay> essays = essayService.displayEssay(page);
+        for (Essay essay : essays) {
+            List<Record> records = recordService.getRecordsByEssayId(essay.getEssayId());
+            AdminEssay adminEssay = new AdminEssay();
+            User user = userService.queryUser(essay.getUserId());
             adminEssay.setCommentNum(essay.getCommentNum());
             adminEssay.setEssayContent(essay.getEssayContent());
             adminEssay.setEssayId(essay.getEssayId());
@@ -50,23 +68,23 @@ public class EssayController {
             adminEssay.setImg(records);
             adminEssays.add(adminEssay);
         }
-        res.put("state","ok");
-        res.put("essays",adminEssays);
+        res.put("state", "ok");
+        res.put("essays", adminEssays);
         return res;
     }
 
     //根据username模糊搜索的动态
     @RequestMapping("/query")
-    public JSONObject query(@RequestBody String jsonstr){
-        JSONObject res=new JSONObject();
-        JSONObject object= (JSONObject) JSON.parse(jsonstr);
-        String username=object.getString("username");
-        List<AdminEssay> adminEssays=new ArrayList<AdminEssay>();
-        List<Essay> essays=essayService.queryEssaysByUserName(username);
-        for (Essay essay:essays){
-            List<Record> records=recordService.getRecordsByEssayId(essay.getEssayId());
-            AdminEssay adminEssay=new AdminEssay();
-            User user=userService.queryUser(essay.getUserId());
+    public JSONObject query(@RequestBody String jsonstr) {
+        JSONObject res = new JSONObject();
+        JSONObject object = (JSONObject) JSON.parse(jsonstr);
+        String username = object.getString("username");
+        List<AdminEssay> adminEssays = new ArrayList<AdminEssay>();
+        List<Essay> essays = essayService.queryEssaysByUserName(username);
+        for (Essay essay : essays) {
+            List<Record> records = recordService.getRecordsByEssayId(essay.getEssayId());
+            AdminEssay adminEssay = new AdminEssay();
+            User user = userService.queryUser(essay.getUserId());
             adminEssay.setCommentNum(essay.getCommentNum());
             adminEssay.setEssayContent(essay.getEssayContent());
             adminEssay.setEssayId(essay.getEssayId());
@@ -76,13 +94,13 @@ public class EssayController {
             adminEssay.setImg(records);
             adminEssays.add(adminEssay);
         }
-        res.put("state","ok");
-        res.put("essays",adminEssays);
+        res.put("state", "ok");
+        res.put("essays", adminEssays);
         return res;
     }
 
 
-    class AdminEssay{
+    class AdminEssay {
         private int commentNum;
         private String essayContent;
         private String essayId;

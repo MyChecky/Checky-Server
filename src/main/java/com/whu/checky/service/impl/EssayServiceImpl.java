@@ -70,4 +70,9 @@ public class EssayServiceImpl implements EssayService {
     public List<Essay> queryEssaysByUserName(String username) {
         return essayMapper.queryEssaysByUserName(username);
     }
+
+    @Override
+    public int updateEssay(Essay essay) {
+        return essayMapper.updateById(essay);
+    }
 }

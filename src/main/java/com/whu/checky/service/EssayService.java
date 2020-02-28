@@ -27,5 +27,5 @@ public interface EssayService {
     List<Essay> queryEssaysByUserName(String username);
 
 
-
+    int updateEssay(Essay essay);
 }
