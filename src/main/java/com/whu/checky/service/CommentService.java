@@ -9,4 +9,7 @@ public interface CommentService {
     Integer addComment(Comment comment);
     Integer deleteComment(String commentId);
 
+    Comment queryCommentById(String commentId);
+
+    int updateComment(Comment comment);
 }

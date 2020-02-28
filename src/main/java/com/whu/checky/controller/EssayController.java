@@ -87,24 +87,12 @@ public class EssayController {
         JSONObject object = (JSONObject) JSON.parse(jsonstr);
         String essayId = (String) object.get("essayId");
         String userId = (String) object.get("userId");
-        // 此处不确定，举报的文章是否给予立即删除？-->在某用户被举报后，恰好删除了动态，管理就看不到内容了！
-        // 目前是给予删除
-        List<Record> records = recordService.getRecordsByEssayId(essayId);
-        for (Record record : records) {
-            record.setEssayId(null);
-            recordService.deleteRecordById(record.getRecordId());
-            recordService.addRecord(record);
-        }
-        List<Comment> comments = commentService.queryCommentByEssayId(essayId);
-        for (Comment comment : comments) {
-            commentService.deleteComment(comment.getCommentId());
-        }
-        List<EssayLike> likes = likeService.queryAllLikeByEssayId(essayId);
-        for (EssayLike essayLike: likes){
-            likeService.UnLike(essayLike.getUserId(), essayLike.getEssayId());
-        }
-        int result = essayService.deleteEssay(essayId);
-        if(result == 1){
+        // 这里是假删除
+        Essay essayToDelete = essayService.queryEssayById(essayId);
+        essayToDelete.setIfDelete(1);
+        int deleteResult = essayService.updateEssay(essayToDelete);
+
+        if(deleteResult == 1){
             List<EssayAndRecord> res = new ArrayList<>();
             List<Essay> essays = essayService.queryUserEssays(userId);
             for (Essay essay : essays) {
@@ -144,7 +132,7 @@ public class EssayController {
         return res;
     }
 
-    //查看单条动态
+    //查看单条动态-->只有显示在小程序页面，才会有调用此可能；故无需判别是否已删除
     @RequestMapping("/queryEssayById")
     public EssayAndRecord queryEssayById(@RequestBody String jsonstr) {
         JSONObject object = (JSONObject) JSON.parse(jsonstr);
@@ -257,19 +245,24 @@ public class EssayController {
     //删除评论
     @RequestMapping("/delComment")
     public JSONObject delEssayComment(@RequestBody String jsonstr) {
+        JSONObject res = new JSONObject();
         JSONObject data = (JSONObject) JSON.parse(jsonstr);
         String commentId = (String) data.get("commentId");
         String essayId = (String) data.get("essayId");
-        int res = commentService.deleteComment(commentId);
-        JSONObject object = new JSONObject();
-        if (res == 1) {
+        Comment comment = commentService.queryCommentById(commentId);
+        comment.setIfDelete(1);
+        int deleteResult = commentService.updateComment(comment);
+        if (deleteResult == 1) {
+            Essay essay = essayService.queryEssayById(essayId);
+            essay.setCommentNum(essay.getCommentNum() - 1);
+            essayService.updateEssay(essay);
             List<Comment> comments = commentService.queryCommentByEssayId(essayId);
-            object.put("state", "OK");
-            object.put("comments", comments);
+            res.put("state", "OK");
+            res.put("comments", comments);
         } else {
-            object.put("state", "FAIL");
+            res.put("state", "FAIL");
         }
-        return object;
+        return res;
     }
 
 
@@ -278,8 +271,7 @@ public class EssayController {
     public List<Comment> queryComment(@RequestBody String jsonstr) {
         JSONObject data = (JSONObject) JSON.parse(jsonstr);
         String essayId = (String) data.get("essayId");
-        List<Comment> comments = commentService.queryCommentByEssayId(essayId);
-        return comments;
+        return commentService.queryCommentByEssayId(essayId);
     }
 
 

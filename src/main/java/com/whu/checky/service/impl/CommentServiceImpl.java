@@ -26,7 +26,10 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public List<Comment> queryCommentByEssayId(String essayId) {
-        List<Comment> comments= commentMapper.selectList(new EntityWrapper<Comment>().eq("essay_id",essayId)
+        List<Comment> comments= commentMapper.selectList(new EntityWrapper<Comment>()
+                .eq("essay_id",essayId)
+                .and()
+                .eq("if_delete", 0)
                 .orderBy("comment_time",true)
         );
         for (Comment comment:comments){
@@ -45,5 +48,15 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public Integer deleteComment(String commentId) {
         return commentMapper.deleteById(commentId);
+    }
+
+    @Override
+    public Comment queryCommentById(String commentId) {
+        return commentMapper.selectById(commentId);
+    }
+
+    @Override
+    public int updateComment(Comment comment) {
+        return commentMapper.updateById(comment);
     }
 }

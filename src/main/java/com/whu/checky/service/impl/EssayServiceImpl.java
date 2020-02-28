@@ -39,7 +39,9 @@ public class EssayServiceImpl implements EssayService {
     public List<Essay> displayEssay(Page<Essay> page) {
         return essayMapper.selectPage(
                 page,
-                new EntityWrapper<Essay>().orderBy("essay_time",false).orderBy("like_num"));
+                new EntityWrapper<Essay>()
+                .eq("if_delete", 0)
+                .orderBy("essay_time",false).orderBy("like_num"));
     }
 
     @Override
@@ -48,6 +50,8 @@ public class EssayServiceImpl implements EssayService {
                 page,
                 new EntityWrapper<Essay>()
                         .eq("user_id",targetUserId)
+                        .and()
+                        .eq("if_delete", 0)
                         .orderBy("essay_time",false)
                         .orderBy("like_num"));
     }
@@ -58,6 +62,8 @@ public class EssayServiceImpl implements EssayService {
                 new Page<Essay>(1,10),
                 new EntityWrapper<Essay>()
                         .eq("user_id",userId)
+                        .and()
+                        .eq("if_delete", 0)
                         .orderBy("essay_time",false));
     }
 
