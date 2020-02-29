@@ -85,6 +85,7 @@ public class AdminController {
             else{
                 ans.put("sessionKey",sessionKey);
                 ans.put("userId",administrator.getUserId());
+                ans.put("department", administrator.getDepartment());
             }
         }
         catch (Exception ex){

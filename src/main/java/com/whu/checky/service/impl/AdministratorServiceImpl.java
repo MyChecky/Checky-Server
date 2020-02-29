@@ -50,6 +50,7 @@ public class AdministratorServiceImpl implements AdministratorService {
         } else {
             if (temp.get(0).getSessionId() != null) redisService.delSessionId(temp.get(0).getSessionId());
             administrator.setUserId(temp.get(0).getUserId());
+            administrator.setDepartment(temp.get(0).getDepartment());
             mapper.updateById(administrator);
             redisService.saveUserOrAdminBySessionId(administrator.getSessionId(), administrator);
             return 0;
