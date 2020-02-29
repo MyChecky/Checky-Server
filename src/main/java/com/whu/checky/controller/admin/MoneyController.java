@@ -24,7 +24,10 @@ public class MoneyController {
     HashMap<String, Object> queryUser(@RequestBody String body) {
         String userId = JSONObject.parseObject(body).getString("userId");
         int page = JSONObject.parseObject(body).getInteger("page");
-        int pageSize = 5;
+        Integer pageSize = JSON.parseObject(body).getInteger("pageSize");
+        if(pageSize == null){
+            pageSize = 10;
+        }
         String dateType = "DESC"; //dateType为 大写DESC或ASC
 
         List<MoneyFlow> moneyFlow = moneyService.queryUserMoneyFlowWithName(page, userId, pageSize, dateType);
@@ -39,7 +42,10 @@ public class MoneyController {
     public HashMap<String, Object> all(@RequestBody String body) {
         JSONObject json = JSONObject.parseObject(body);
         int page = json.getInteger("page");
-        int pageSize = 5;
+        Integer pageSize = JSON.parseObject(body).getInteger("pageSize");
+        if(pageSize == null){
+            pageSize = 5;
+        }
         String dateType = "DESC"; //dateType为 大写DESC或ASC
 
         List<MoneyFlow> moneyFlow = moneyService.queryAllMoneyFlows(page, pageSize, dateType);

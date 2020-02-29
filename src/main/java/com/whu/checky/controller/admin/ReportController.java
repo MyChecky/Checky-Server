@@ -34,7 +34,10 @@ public class ReportController {
         JSONObject res=new JSONObject();
         JSONObject object= (JSONObject) JSON.parse(body);
         int currentPage = (Integer) object.get("page");
-        int pageSize = 5;
+        Integer pageSize = (Integer) object.get("pageSize");
+        if(pageSize == null){
+            pageSize = 5;
+        }
         Page<Report> page=new Page<>(currentPage,pageSize);
         List<AdminReport> adminReports=new ArrayList<AdminReport>();
         List<Report> reports=reportService.displayReports(page);

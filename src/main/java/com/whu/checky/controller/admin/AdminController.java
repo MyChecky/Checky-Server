@@ -113,7 +113,10 @@ public class AdminController {
     @PostMapping("/all")
     public HashMap<String,Object> getAllAdmins(@RequestBody String body){
         int page = JSON.parseObject(body).getInteger("page");
-        int pageSize = 10;
+        Integer pageSize = JSON.parseObject(body).getInteger("pageSize");
+        if(pageSize == null){
+            pageSize = 10;
+        }
         List<Administrator> adminList = administratorService.getAllAdmins(page, pageSize);
         for(Administrator administrator: adminList){
             administrator.setUserPassword(null);

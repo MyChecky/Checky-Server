@@ -33,7 +33,10 @@ public class AppealController {
         JSONObject res=new JSONObject();
         JSONObject object= (JSONObject) JSON.parse(body);
         int currentPage = (Integer) object.get("page");
-        int pageSize = 5;
+        Integer pageSize = JSON.parseObject(body).getInteger("pageSize");
+        if(pageSize == null){
+            pageSize = 5;
+        }
         Page<Appeal> page=new Page<>(currentPage,pageSize);
         List<AdminAppeal> adminAppeals=new ArrayList<AdminAppeal>();
         List<Appeal> appeals=appealService.displayAppeals(page);

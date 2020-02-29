@@ -30,7 +30,10 @@ public class RechargeController {
         JSONObject json = JSONObject.parseObject(body);
         int page = json.getInteger("page");
 
-        int pageSize = 5;
+        Integer pageSize = json.getInteger("pageSize");
+        if(pageSize == null){
+            pageSize = 5;
+        }
         String dateType = "DESC"; //dateType为 大写DESC或ASC
         List<Pay> pays = moneyService.rechargeList(page, pageSize, dateType);
 
@@ -48,7 +51,10 @@ public class RechargeController {
         int page = json.getInteger("page");
         String userId = json.getString("userId");
 
-        int pageSize = 5;
+        Integer pageSize = json.getInteger("pageSize");
+        if(pageSize == null){
+            pageSize = 5;
+        }
         String dateType = "DESC"; //dateType为 大写DESC或ASC
         List<Pay> pays = moneyService.rechargeUser(page, userId, pageSize, dateType);
 

@@ -52,7 +52,10 @@ public class EssayController {
         JSONObject res = new JSONObject();
         JSONObject object = (JSONObject) JSON.parse(jsonstr);
         int currentPage = (Integer) object.get("page");
-        int pageSize = 5;
+        Integer pageSize = (Integer) object.get("pageSize");
+        if(pageSize == null){
+            pageSize = 5;
+        }
         Page<Essay> page = new Page<>(currentPage, pageSize);
         List<AdminEssay> adminEssays = new ArrayList<AdminEssay>();
         List<Essay> essays = essayService.displayEssay(page);
