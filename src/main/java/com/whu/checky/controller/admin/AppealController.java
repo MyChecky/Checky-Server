@@ -33,7 +33,8 @@ public class AppealController {
         JSONObject res=new JSONObject();
         JSONObject object= (JSONObject) JSON.parse(body);
         int currentPage = (Integer) object.get("page");
-        Page<Appeal> page=new Page<>(currentPage,5);
+        int pageSize = 5;
+        Page<Appeal> page=new Page<>(currentPage,pageSize);
         List<AdminAppeal> adminAppeals=new ArrayList<AdminAppeal>();
         List<Appeal> appeals=appealService.displayAppeals(page);
         for (Appeal appeal:appeals){
@@ -49,9 +50,10 @@ public class AppealController {
             adminAppeal.setAppealState(appeal.getProcessResult());
             adminAppeals.add(adminAppeal);
         }
+//        res.put("size", appealService.queryAllAppealNum());
         res.put("state","ok");
         res.put("appeals",adminAppeals);
-        res.put("appealsSize", page.getTotal());
+        res.put("size", (int)Math.ceil(page.getTotal()/ (double)pageSize));
         return res;
     }
 

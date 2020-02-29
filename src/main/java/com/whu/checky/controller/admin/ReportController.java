@@ -34,7 +34,8 @@ public class ReportController {
         JSONObject res=new JSONObject();
         JSONObject object= (JSONObject) JSON.parse(body);
         int currentPage = (Integer) object.get("page");
-        Page<Report> page=new Page<>(currentPage,5);
+        int pageSize = 5;
+        Page<Report> page=new Page<>(currentPage,pageSize);
         List<AdminReport> adminReports=new ArrayList<AdminReport>();
         List<Report> reports=reportService.displayReports(page);
         for (Report report:reports){
@@ -57,7 +58,7 @@ public class ReportController {
         }
         res.put("state","ok");
         res.put("reports",adminReports);
-        res.put("reportsSize", page.getTotal());
+        res.put("size", (int)Math.ceil(page.getTotal() / (double)pageSize));
         return res;
     }
 

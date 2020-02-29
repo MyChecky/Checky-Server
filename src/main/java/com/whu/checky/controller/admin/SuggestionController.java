@@ -37,7 +37,8 @@ public class SuggestionController {
         JSONObject res=new JSONObject();
         JSONObject object= (JSONObject) JSON.parse(jsonstr);
         int currentPage = (Integer) object.get("page");
-        Page<Suggestion> page=new Page<>(currentPage,5);
+        int pageSize = 5;
+        Page<Suggestion> page=new Page<>(currentPage,pageSize);
         List<AdminSuggestion> adminSuggestions=new ArrayList<AdminSuggestion>();
         List<Suggestion> suggestions=suggestionService.displaySuggestions(page);
         for (int i = 0;i<suggestions.size();i++){
@@ -53,6 +54,7 @@ public class SuggestionController {
         }
         res.put("state","ok");
         res.put("suggestions",adminSuggestions);
+        res.put("size", (int)Math.ceil(page.getTotal() / (double)pageSize));
         return res;
     }
 

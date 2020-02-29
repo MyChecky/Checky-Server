@@ -61,5 +61,9 @@ public class AppealServiceImpl implements AppealService {
         return mapper.queryAppealByUserName(username);
     }
 
+//    @Override
+//    public int queryAllAppealNum() {
+//        return  mapper.selectCount(new EntityWrapper<>());
+//    }
 
 }

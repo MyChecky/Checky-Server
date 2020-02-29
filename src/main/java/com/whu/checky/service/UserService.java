@@ -17,13 +17,15 @@ public interface UserService {
     //删除用户
     void deleteUser(String userId);
 
-    List<User> getAllUsers(int page);
+    List<User> getAllUsers(int page, int pageSize);
 
     int getAllUsersNum();
 
-    List<User> queryUsers(int page,String keyword);
+    List<User> queryUsers(int page,String keyword, int pageSize);
 
     List<User> getUserListForMatch();
 
     List<User> queryUserByNickname(String nickname);
+
+    int queryUsersNum(String keyWord);
 }

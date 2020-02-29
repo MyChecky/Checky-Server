@@ -21,4 +21,5 @@ public interface AppealService {
     //根据用户名检索
     List<Appeal> queryAppealByUserName(String username);
 
+//    int queryAllAppealNum();
 }

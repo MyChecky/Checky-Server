@@ -40,8 +40,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getAllUsers(int page) {
-        return mapper.selectPage(new Page<User>(page,10),new EntityWrapper<User>().orderBy("user_time"));
+    public List<User> getAllUsers(int page, int pageSize) {
+        return mapper.selectPage(new Page<User>(page, pageSize), new EntityWrapper<User>().orderBy("user_time"));
     }
 
     @Override
@@ -50,8 +50,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> queryUsers(int page, String keyword) {
-        return mapper.selectPage(new Page<User>(page,10),new EntityWrapper<User>().like("user_name",keyword
+    public List<User> queryUsers(int page, String keyword, int pageSize) {
+        return mapper.selectPage(new Page<User>(page, pageSize), new EntityWrapper<User>().like("user_name", keyword
         ).orderBy("user_time"));
     }
 
@@ -70,5 +70,11 @@ public class UserServiceImpl implements UserService {
                 .like("user_name", nickname)
                 .orderBy("user_time", true)
         );
+    }
+
+    @Override
+    public int queryUsersNum(String keyWord) {
+        return mapper.selectCount(new EntityWrapper<User>()
+                .like("user_name", keyWord));
     }
 }

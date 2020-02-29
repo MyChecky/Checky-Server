@@ -40,7 +40,8 @@ public class AdministratorServiceImpl implements AdministratorService {
 
     @Override
     public int login(Administrator administrator) throws Exception {
-        List<Administrator> temp = mapper.selectList(new EntityWrapper<Administrator>().eq("user_name", administrator.getUserName()));
+        List<Administrator> temp = mapper.selectList(new EntityWrapper<Administrator>().
+                eq("user_name", administrator.getUserName()));
         int length = temp.size();
         if (length == 0) {
             return 1;
@@ -68,12 +69,12 @@ public class AdministratorServiceImpl implements AdministratorService {
     }
 
     @Override
-    public List<Administrator> getAllAdmins(int page) {
-        return mapper.selectPage(new Page<Administrator>(page, 10), new EntityWrapper<Administrator>().orderBy("user_id"));
+    public List<Administrator> getAllAdmins(int page, int pageSize) {
+        return mapper.selectPage(new Page<Administrator>(page, pageSize), new EntityWrapper<Administrator>().orderBy("user_id"));
     }
 
     @Override
-    public int getAllAdminsnum() {
+    public int getAllAdminsNum() {
         return mapper.selectCount(new EntityWrapper<>());
     }
 

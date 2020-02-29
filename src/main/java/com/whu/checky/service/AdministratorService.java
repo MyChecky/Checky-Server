@@ -16,9 +16,9 @@ public interface AdministratorService {
     //删除管理员
     boolean deleteById(Administrator administrator);
     //获取管理员列表
-    List<Administrator> getAllAdmins(int page);
+    List<Administrator> getAllAdmins(int page, int pageSize);
     //获取管理员数量
-    int getAllAdminsnum();
+    int getAllAdminsNum();
     //搜索管理员
     List<Administrator> queryAdmins(int page,String keyword);
     //单个管理员

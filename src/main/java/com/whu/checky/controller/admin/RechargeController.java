@@ -37,6 +37,7 @@ public class RechargeController {
         HashMap<String, Object> resp = new HashMap<>();
         resp.put("pays", pays);
         resp.put("state", "ok");
+        resp.put("size", (int)Math.ceil(moneyService.rechargeListSize() / (double)pageSize));
         return resp;
     }
 
@@ -54,6 +55,7 @@ public class RechargeController {
         HashMap<String, Object> resp = new HashMap<>();
         resp.put("pays", pays);
         resp.put("state", "ok");
+        resp.put("size", (int)Math.ceil(moneyService.rechargeUserSize(userId) / (double)pageSize));
         return resp;
     }
 }

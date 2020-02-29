@@ -52,7 +52,8 @@ public class EssayController {
         JSONObject res = new JSONObject();
         JSONObject object = (JSONObject) JSON.parse(jsonstr);
         int currentPage = (Integer) object.get("page");
-        Page<Essay> page = new Page<>(currentPage, 5);
+        int pageSize = 5;
+        Page<Essay> page = new Page<>(currentPage, pageSize);
         List<AdminEssay> adminEssays = new ArrayList<AdminEssay>();
         List<Essay> essays = essayService.displayEssay(page);
         for (Essay essay : essays) {
@@ -74,10 +75,11 @@ public class EssayController {
         }
         res.put("state", "ok");
         res.put("essays", adminEssays);
+        res.put("size", (int)Math.ceil(page.getTotal() / (double) pageSize));
         return res;
     }
 
-    //根据username模糊搜索的动态
+    //根据username模糊搜索的动态-->目前逻辑没有分页，无需size
     @RequestMapping("/query")
     public JSONObject query(@RequestBody String jsonstr) {
         JSONObject res = new JSONObject();

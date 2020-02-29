@@ -112,6 +112,28 @@ public class MoneyServiceImpl implements MoneyService {
     }
 
     @Override
+    public int querySizeOfUserMoneyFlowWithName(String userId) {
+        return moneyFlowMapper.selectCount(new EntityWrapper<MoneyFlow>()
+        .eq("user_id", userId));
+    }
+
+    @Override
+    public int querySizeOfAllMoneyFlow() {
+        return moneyFlowMapper.selectCount(new EntityWrapper<>());
+    }
+
+    @Override
+    public int rechargeUserSize(String userId) {
+        return payMapper.selectCount(new EntityWrapper<Pay>()
+                .eq("pay_userid", userId));
+    }
+
+    @Override
+    public int rechargeListSize() {
+        return payMapper.selectCount(new EntityWrapper<>());
+    }
+
+    @Override
     public List<MoneyFlow> queryUserTestScopeMoneyFlow(String startDate, String endDate, String userId) {
         return moneyFlowMapper.queryUserScopeMoneyFlow(startDate, endDate, userId);
     }
@@ -141,7 +163,8 @@ public class MoneyServiceImpl implements MoneyService {
 
         for (MoneyFlow m : moneyFlowList) {
             try {
-                int month = sdf.parse(m.getFlowTime()).getMonth();
+                int month = Integer.parseInt(m.getFlowTime().substring(5, 7))-1;
+//                int month = sdf.parse(m.getFlowTime()).getMonth();
                 if (m.getFlowIo().equals("O")) {// no
                     if (m.getIfTest() == 0)// t num 0 here
                         trueIncomeList.set(month, m.getFlowMoney() + trueIncomeList.get(month));
@@ -153,7 +176,7 @@ public class MoneyServiceImpl implements MoneyService {
                     else
                         testRefundList.set(month, m.getFlowMoney() + testRefundList.get(month));
                 }
-            } catch (ParseException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }

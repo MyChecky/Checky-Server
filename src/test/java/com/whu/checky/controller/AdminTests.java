@@ -27,10 +27,11 @@ public class AdminTests {
     @Test
     public void getAllUsers(){
         int page = 1;
-        List<User> userList = userService.getAllUsers(page);
+        int pageSize = 10;
+        List<User> userList = userService.getAllUsers(page, pageSize);
         HashMap<String,Object> resp = new HashMap<>();
         resp.put("state","ok");
-        resp.put("usersSize",userService.getAllUsersNum());
+        resp.put("size",(int)Math.floor(userService.getAllUsersNum()/ (double)pageSize) );
         resp.put("users",userList);
         System.out.println(resp.toString());
     }

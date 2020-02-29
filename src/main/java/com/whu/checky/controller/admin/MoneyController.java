@@ -31,6 +31,7 @@ public class MoneyController {
         HashMap<String, Object> resp = new HashMap<>();
         resp.put("state", "ok");
         resp.put("moneyFlow", moneyFlow);
+        resp.put("size", (int)Math.ceil(moneyService.querySizeOfUserMoneyFlowWithName(userId) / (double)pageSize));
         return resp;
     }
 
@@ -45,6 +46,7 @@ public class MoneyController {
         HashMap<String, Object> resp = new HashMap<>();
         resp.put("state", "ok");
         resp.put("moneyFlow", moneyFlow);
+        resp.put("size",  (int)Math.ceil(moneyService.querySizeOfAllMoneyFlow() / (double)pageSize));
         return resp;
     }
 

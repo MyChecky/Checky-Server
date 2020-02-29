@@ -3,8 +3,6 @@ package com.whu.checky.controller.admin;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.whu.checky.domain.Administrator;
-import com.whu.checky.domain.User;
-import com.whu.checky.mapper.AdministratorMapper;
 import com.whu.checky.service.AdministratorService;
 import com.whu.checky.service.RedisService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,9 +80,9 @@ public class AdminController {
             int result = administratorService.login(administrator);
             String dept=administratorService.queryAdmin(administrator.getUserId()).getDepartment();
             if(result == 1)
-                message = "missusername";
+                message = "missUsername";
             else if(result == 2)
-                message = "wrongpassword";
+                message = "wrongPassword";
             else{
                 ans.put("sessionKey",sessionKey);
                 ans.put("userId",administrator.getUserId());
@@ -117,13 +115,14 @@ public class AdminController {
     @PostMapping("/all")
     public HashMap<String,Object> getAllAdmins(@RequestBody String body){
         int page = JSON.parseObject(body).getInteger("page");
-        List<Administrator> adminList = administratorService.getAllAdmins(page);
+        int pageSize = 10;
+        List<Administrator> adminList = administratorService.getAllAdmins(page, pageSize);
         for(Administrator administrator: adminList){
             administrator.setUserPassword(null);
         }
         HashMap<String,Object> resp = new HashMap<>();
         resp.put("state","ok");
-        resp.put("adminsSize",administratorService.getAllAdminsnum());
+        resp.put("size",(int)Math.ceil(administratorService.getAllAdminsNum() / (double)pageSize));
         resp.put("admins",adminList);
         return resp;
     }

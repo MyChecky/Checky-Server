@@ -52,4 +52,12 @@ public interface MoneyService {
     List<MoneyFlow> queryUserMoneyFlowWithName(int page, String userId, int pageSize, String dateType);
     // 以page查全部人的资金流动
     List<MoneyFlow> queryAllMoneyFlows(int page, int pageSize, String dateType);
+
+    int querySizeOfUserMoneyFlowWithName(String userId);
+
+    int querySizeOfAllMoneyFlow();
+
+    int rechargeUserSize(String userId);
+
+    int rechargeListSize();
 }

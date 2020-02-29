@@ -21,10 +21,11 @@ public class UserController {
     @PostMapping("/all")
     HashMap<String,Object> getAllUsers(@RequestBody String body){
         int page = JSON.parseObject(body).getInteger("page");
-        List<User> userList = userService.getAllUsers(page);
+        int pageSize = 10;
+        List<User> userList = userService.getAllUsers(page, pageSize);
         HashMap<String,Object> resp = new HashMap<>();
         resp.put("state","ok");
-        resp.put("usersSize",userService.getAllUsersNum());
+        resp.put("size",(int)Math.floor(userService.getAllUsersNum()/(double)pageSize));
         resp.put("users",userList);
         return resp;
     }
@@ -33,11 +34,13 @@ public class UserController {
     HashMap<String,Object> queryUserByKeyWord(@RequestBody String body){
         JSONObject object= (JSONObject) JSON.parseObject(body).get("params");
         int page = object.getInteger("page");
+        int pageSize = 10;
         String keyWord=object.getString("keyword");
-        List<User> userList=userService.queryUsers(page,keyWord);
+        List<User> userList=userService.queryUsers(page,keyWord, pageSize);
         HashMap<String,Object> resp = new HashMap<>();
         resp.put("state","ok");
         resp.put("users",userList);
+        resp.put("size", (int)Math.ceil(userService.queryUsersNum(keyWord) / (double)pageSize));
         return resp;
     }
 
