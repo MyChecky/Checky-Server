@@ -29,6 +29,7 @@ public class UserController {
         HashMap<String,Object> resp = new HashMap<>();
         resp.put("state","ok");
         resp.put("size",(int)Math.floor(userService.getAllUsersNum()/(double)pageSize));
+        resp.put("total", userService.getAllUsersNum());
         resp.put("users",userList);
         return resp;
     }
@@ -47,6 +48,7 @@ public class UserController {
         resp.put("state","ok");
         resp.put("users",userList);
         resp.put("size", (int)Math.ceil(userService.queryUsersNum(keyWord) / (double)pageSize));
+        resp.put("total", userService.queryUsersNum(keyWord));
         return resp;
     }
 

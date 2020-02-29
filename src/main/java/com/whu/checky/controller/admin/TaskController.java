@@ -66,7 +66,10 @@ public class TaskController {
             task.setTypeContent(taskTypeService.QueryTaskType(task.getTypeId()).getTypeContent());
         }
         resp.put("tasks", taskList);
-        if (p != null) resp.put("size", (int)Math.ceil(p.getTotal() / (double) pageSize));
+        if (p != null) {
+            resp.put("size", (int)Math.ceil(p.getTotal() / (double) pageSize));
+            resp.put("total", p.getTotal());
+        }
         resp.put("state", "ok");
         return resp;
     }

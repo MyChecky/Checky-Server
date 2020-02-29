@@ -79,6 +79,7 @@ public class EssayController {
         res.put("state", "ok");
         res.put("essays", adminEssays);
         res.put("size", (int)Math.ceil(page.getTotal() / (double) pageSize));
+        res.put("total", page.getTotal());
         return res;
     }
 

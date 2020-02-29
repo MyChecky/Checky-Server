@@ -57,6 +57,7 @@ public class AppealController {
         res.put("state","ok");
         res.put("appeals",adminAppeals);
         res.put("size", (int)Math.ceil(page.getTotal()/ (double)pageSize));
+        res.put("total", page.getTotal());
         return res;
     }
 

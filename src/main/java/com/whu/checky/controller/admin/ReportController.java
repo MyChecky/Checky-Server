@@ -62,6 +62,7 @@ public class ReportController {
         res.put("state","ok");
         res.put("reports",adminReports);
         res.put("size", (int)Math.ceil(page.getTotal() / (double)pageSize));
+        res.put("total", page.getTotal());
         return res;
     }
 

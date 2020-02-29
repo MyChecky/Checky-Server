@@ -40,7 +40,9 @@ public class RechargeController {
         HashMap<String, Object> resp = new HashMap<>();
         resp.put("pays", pays);
         resp.put("state", "ok");
-        resp.put("size", (int)Math.ceil(moneyService.rechargeListSize() / (double)pageSize));
+        int total = moneyService.rechargeListSize();
+        resp.put("size", (int)Math.ceil(total / (double)pageSize));
+        resp.put("total", total);
         return resp;
     }
 
@@ -61,7 +63,9 @@ public class RechargeController {
         HashMap<String, Object> resp = new HashMap<>();
         resp.put("pays", pays);
         resp.put("state", "ok");
-        resp.put("size", (int)Math.ceil(moneyService.rechargeUserSize(userId) / (double)pageSize));
+        int total = moneyService.rechargeUserSize(userId);
+        resp.put("size", (int)Math.ceil(total / (double)pageSize));
+        resp.put("total", total);
         return resp;
     }
 }

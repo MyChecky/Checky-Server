@@ -58,6 +58,7 @@ public class SuggestionController {
         res.put("state","ok");
         res.put("suggestions",adminSuggestions);
         res.put("size", (int)Math.ceil(page.getTotal() / (double)pageSize));
+        res.put("total", page.getTotal());
         return res;
     }
 

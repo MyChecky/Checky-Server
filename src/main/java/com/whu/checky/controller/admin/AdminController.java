@@ -124,7 +124,9 @@ public class AdminController {
         }
         HashMap<String,Object> resp = new HashMap<>();
         resp.put("state","ok");
-        resp.put("size",(int)Math.ceil(administratorService.getAllAdminsNum() / (double)pageSize));
+        int total = administratorService.getAllAdminsNum();
+        resp.put("size",(int)Math.ceil(total / (double)pageSize));
+        resp.put("total", total);
         resp.put("admins",adminList);
         return resp;
     }
