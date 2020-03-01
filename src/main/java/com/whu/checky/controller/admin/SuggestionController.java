@@ -53,6 +53,8 @@ public class SuggestionController {
             adminSuggestion.setSuggestionTime(suggestion.getSuggestionTime());
             adminSuggestion.setUserId(user.getUserId());
             adminSuggestion.setUserName(user.getUserName());
+            adminSuggestion.setSuggestionState(suggestion.getSuggestionState());
+
             adminSuggestions.add(adminSuggestion);
         }
         res.put("state","ok");
@@ -116,6 +118,15 @@ public class SuggestionController {
         private String suggestionTime;
         private String userId;
         private String userName;
+        private String suggestionState;
+
+        public String getSuggestionState() {
+            return suggestionState;
+        }
+
+        public void setSuggestionState(String suggestionState) {
+            this.suggestionState = suggestionState;
+        }
 
         public String getSuggestionContent() {
             return suggestionContent;
