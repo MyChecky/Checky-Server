@@ -8,6 +8,7 @@ import com.whu.checky.domain.MoneyFlow;
 import com.whu.checky.domain.Pay;
 import com.whu.checky.mapper.MoneyFlowMapper;
 import com.whu.checky.mapper.PayMapper;
+import com.whu.checky.mapper.UserMapper;
 import com.whu.checky.service.MoneyService;
 import com.whu.checky.util.WXPayUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,9 @@ public class MoneyServiceImpl implements MoneyService {
 
     @Autowired
     private PayMapper payMapper;
+
+    @Autowired
+    private UserMapper userMapper;
 
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -92,29 +96,51 @@ public class MoneyServiceImpl implements MoneyService {
     }
 
     @Override
-    public List<Pay> rechargeList(int page, int pageSize, String dateType) {
-        return payMapper.rechargeList(page, pageSize, dateType);
+    public List<Pay> rechargeList(Page<Pay> page, boolean isAsc) {
+        List<Pay> pays = payMapper.selectPage(page, new EntityWrapper<Pay>()
+                .orderBy("pay_time", isAsc));
+        for(Pay pay: pays){
+            pay.setPayUserName(userMapper.selectById(pay.getPayUserid()).getUserName());
+        }
+        return pays;
     }
 
     @Override
-    public List<Pay> rechargeUser(int page, String userId, int pageSize, String dateType) {
-        return payMapper.rechargeUser(page, userId, pageSize, dateType);
+    public List<Pay> rechargeUser(String userId, Page<Pay> page, boolean isAsc) {
+        List<Pay> pays = payMapper.selectPage(page, new EntityWrapper<Pay>()
+                .eq("pay_userid", userId)
+                .orderBy("pay_time", isAsc));
+        for(Pay pay: pays){
+            pay.setPayUserName(userMapper.selectById(pay.getPayUserid()).getUserName());
+        }
+        return pays;
     }
 
     @Override
-    public List<MoneyFlow> queryUserMoneyFlowWithName(int page, String userId, int pageSize, String dateType) {
-        return moneyFlowMapper.queryUserMoneyFlowWithName(page, userId, pageSize, dateType);
+    public List<MoneyFlow> queryUserMoneyFlowWithName(String userId, Page<MoneyFlow> page, boolean isAsc) {
+        List<MoneyFlow> moneyFlows = moneyFlowMapper.selectPage(page, new EntityWrapper<MoneyFlow>()
+                .eq("user_id", userId)
+                .orderBy("flow_time", isAsc));
+        for(MoneyFlow moneyFlow: moneyFlows){
+            moneyFlow.setUserName(userMapper.selectById(moneyFlow.getUserID()).getUserName());
+        }
+        return moneyFlows;
     }
 
     @Override
-    public List<MoneyFlow> queryAllMoneyFlows(int page, int pageSize, String dateType) {
-        return moneyFlowMapper.queryAllMoneyFlows(page, pageSize, dateType);
+    public List<MoneyFlow> queryAllMoneyFlows(Page<MoneyFlow> page, boolean isAsc) {
+        List<MoneyFlow> moneyFlows = moneyFlowMapper.selectPage(page, new EntityWrapper<MoneyFlow>()
+                .orderBy("flow_time", isAsc));
+        for(MoneyFlow moneyFlow: moneyFlows){
+            moneyFlow.setUserName(userMapper.selectById(moneyFlow.getUserID()).getUserName());
+        }
+        return moneyFlows;
     }
 
     @Override
     public int querySizeOfUserMoneyFlowWithName(String userId) {
         return moneyFlowMapper.selectCount(new EntityWrapper<MoneyFlow>()
-        .eq("user_id", userId));
+                .eq("user_id", userId));
     }
 
     @Override
@@ -163,7 +189,7 @@ public class MoneyServiceImpl implements MoneyService {
 
         for (MoneyFlow m : moneyFlowList) {
             try {
-                int month = Integer.parseInt(m.getFlowTime().substring(5, 7))-1;
+                int month = Integer.parseInt(m.getFlowTime().substring(5, 7)) - 1;
 //                int month = sdf.parse(m.getFlowTime()).getMonth();
                 if (m.getFlowIo().equals("O")) {// no
                     if (m.getIfTest() == 0)// t num 0 here

@@ -40,8 +40,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getAllUsers(int page, int pageSize) {
-        return mapper.selectPage(new Page<User>(page, pageSize), new EntityWrapper<User>().orderBy("user_time"));
+    public List<User> getAllUsers(Page<User> page, boolean isAsc) {
+        return mapper.selectPage(page, new EntityWrapper<User>()
+                .orderBy("user_time", isAsc));
     }
 
     @Override

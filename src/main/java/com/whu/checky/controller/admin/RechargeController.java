@@ -29,20 +29,20 @@ public class RechargeController {
     public HashMap<String, Object> rechargeList(@RequestBody String body) {
         JSONObject json = JSONObject.parseObject(body);
         int page = json.getInteger("page");
-
         Integer pageSize = json.getInteger("pageSize");
         if(pageSize == null){
             pageSize = 5;
         }
-        String dateType = "DESC"; //dateType为 大写DESC或ASC
-        List<Pay> pays = moneyService.rechargeList(page, pageSize, dateType);
+        Page<Pay> p = new Page<Pay>(page, pageSize);
+        boolean isAsc = false;
+
+        List<Pay> pays = moneyService.rechargeList(p, isAsc);
 
         HashMap<String, Object> resp = new HashMap<>();
         resp.put("pays", pays);
         resp.put("state", "ok");
-        int total = moneyService.rechargeListSize();
-        resp.put("size", (int)Math.ceil(total / (double)pageSize));
-        resp.put("total", total);
+        resp.put("size", (int)Math.ceil(p.getTotal() / (double)pageSize));
+        resp.put("total", p.getTotal());
         return resp;
     }
 
@@ -57,15 +57,15 @@ public class RechargeController {
         if(pageSize == null){
             pageSize = 5;
         }
-        String dateType = "DESC"; //dateType为 大写DESC或ASC
-        List<Pay> pays = moneyService.rechargeUser(page, userId, pageSize, dateType);
+        Page<Pay> p = new Page<Pay>(page, pageSize);
+        boolean isAsc = false;
+        List<Pay> pays = moneyService.rechargeUser(userId, p, isAsc);
 
         HashMap<String, Object> resp = new HashMap<>();
         resp.put("pays", pays);
         resp.put("state", "ok");
-        int total = moneyService.rechargeUserSize(userId);
-        resp.put("size", (int)Math.ceil(total / (double)pageSize));
-        resp.put("total", total);
+        resp.put("size", (int)Math.ceil(p.getTotal() / (double)pageSize));
+        resp.put("total", p.getTotal());
         return resp;
     }
 }

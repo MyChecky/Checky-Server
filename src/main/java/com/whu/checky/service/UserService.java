@@ -1,5 +1,6 @@
 package com.whu.checky.service;
 
+import com.baomidou.mybatisplus.plugins.Page;
 import com.whu.checky.domain.User;
 import com.whu.checky.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,7 @@ public interface UserService {
     //删除用户
     void deleteUser(String userId);
 
-    List<User> getAllUsers(int page, int pageSize);
+    List<User> getAllUsers(Page<User> page, boolean isAsc);
 
     int getAllUsersNum();
 

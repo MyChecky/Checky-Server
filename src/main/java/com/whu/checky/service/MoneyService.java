@@ -45,13 +45,13 @@ public interface MoneyService {
     //查看一段日期内系统的所有流水
     List<MoneyFlow> queryAllScopeMoneyFlow(String startDate, String endDate);
     // 是以page查全部人的冲值变化
-    List<Pay> rechargeList(int page, int pageSize, String dateType);
+    List<Pay> rechargeList(Page<Pay> page, boolean isAsc);
     // 是以page和userId查某人的充值记录
-    List<Pay> rechargeUser(int page, String userId, int pageSize, String dateType);
+    List<Pay> rechargeUser(String userId, Page<Pay> page, boolean isAsc);
     // 是以page和userId查某人的资金流动
-    List<MoneyFlow> queryUserMoneyFlowWithName(int page, String userId, int pageSize, String dateType);
+    List<MoneyFlow> queryUserMoneyFlowWithName(String userId, Page<MoneyFlow> page, boolean isAsc);
     // 以page查全部人的资金流动
-    List<MoneyFlow> queryAllMoneyFlows(int page, int pageSize, String dateType);
+    List<MoneyFlow> queryAllMoneyFlows(Page<MoneyFlow> page, boolean isAsc);
 
     int querySizeOfUserMoneyFlowWithName(String userId);
 

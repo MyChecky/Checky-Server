@@ -2,6 +2,7 @@ package com.whu.checky.controller.admin;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.whu.checky.domain.User;
 import com.whu.checky.mapper.UserMapper;
 import com.whu.checky.service.UserService;
@@ -25,11 +26,14 @@ public class UserController {
         if(pageSize == null){
             pageSize = 5;
         }
-        List<User> userList = userService.getAllUsers(page, pageSize);
+        Page<User> p = new Page<User>(page, pageSize);
+        boolean isAsc = false;
+
+        List<User> userList = userService.getAllUsers(p, isAsc);
         HashMap<String,Object> resp = new HashMap<>();
         resp.put("state","ok");
-        resp.put("size",(int)Math.floor(userService.getAllUsersNum()/(double)pageSize));
-        resp.put("total", userService.getAllUsersNum());
+        resp.put("size",(int)Math.floor(p.getTotal() / (double)pageSize));
+        resp.put("total", p.getTotal());
         resp.put("users",userList);
         return resp;
     }

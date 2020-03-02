@@ -45,10 +45,4 @@ public interface  MoneyFlowMapper extends BaseMapper<MoneyFlow> {
 //    List<MoneyFlow> getMoneyFlowsWithName(@Param("ew") Wrapper wrapper, Pagination page);
 
     List<MoneyFlow> queryMoneyFolwByUserName(@Param("username")String username);
-
-    List<MoneyFlow> queryUserMoneyFlowWithName(@Param("page")int page, @Param("userId")String userId,
-                                               @Param("pageSize")int pageSize, @Param("dateType")String dateType);
-
-    List<MoneyFlow> queryAllMoneyFlows(@Param("page")int page, @Param("pageSize")int pageSize,
-                                       @Param("dateType")String dateType);
 }

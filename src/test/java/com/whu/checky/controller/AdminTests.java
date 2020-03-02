@@ -28,7 +28,9 @@ public class AdminTests {
     public void getAllUsers(){
         int page = 1;
         int pageSize = 10;
-        List<User> userList = userService.getAllUsers(page, pageSize);
+        boolean isAsc = false;
+        Page<User> p = new Page<User>(page, pageSize);
+        List<User> userList = userService.getAllUsers(p, isAsc);
         HashMap<String,Object> resp = new HashMap<>();
         resp.put("state","ok");
         resp.put("size",(int)Math.floor(userService.getAllUsersNum()/ (double)pageSize) );

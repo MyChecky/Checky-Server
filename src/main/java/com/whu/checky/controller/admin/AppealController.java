@@ -37,7 +37,7 @@ public class AppealController {
         if(pageSize == null){
             pageSize = 5;
         }
-        Page<Appeal> page=new Page<>(currentPage,pageSize);
+        Page<Appeal> page=new Page<Appeal>(currentPage,pageSize);
         List<AdminAppeal> adminAppeals=new ArrayList<AdminAppeal>();
         List<Appeal> appeals=appealService.displayAppeals(page);
         for (Appeal appeal:appeals){

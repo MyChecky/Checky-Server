@@ -28,15 +28,15 @@ public class MoneyController {
         if(pageSize == null){
             pageSize = 10;
         }
-        String dateType = "DESC"; //dateType为 大写DESC或ASC
+        Page<MoneyFlow> p = new Page<MoneyFlow>(page, pageSize);
+        boolean isAsc = false;
 
-        List<MoneyFlow> moneyFlow = moneyService.queryUserMoneyFlowWithName(page, userId, pageSize, dateType);
+        List<MoneyFlow> moneyFlows = moneyService.queryUserMoneyFlowWithName(userId, p, isAsc);
         HashMap<String, Object> resp = new HashMap<>();
         resp.put("state", "ok");
-        resp.put("moneyFlow", moneyFlow);
-        int total = moneyService.querySizeOfUserMoneyFlowWithName(userId);
-        resp.put("size", (int)Math.ceil(total / (double)pageSize));
-        resp.put("total", total);
+        resp.put("moneyFlow", moneyFlows);
+        resp.put("size", (int)Math.ceil(p.getTotal() / (double)pageSize));
+        resp.put("total", p.getTotal());
         return resp;
     }
 
@@ -48,15 +48,15 @@ public class MoneyController {
         if(pageSize == null){
             pageSize = 5;
         }
-        String dateType = "DESC"; //dateType为 大写DESC或ASC
+        Page<MoneyFlow> p = new Page<MoneyFlow>(page, pageSize);
+        boolean isAsc = false;
 
-        List<MoneyFlow> moneyFlow = moneyService.queryAllMoneyFlows(page, pageSize, dateType);
+        List<MoneyFlow> moneyFlows = moneyService.queryAllMoneyFlows(p, isAsc);
         HashMap<String, Object> resp = new HashMap<>();
         resp.put("state", "ok");
-        resp.put("moneyFlow", moneyFlow);
-        int total = moneyService.querySizeOfAllMoneyFlow();
-        resp.put("size",  (int)Math.ceil(total / (double)pageSize));
-        resp.put("total", total);
+        resp.put("moneyFlow", moneyFlows);
+        resp.put("size",  (int)Math.ceil(p.getTotal() / (double)pageSize));
+        resp.put("total", p.getTotal());
         return resp;
     }
 

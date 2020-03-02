@@ -2,6 +2,7 @@ package com.whu.checky.controller.admin;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.whu.checky.domain.Administrator;
 import com.whu.checky.service.AdministratorService;
 import com.whu.checky.service.RedisService;
@@ -118,15 +119,16 @@ public class AdminController {
         if(pageSize == null){
             pageSize = 10;
         }
-        List<Administrator> adminList = administratorService.getAllAdmins(page, pageSize);
+        Page<Administrator> p = new Page<Administrator>(page, pageSize);
+
+        List<Administrator> adminList = administratorService.getAllAdmins(p);
         for(Administrator administrator: adminList){
             administrator.setUserPassword(null);
         }
         HashMap<String,Object> resp = new HashMap<>();
         resp.put("state","ok");
-        int total = administratorService.getAllAdminsNum();
-        resp.put("size",(int)Math.ceil(total / (double)pageSize));
-        resp.put("total", total);
+        resp.put("size",(int)Math.ceil(p.getTotal() / (double)pageSize));
+        resp.put("total", p.getTotal());
         resp.put("admins",adminList);
         return resp;
     }

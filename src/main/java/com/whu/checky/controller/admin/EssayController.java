@@ -56,7 +56,7 @@ public class EssayController {
         if(pageSize == null){
             pageSize = 5;
         }
-        Page<Essay> page = new Page<>(currentPage, pageSize);
+        Page<Essay> page = new Page<Essay>(currentPage, pageSize);
         List<AdminEssay> adminEssays = new ArrayList<AdminEssay>();
         List<Essay> essays = essayService.displayEssay(page);
         for (Essay essay : essays) {
