@@ -15,6 +15,7 @@ import java.util.List;
 public class EssayServiceImpl implements EssayService {
     @Autowired
     private EssayMapper essayMapper;
+
     @Override
     public int addEssay(Essay essay) {
         return essayMapper.insert(essay);
@@ -37,11 +38,10 @@ public class EssayServiceImpl implements EssayService {
 
     @Override
     public List<Essay> displayEssay(Page<Essay> page) {
-        return essayMapper.selectPage(
-                page,
-                new EntityWrapper<Essay>()
+        return essayMapper.selectPage(page, new EntityWrapper<Essay>()
                 .eq("if_delete", 0)
-                .orderBy("essay_time",false).orderBy("like_num"));
+                .orderBy("essay_time", false)
+                .orderBy("like_num"));
     }
 
     @Override
@@ -49,22 +49,22 @@ public class EssayServiceImpl implements EssayService {
         return essayMapper.selectPage(
                 page,
                 new EntityWrapper<Essay>()
-                        .eq("user_id",targetUserId)
+                        .eq("user_id", targetUserId)
                         .and()
                         .eq("if_delete", 0)
-                        .orderBy("essay_time",false)
+                        .orderBy("essay_time", false)
                         .orderBy("like_num"));
     }
 
     @Override
     public List<Essay> queryUserEssays(String userId) {
         return essayMapper.selectPage(
-                new Page<Essay>(1,10),
+                new Page<Essay>(1, 10),
                 new EntityWrapper<Essay>()
-                        .eq("user_id",userId)
+                        .eq("user_id", userId)
                         .and()
                         .eq("if_delete", 0)
-                        .orderBy("essay_time",false));
+                        .orderBy("essay_time", false));
     }
 
     @Override

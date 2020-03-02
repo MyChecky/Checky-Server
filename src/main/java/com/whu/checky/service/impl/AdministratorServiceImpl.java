@@ -70,8 +70,9 @@ public class AdministratorServiceImpl implements AdministratorService {
     }
 
     @Override
-    public List<Administrator> getAllAdmins(int page, int pageSize) {
-        return mapper.selectPage(new Page<Administrator>(page, pageSize), new EntityWrapper<Administrator>().orderBy("user_id"));
+    public List<Administrator> getAllAdmins(Page<Administrator> page) {
+        return mapper.selectPage(page, new EntityWrapper<Administrator>().
+                orderBy("user_id"));
     }
 
     @Override

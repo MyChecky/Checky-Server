@@ -1,5 +1,6 @@
 package com.whu.checky.service;
 
+import com.baomidou.mybatisplus.plugins.Page;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 import com.whu.checky.domain.Administrator;
 import com.whu.checky.domain.User;
@@ -16,7 +17,7 @@ public interface AdministratorService {
     //删除管理员
     boolean deleteById(Administrator administrator);
     //获取管理员列表
-    List<Administrator> getAllAdmins(int page, int pageSize);
+    List<Administrator> getAllAdmins(Page<Administrator> page);
     //获取管理员数量
     int getAllAdminsNum();
     //搜索管理员
