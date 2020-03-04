@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -56,7 +57,6 @@ public class AdminController {
         administrator.setUserName(userName);
         administrator.setUserTel(userTel);
         administrator.setUserEmail(userEmail);
-        administrator.setDepartment(department);
         int updateState = administratorService.update(administrator);
 
         HashMap<String,String> ans = new HashMap<>();
@@ -68,10 +68,9 @@ public class AdminController {
     }
 
     @PostMapping("/login")
-    public HashMap<String,String> login(@RequestBody String body) {
+    public HashMap<String,Object> login(@RequestBody String body) {
         String message = "ok";
-        HashMap<String,String> ans = new HashMap<>();
-
+        HashMap<String,Object> ans = new HashMap<>();
         //构建Administrator
         Administrator administrator = parserJson2User(body);
         String sessionKey = UUID.randomUUID().toString();
@@ -86,14 +85,14 @@ public class AdminController {
             else{
                 ans.put("sessionKey",sessionKey);
                 ans.put("userId",administrator.getUserId());
-                ans.put("department", administrator.getDepartment());
+                Map<String, Boolean> menus = administratorService.getAdminPowers(administrator.getUserId());
+                ans.put("menus", menus);
             }
         }
         catch (Exception ex){
             ex.printStackTrace();
         }
 
-        //
         ans.put("state",message);
         return ans;
     }
@@ -135,14 +134,20 @@ public class AdminController {
 
     @RequestMapping("/queryByKeyWord")
     HashMap<String,Object> queryUserByKeyWord(@RequestBody String body){
-        JSONObject object= (JSONObject) JSON.parseObject(body).get("params");
-        int page = object.getInteger("page");
-        String keyWord=object.getString("keyword");
-        List<Administrator> adminList=administratorService.queryAdmins(page,keyWord);
+        String keyWord=JSON.parseObject(body).getString("keyword");
+        int page = JSON.parseObject(body).getInteger("page");
+        Integer pageSize = JSON.parseObject(body).getInteger("pageSize");
+        if(pageSize == null){
+            pageSize = 10;
+        }
+        Page<Administrator> p = new Page<Administrator>(page, pageSize);
+        List<Administrator> adminList=administratorService.queryAdminsWithPage(p, keyWord);
         for(Administrator administrator: adminList){
             administrator.setUserPassword(null);
         }
         HashMap<String,Object> resp = new HashMap<>();
+        resp.put("size", (int) Math.ceil(p.getTotal() / (double) pageSize));
+        resp.put("total", p.getTotal());
         resp.put("state","ok");
         resp.put("admins",adminList);
         return resp;
@@ -156,7 +161,8 @@ public class AdminController {
         HashMap<String,Object> resp = new HashMap<>();
         resp.put("state","ok");
         resp.put("admin",admin);
-        resp.put("department",admin.getDepartment());
+        Map<String, Boolean> menus = administratorService.getAdminPowers(userId);
+        resp.put("menus", menus);
         return resp;
     }
 

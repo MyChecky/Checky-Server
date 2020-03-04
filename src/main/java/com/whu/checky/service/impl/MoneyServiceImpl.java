@@ -16,10 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service("/moneyService")
 public class MoneyServiceImpl implements MoneyService {
@@ -157,6 +154,30 @@ public class MoneyServiceImpl implements MoneyService {
     @Override
     public int rechargeListSize() {
         return payMapper.selectCount(new EntityWrapper<>());
+    }
+
+    @Override
+    public double[] getUserTotalMoneys(String userId) {
+        double[] userTotalMoneys = {0.0, 0.0, 0.0, 0.0}; // totalTrueOut, totalTrueIn, totalTestOut, totalTestIn
+        String startDay = "1970-01-01";
+        String endDay = sdf.format(new Date());
+        List<MoneyFlow> moneyFlows = moneyFlowMapper.queryUserScopeMoneyFlow(startDay, endDay, userId);
+        for(MoneyFlow moneyFlow: moneyFlows){
+            if(moneyFlow.getIfTest() == 0){ // 真实余额 数字0
+                if(moneyFlow.getFlowIo().equals("O")){ // 字母 O
+                    userTotalMoneys[0] += moneyFlow.getFlowMoney();
+                }else{
+                    userTotalMoneys[1] += moneyFlow.getFlowMoney();
+                }
+            }else{ // 测试余额
+                if(moneyFlow.getFlowIo().equals("O")){ // 字母 O
+                    userTotalMoneys[2] += moneyFlow.getFlowMoney();
+                }else{
+                    userTotalMoneys[3] += moneyFlow.getFlowMoney();
+                }
+            }
+        }
+        return userTotalMoneys;
     }
 
     @Override

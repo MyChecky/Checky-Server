@@ -8,7 +8,7 @@ public class Menu {
     @TableId
     private String menuId;
     private String menuName;
-    private String menuURL;
+    private String menuUrl;
     private int flag;
 
     public String getMenuId() {
@@ -27,12 +27,12 @@ public class Menu {
         this.menuName = menuName;
     }
 
-    public String getMenuURL() {
-        return menuURL;
+    public String getMenuUrl() {
+        return menuUrl;
     }
 
-    public void setMenuURL(String menuURL) {
-        this.menuURL = menuURL;
+    public void setMenuUrl(String menuUrl) {
+        this.menuUrl = menuUrl;
     }
 
     public int getFlag() {

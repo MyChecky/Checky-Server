@@ -60,4 +60,6 @@ public interface MoneyService {
     int rechargeUserSize(String userId);
 
     int rechargeListSize();
+
+    double[] getUserTotalMoneys(String userId);
 }

@@ -78,4 +78,10 @@ public class UserServiceImpl implements UserService {
         return mapper.selectCount(new EntityWrapper<User>()
                 .like("user_name", keyWord));
     }
+
+    @Override
+    public List<User> queryUsersWithPage(Page<User> p, String keyWord) {
+        return mapper.selectPage(p, new EntityWrapper<User>().like("user_name", keyWord
+        ).orderBy("user_time", false));
+    }
 }

@@ -29,4 +29,6 @@ public interface UserService {
     List<User> queryUserByNickname(String nickname);
 
     int queryUsersNum(String keyWord);
+
+    List<User> queryUsersWithPage(Page<User> p, String keyWord);
 }

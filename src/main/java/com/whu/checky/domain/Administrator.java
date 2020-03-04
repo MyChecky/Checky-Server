@@ -19,8 +19,6 @@ public class Administrator implements Serializable {
     //权限列表
     @TableField(exist = false)
     private List<String> permissions;
-    //管理员所处部门
-    private String department;
 
     private String userTel;
 
@@ -64,14 +62,6 @@ public class Administrator implements Serializable {
 
     public void setPermissions(List<String> permissions) {
         this.permissions = permissions;
-    }
-
-    public String getDepartment(){
-        return department;
-    }
-
-    public void setDepartment(String department){
-        this.department=department;
     }
 
     public String getUserTel() {

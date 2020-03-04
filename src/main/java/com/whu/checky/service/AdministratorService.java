@@ -6,6 +6,7 @@ import com.whu.checky.domain.Administrator;
 import com.whu.checky.domain.User;
 
 import java.util.List;
+import java.util.Map;
 
 public interface AdministratorService {
     //管理员注册
@@ -24,4 +25,8 @@ public interface AdministratorService {
     List<Administrator> queryAdmins(int page,String keyword);
     //单个管理员
     Administrator queryAdmin(String userId);
+
+    List<Administrator> queryAdminsWithPage(Page<Administrator> p, String keyWord);
+
+    Map<String, Boolean> getAdminPowers(java.lang.String userId);
 }

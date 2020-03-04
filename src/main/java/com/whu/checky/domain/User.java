@@ -68,10 +68,6 @@ public class User implements Serializable{
      */
     private int userCredit=100;
     /**
-     *  用户爱好，“;”分隔
-     */
-    private String hobby;
-    /**
      * 被举报总次数
      */
     private int reportedTotal=0;
@@ -225,14 +221,6 @@ public class User implements Serializable{
 
     public void setSessionId(String sessionId) {
         this.sessionId = sessionId;
-    }
-
-    public String getHobby() {
-        return hobby;
-    }
-
-    public void setHobby(String hobby) {
-        this.hobby = hobby;
     }
 
     public int getReportedTotal() {

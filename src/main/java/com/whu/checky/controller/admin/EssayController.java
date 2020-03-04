@@ -89,27 +89,36 @@ public class EssayController {
         JSONObject res = new JSONObject();
         JSONObject object = (JSONObject) JSON.parse(jsonstr);
         String username = object.getString("username");
+        int page = object.getInteger("page");
+        Integer pageSize = object.getInteger("pageSize");
+        if(pageSize == null){
+            pageSize = 10;
+        }
         List<AdminEssay> adminEssays = new ArrayList<AdminEssay>();
         List<Essay> essays = essayService.queryEssaysByUserName(username);
-        for (Essay essay : essays) {
-            List<Record> records = recordService.getRecordsByEssayId(essay.getEssayId());
+        int end = Math.min((page + 1) * pageSize, essays.size());
+        for (int i = page * pageSize; i< end; i++) {
+            List<Record> records = recordService.getRecordsByEssayId(essays.get(i).getEssayId());
             for (Record record : records) {
                 if (!record.getRecordType().equals("text"))
                     record.setRecordType(record.getRecordType().substring(0, 5));
             }
             AdminEssay adminEssay = new AdminEssay();
-            User user = userService.queryUser(essay.getUserId());
-            adminEssay.setCommentNum(essay.getCommentNum());
-            adminEssay.setEssayContent(essay.getEssayContent());
-            adminEssay.setEssayId(essay.getEssayId());
-            adminEssay.setEssayTime(essay.getEssayTime());
-            adminEssay.setLikeNum(essay.getLikeNum());
+            User user = userService.queryUser(essays.get(i).getUserId());
+            adminEssay.setCommentNum(essays.get(i).getCommentNum());
+            adminEssay.setEssayContent(essays.get(i).getEssayContent());
+            adminEssay.setEssayId(essays.get(i).getEssayId());
+            adminEssay.setEssayTime(essays.get(i).getEssayTime());
+            adminEssay.setLikeNum(essays.get(i).getLikeNum());
             adminEssay.setUserName(user.getUserName());
             adminEssay.setImg(records);
             adminEssays.add(adminEssay);
         }
+        res.put("total", essays.size());
+        res.put("size",(int)Math.ceil(essays.size() / (double)pageSize));
         res.put("state", "ok");
         res.put("essays", adminEssays);
+
         return res;
     }
 

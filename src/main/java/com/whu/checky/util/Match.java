@@ -349,34 +349,34 @@ public class Match {
         );
         User user = users.get(0);
 
-        String hobbyStr = user.getHobby();
-
-        if(hobbyStr != null) {
-            String[] hobbies = hobbyStr.split(",");
-
-            HashSet<String> hobbySet = new HashSet<String>();
-            for(String h : hobbies) {
-                hobbySet.add(h);
-            }
-    
-            List<User> users2 = userMapper.selectList(new EntityWrapper<User>());
-    
-            for(User user2 : users2) {
-                String hobbyStr2 = user2.getHobby();
-
-                if(hobbyStr2 != null) {
-                    String[] hobbies2 = hobbyStr2.split(",");
-    
-                    for(String h2 : hobbies2) {
-                        if(hobbySet.contains(h2)) {
-                            candidates.add(user2.getUserId());
-        
-                            break;
-                        }
-                    }
-                }
-            }
-        }
+//        String hobbyStr = user.getHobby();
+//
+//        if(hobbyStr != null) {
+//            String[] hobbies = hobbyStr.split(",");
+//
+//            HashSet<String> hobbySet = new HashSet<String>();
+//            for(String h : hobbies) {
+//                hobbySet.add(h);
+//            }
+//
+//            List<User> users2 = userMapper.selectList(new EntityWrapper<User>());
+//
+//            for(User user2 : users2) {
+//                String hobbyStr2 = user2.getHobby();
+//
+//                if(hobbyStr2 != null) {
+//                    String[] hobbies2 = hobbyStr2.split(",");
+//
+//                    for(String h2 : hobbies2) {
+//                        if(hobbySet.contains(h2)) {
+//                            candidates.add(user2.getUserId());
+//
+//                            break;
+//                        }
+//                    }
+//                }
+//            }
+//        }
 
         return candidates;
     }

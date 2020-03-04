@@ -33,10 +33,14 @@
     </select>
 
     <select id="queryLatestMessageByIds" resultType="com.whu.checky.domain.FriendChat">
-        SELECT send_id AS sendId, receiver_id AS receiverId, MAX(chat_time) AS chatTime,
-        chat_content AS chatContent, if_read AS ifRead
-          FROM friend_chat WHERE (receiver_id = #{userId2} AND send_id = #{userId1})
-          OR (receiver_id = #{userId1} AND send_id = #{userId2})
+		SELECT send_id AS sendId, receiver_id AS receiverId, chat_time AS chatTime,
+		chat_content AS chatContent, if_read AS ifRead
+		FROM friend_chat WHERE chat_time =
+		(SELECT MAX(chat_time) FROM friend_chat
+		WHERE (receiver_id = #{userId2}  AND send_id =#{userId1} )
+		OR (receiver_id =  #{userId1} AND send_id = #{userId2} ))
+		AND ((receiver_id = #{userId2}  AND send_id = #{userId1})
+		OR (receiver_id = #{userId1} AND send_id =#{userId2} ));
     </select>
 
     <select id="queryMsgsFromFriends" resultType="com.whu.checky.domain.FriendChat">
