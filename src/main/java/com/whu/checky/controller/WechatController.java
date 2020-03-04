@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.whu.checky.domain.User;
+import com.whu.checky.service.ParameterService;
 import com.whu.checky.service.RedisService;
 import com.whu.checky.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +32,12 @@ public class WechatController {
     @Autowired
     private RedisService redisService;
 
+    @Autowired
+    private ParameterService parameterService;
+
     @PostMapping("/login")
-    public HashMap<String,String> login(@RequestBody String body) throws IOException {
+    public HashMap<String,Object> login(@RequestBody String body) throws IOException {
+        HashMap<String,Object> ret = new HashMap<>(); // 返回值
         JSONObject object= JSONObject.parseObject(body);
         String code=(String)object.get("code");
         JSONObject userinfo= (JSONObject) object.get("userInfo");
@@ -41,15 +46,13 @@ public class WechatController {
         String url = "https://api.weixin.qq.com/sns/jscode2session?"+params;// 微信接口 用于查询oponid
         String response = restTemplate.getForObject(url,String.class);
 
-
-
         JsonNode node = this.mapper.readTree(response);
         String openid = node.get("openid").asText();
-        String sessionKey = node.get("session_key").asText();
+//        String sessionKey = node.get("session_key").asText(); // 微信返回的没用到
 
         JSONObject location = (JSONObject) object.get("location");
-//        double latitude = Double.parseDouble(location.get("latitude").toString());
-//        double longitude = Double.parseDouble(location.get("longitude").toString());
+        double latitude = Double.parseDouble(location.get("latitude").toString());
+        double longitude = Double.parseDouble(location.get("longitude").toString());
 
         User user = new User();
         user.setUserId(openid);
@@ -57,24 +60,27 @@ public class WechatController {
         String skey = UUID.randomUUID().toString();
         user.setSessionId(skey);
         User check = userService.queryUser(openid);
-//        user.setLatitude(latitude);
-//        user.setLongtitude(longitude);
-//        boolean flag = false;
         if(check==null){
+            user.setLatitude(latitude);
+            user.setLongtitude(longitude);
             userService.register(user);
             check = user;
         }else{
             redisService.delSessionId(check.getSessionId());
             updateFromWeixin(check,user);
+            check.setLatitude(latitude);
+            check.setLongtitude(longitude);
             userService.updateUser(check);
         }
         redisService.saveUserOrAdminBySessionId(skey,check);
-
-        HashMap<String,String> ret = new HashMap<>();
-//        ret.put("states",sessionKey);
+        Boolean ifTrueMoneyAccess = Integer.
+                parseInt(parameterService.getValueByParam("if_true_money_access").getParamValue()) != 0;
+        Boolean ifNewTaskHighSettingAccess = Integer.
+                parseInt(parameterService.getValueByParam("if_new_task_high_set").getParamValue()) != 0;
+        ret.put("ifTrueMoneyAccess", ifTrueMoneyAccess);
+        ret.put("ifNewTaskHighSettingAccess", ifNewTaskHighSettingAccess);
         ret.put("states",openid);
         ret.put("sessionKey",skey);
-//        ret.put("openId",openid);
         return ret;
     }
 

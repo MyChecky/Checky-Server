@@ -76,19 +76,8 @@ public class MoneyController {
     public HashMap<String, Object> queryMoneyRecord(@RequestBody String jsonstr) throws ParseException {
         JSONObject object = (JSONObject) JSON.parse(jsonstr);
         String userId = (String) object.get("userId");
-        int displayTypeIndex, moneyTypeIndex;
-        try {
-            displayTypeIndex = (Integer) object.get("displayTypeIndex");  // 0: 列表，1：图表
-        } catch (ClassCastException ex) {
-            String displayTypeIndexStr = (String) object.get("displayTypeIndex");
-            displayTypeIndex = Integer.parseInt(displayTypeIndexStr);
-        }
-        try {
-            moneyTypeIndex = (Integer) object.get("moneyTypeIndex");  // 0：充值，1：试玩，2：全部
-        } catch (ClassCastException ex) {
-            String moneyTypeIndexStr = (String) object.get("moneyTypeIndex");
-            moneyTypeIndex = Integer.parseInt(moneyTypeIndexStr);
-        }
+        Integer displayTypeIndex = object.getInteger("displayTypeIndex"); // 0: 列表，1：图表
+        Integer moneyTypeIndex = (Integer) object.get("moneyTypeIndex"); // 1：充值，0：试玩，2：全部
         HashMap<String, Object> ans = new HashMap<>();  // 返回值
 
         if (displayTypeIndex == 0) {          // 列表,查询时间范围内
@@ -96,13 +85,8 @@ public class MoneyController {
             String endTime = (String) object.get("endTime");
             getRecordList(userId, startTime, endTime, moneyTypeIndex, ans);
         } else if (displayTypeIndex == 1) {    // 图表，查询某一年
-            int year = 2019;    // 根据前端返回index确定所查年份，index为0时查询2019年
-            try {
-                year += (Integer) object.get("yearIndex");
-            } catch (ClassCastException ex) {
-                String yearStr = (String) object.get("yearIndex");
-                year += Integer.parseInt(yearStr);
-            }
+            // 根据前端返回index确定所查年份，index为0时查询2019年
+            Integer year = object.getInteger("yearIndex") + 2019;
             ans.put("year", year);
             getRecordGraph(userId, year, moneyTypeIndex, ans);
         }
@@ -119,13 +103,13 @@ public class MoneyController {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");//注意月份是MM
         int i=PayRecords.size()-1;
         int j=MoneyRecords.size()-1;
-        List<MyFlow> displayMoneyList = new ArrayList<MyFlow>();
+        List<MyFlow> displayMoneyList = new ArrayList<MyFlow>(); // 返回值
         while(i >= 0 && j >= 0) {
             MyFlow flow = new MyFlow();
             Date testDate = simpleDateFormat.parse(MoneyRecords.get(j).getFlowTime());
             Date trueDate = simpleDateFormat.parse(PayRecords.get(i).getPayTime().substring(0, 10));
             if(testDate.compareTo(trueDate) >= 0){ // test日期更近或同一天
-                if(recordType == 2 || recordType == MoneyRecords.get(j).getIfTest()){
+                if(recordType == 2 || recordType != MoneyRecords.get(j).getIfTest()){
                     flow.setFlowTime(MoneyRecords.get(j).getFlowTime());
                     flow.setFlowMoney(MoneyRecords.get(j).getFlowMoney());
                     flow.setTaskTitle(taskService.queryTask(MoneyRecords.get(j).getTaskId()).getTaskTitle());
@@ -138,7 +122,7 @@ public class MoneyController {
                 }
                 j--;
             }else if(testDate.compareTo(trueDate) < 0) { // true日期更近
-                if((recordType == 2 || recordType == 0)){
+                if((recordType == 2 || recordType == 1)){
                     flow.setFlowMoney(PayRecords.get(i).getPayMoney());
                     flow.setFlowTime(PayRecords.get(i).getPayTime().substring(0, 10));
                     if(PayRecords.get(i).getPayType().equals("pay")){
@@ -154,7 +138,7 @@ public class MoneyController {
             }
         }
         while(i >= 0){
-            if((recordType == 2 || recordType == 0)){
+            if((recordType == 2 || recordType == 1)){
                 MyFlow flow = new MyFlow();
                 flow.setTaskTitle("微信充值");
                 flow.setFlowMoney(PayRecords.get(i).getPayMoney());
@@ -169,7 +153,7 @@ public class MoneyController {
             i--;
         }
         while(j >= 0){
-            if(recordType == 2 || recordType == MoneyRecords.get(j).getIfTest()){
+            if(recordType == 2 || recordType != MoneyRecords.get(j).getIfTest()){
                 MyFlow flow = new MyFlow();
                 flow.setFlowTime(MoneyRecords.get(j).getFlowTime());
                 flow.setFlowMoney(MoneyRecords.get(j).getFlowMoney());
@@ -195,7 +179,7 @@ public class MoneyController {
         for (MoneyFlow record : MoneyRecords) {
             String[] recordDates = record.getFlowTime().split("-");
             if (Integer.parseInt(recordDates[0]) == year) { // 在查询年份的范围内
-                if (recordType == 2 || recordType == record.getIfTest()) {  // 查询全部/ 充值余额/试玩余额
+                if (recordType == 2 || recordType != record.getIfTest()) {  // 查询全部/ 充值余额/试玩余额
                     if (record.getFlowIo().equals("O")) { //not num 0, but letter O支出
                         totalMoneyOut += record.getFlowMoney();
                         displayMoneyOut[Integer.parseInt(recordDates[1]) - 1] += record.getFlowMoney();
@@ -209,7 +193,7 @@ public class MoneyController {
         for (Pay payRecord : PayRecords) {
             String[] recordDates = payRecord.getPayTime().split("-");
             if (Integer.parseInt(recordDates[0]) == year) { // 在查询年份的范围内
-                if (recordType == 2 || recordType == 0) {  // 查询全部/ 充值余额/试玩余额
+                if (recordType == 2 || recordType == 1) {  // 查询全部/ 充值余额/试玩余额
                     if (payRecord.getPayType().equals("pay")) { // 充值
                         totalRecharge += payRecord.getPayMoney();
                     } else { // 取现

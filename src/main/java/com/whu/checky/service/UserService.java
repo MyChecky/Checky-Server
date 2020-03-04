@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface UserService {
     //第一次登录
-    boolean register(User user);
+    Integer register(User user);
      //再次登录
 //    boolean updateSessionID(User user,String id);
     void updateUser(User user);

@@ -17,9 +17,8 @@ public class UserServiceImpl implements UserService {
     private UserMapper mapper;
 
     @Override
-    public boolean register(User user) {
-        mapper.insert(user);
-        return true;
+    public Integer register(User user) {
+        return mapper.insert(user);
     }
 
     @Override
