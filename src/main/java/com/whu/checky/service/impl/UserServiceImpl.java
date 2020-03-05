@@ -5,13 +5,18 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.whu.checky.domain.User;
 import com.whu.checky.mapper.UserMapper;
 import com.whu.checky.service.UserService;
+
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Random;
 
 @Service("userService")
 public class UserServiceImpl implements UserService {
+
+    private static final Random RANDOM = new Random();
 
     @Autowired
     private UserMapper mapper;
@@ -82,5 +87,17 @@ public class UserServiceImpl implements UserService {
     public List<User> queryUsersWithPage(Page<User> p, String keyWord) {
         return mapper.selectPage(p, new EntityWrapper<User>().like("user_name", keyWord
         ).orderBy("user_time", false));
+    }
+
+    @Override
+    public List<User> queryUsersWithPage(Page<User> p) {
+        return mapper.selectPage(p, new EntityWrapper<User>().orderBy("user_time", false));
+    }
+
+    @Override
+    public List<User> getUsersRandomly(int maxNumUsersNeed) {
+        int cnt = mapper.selectCount(null);
+        int offset = RANDOM.nextInt(cnt-maxNumUsersNeed+1);
+        return mapper.selectPage(new RowBounds(offset, maxNumUsersNeed), null);
     }
 }

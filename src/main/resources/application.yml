@@ -44,7 +44,7 @@ logging:
 jobs:
     match:
         cron: 0 0 0 * * ?
-        maxNum: 3
+        maxNum: 3 # Deprecated
     judge:
         check:
             timeoutDay: 2

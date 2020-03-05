@@ -1,16 +1,15 @@
 package com.whu.checky.service.impl;
 
+import java.util.List;
+
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.whu.checky.domain.User;
 import com.whu.checky.domain.UserFriend;
 import com.whu.checky.mapper.UserFriendMapper;
 import com.whu.checky.mapper.UserMapper;
 import com.whu.checky.service.UserFriendService;
-import com.whu.checky.service.UserService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service("userFriendService")
 public class UserFriendServiceImpl implements UserFriendService {
@@ -19,7 +18,6 @@ public class UserFriendServiceImpl implements UserFriendService {
     private UserFriendMapper userFriendMapper;
     @Autowired
     private UserMapper userMapper;
-
 
     @Override
     public Integer addUserFriend(UserFriend userFriend) {
@@ -34,11 +32,7 @@ public class UserFriendServiceImpl implements UserFriendService {
     @Override
     public List<UserFriend> queryUserFriends(String userId) {
         List<UserFriend> friends = userFriendMapper.selectList(new EntityWrapper<UserFriend>()
-                .eq("from_user_id", userId)
-                .or()
-                .eq("to_user_id", userId)
-                .and()
-                .eq("add_state", 1));
+                .eq("from_user_id", userId).or().eq("to_user_id", userId).and().eq("add_state", 1));
         for (UserFriend userFriend : friends) {
             if (userFriend.getToUserId().equals(userId)) {
                 userFriend.setFriendName(userMapper.getUsernameById(userFriend.getFromUserId()));
@@ -53,13 +47,11 @@ public class UserFriendServiceImpl implements UserFriendService {
 
     @Override
     public List<UserFriend> queryUserNewFriends(String userId) {
-        List<UserFriend> friends = userFriendMapper.selectList(new EntityWrapper<UserFriend>()
-                .eq("to_user_id", userId)
-                .and()
-                .eq("add_state", 0));
+        List<UserFriend> friends = userFriendMapper
+                .selectList(new EntityWrapper<UserFriend>().eq("to_user_id", userId).and().eq("add_state", 0));
         for (UserFriend userFriend : friends) {
-                userFriend.setFriendName(userMapper.getUsernameById(userFriend.getFromUserId()));
-                userFriend.setFriendAvatar(userMapper.getUserAvatarById(userFriend.getFromUserId()));
+            userFriend.setFriendName(userMapper.getUsernameById(userFriend.getFromUserId()));
+            userFriend.setFriendAvatar(userMapper.getUserAvatarById(userFriend.getFromUserId()));
         }
         return friends;
     }
