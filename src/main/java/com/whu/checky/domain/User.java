@@ -5,10 +5,9 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class User implements Serializable{
+public class User implements Serializable {
     /**
-     * 用户id
-     * GeneratedValue
+     * 用户id GeneratedValue
      */
     @TableId
     private String userId;
@@ -31,7 +30,7 @@ public class User implements Serializable{
     /**
      * 试玩余额，默认100.0
      */
-    private Double testMoney =100.0;
+    private Double testMoney = 100.0;
     /**
      * 用户发布的任务数
      */
@@ -49,41 +48,39 @@ public class User implements Serializable{
      */
     private Integer superviseNumMin;
     /**
-     * 用户是否需要推送通知
-     * 0：不需要 1：需要
+     * 用户是否需要推送通知 0：不需要 1：需要
      */
     private Integer wantpush;
     /**
      * 经度
      */
-    private double longtitude=0.0;
+    private double longtitude = 0.0;
     /**
      * 纬度
      */
-    private double latitude=0.0;
+    private double latitude = 0.0;
 
     private String sessionId;
     /**
-     *  用户信用.默认100
+     * 用户信用.默认100
      */
-    private int userCredit=100;
+    private int userCredit = 100;
     /**
      * 被举报总次数
      */
-    private int reportedTotal=0;
+    private int reportedTotal = 0;
     /**
      * 被举报通过总次数
      */
-    private int reportedPassed=0;
+    private int reportedPassed = 0;
     /**
      * 举报他任总次数
      */
-    private int reportTotal=0;
+    private int reportTotal = 0;
     /**
      * 举报他人通过总次数
      */
-    private int reportPassed=0;
-
+    private int reportPassed = 0;
 
     public void setLongtitude(double longtitude) {
         this.longtitude = longtitude;
@@ -134,7 +131,6 @@ public class User implements Serializable{
     public void setUserAvatar(String userAvatar) {
         this.userAvatar = userAvatar;
     }
-
 
     public Integer getTaskNum() {
         return taskNum;
@@ -207,6 +203,7 @@ public class User implements Serializable{
     public void setUserMoney(Double userMoney) {
         this.userMoney = userMoney;
     }
+
     public Double getTestMoney() {
         return testMoney;
     }

@@ -1,14 +1,17 @@
 package com.whu.checky.util;
 
 public class MatchType {
-    boolean isAcq;
-    
-    boolean isStrg;
+    /**
+     * If true, other class members are ignored.
+     */
+    boolean isRand = false;
 
-    boolean isRand;
+    /**
+     * If one creterion is met, the others following it will be ignored.
+     */
+    boolean isAcq = false;
 
-    boolean isArea;
+    boolean isInSameArea = false;
 
-    boolean isHobby;
+    boolean hasSameHobby = false;
 }
-    
