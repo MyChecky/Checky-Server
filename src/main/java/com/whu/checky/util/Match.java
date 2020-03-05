@@ -101,9 +101,9 @@ public class Match {
                     if (potentialSupervisor.getUserId().equals(taskOwner.getUserId()))
                         continue;
 
-                    if (matchType.isAcq && isAcq(taskOwner, potentialSupervisor)
-                            || (matchType.isInSameArea && isInSameArea(taskOwner, potentialSupervisor))
-                            || (matchType.hasSameHobby && hasSameHobby(taskOwner, potentialSupervisor))) {
+                    if (matchType.isAcq == isAcq(taskOwner, potentialSupervisor)
+                            || (matchType.isInSameArea == isInSameArea(taskOwner, potentialSupervisor))
+                            || (matchType.hasSameHobby == hasSameHobby(taskOwner, potentialSupervisor))) {
                         selectedSupervisors.add(potentialSupervisor);
                         --gap;
                     }

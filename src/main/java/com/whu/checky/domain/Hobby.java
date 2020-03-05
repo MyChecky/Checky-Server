@@ -4,17 +4,17 @@ import com.baomidou.mybatisplus.annotations.TableId;
 
 public class Hobby {
     @TableId
-    private String hobbyId;
+    private int hobbyId;
 
     private String hobbyValue;
 
     private String addTime;
 
-    public String getHobbyId() {
+    public int getHobbyId() {
         return hobbyId;
     }
 
-    public void setHobbyId(String hobbyId) {
+    public void setHobbyId(int hobbyId) {
         this.hobbyId = hobbyId;
     }
 
