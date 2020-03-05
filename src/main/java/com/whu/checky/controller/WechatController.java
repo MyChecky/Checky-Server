@@ -60,12 +60,12 @@ public class WechatController {
         String skey = UUID.randomUUID().toString();
         user.setSessionId(skey);
         User check = userService.queryUser(openid);
-        if(check==null){
+        if(check==null){ // 新用户
             user.setLatitude(latitude);
             user.setLongtitude(longitude);
             userService.register(user);
             check = user;
-        }else{
+        }else{ // 老用户
             redisService.delSessionId(check.getSessionId());
             updateFromWeixin(check,user);
             check.setLatitude(latitude);
@@ -81,6 +81,9 @@ public class WechatController {
         ret.put("ifNewTaskHighSettingAccess", ifNewTaskHighSettingAccess);
         ret.put("states",openid);
         ret.put("sessionKey",skey);
+        ret.put("userGender", check.getUserGender());
+        ret.put("userNickname", check.getUserName());
+        ret.put("userAvatar", check.getUserAvatar());
         return ret;
     }
 
@@ -94,9 +97,9 @@ public class WechatController {
 
 
     private void updateFromWeixin (User check, User user){
-        check.setUserName(user.getUserName());
-        check.setUserGender(user.getUserGender());
-        check.setUserAvatar(user.getUserAvatar());
+//        check.setUserName(user.getUserName());
+//        check.setUserGender(user.getUserGender());
+//        check.setUserAvatar(user.getUserAvatar());
         check.setLongtitude(user.getLongtitude());
         check.setLatitude(user.getLatitude());
         check.setSessionId(user.getSessionId());
