@@ -10,7 +10,7 @@ import com.whu.checky.service.UserHobbyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-@Service("userHobbyService")
+@Service("UserHobbyService")
 public class UserHobbyServiceImpl implements UserHobbyService {
 
     @Autowired
@@ -19,6 +19,17 @@ public class UserHobbyServiceImpl implements UserHobbyService {
     @Override
     public List<UserHobby> getUserHobbies(String userId) {
         return userHobbyMapper.selectList(new EntityWrapper<UserHobby>().eq("USER_ID", userId));
+    }
+
+    @Override
+    public void addUserHobby(UserHobby userHobby) {
+        userHobbyMapper.insert(userHobby);
+    }
+
+    @Override
+    public void delUserHobby(UserHobby userHobby) {
+        userHobbyMapper.delete(new EntityWrapper<>(userHobby));
+
     }
 
 }

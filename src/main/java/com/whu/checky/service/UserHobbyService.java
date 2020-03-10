@@ -5,5 +5,7 @@ import java.util.List;
 import com.whu.checky.domain.UserHobby;
 
 public interface UserHobbyService {
-    public List<UserHobby> getUserHobbies(String userId);
+    List<UserHobby> getUserHobbies(String userId);
+    void addUserHobby(UserHobby userHobby);
+    void delUserHobby(UserHobby userHobby);
 }

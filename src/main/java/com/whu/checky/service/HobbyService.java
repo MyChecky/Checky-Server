@@ -12,4 +12,8 @@ public interface HobbyService {
     void updateUserHobbies(String userId, List<String> hobbies);
 
     List<String> queryUserHobby(String userId);
+
+    void addHobby(Hobby hobby);
+
+    void delHobby(Hobby hobby);
 }

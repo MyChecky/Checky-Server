@@ -1,22 +1,20 @@
 package com.whu.checky.service.impl;
 
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.whu.checky.domain.Hobby;
-import com.whu.checky.domain.User;
-import com.whu.checky.domain.UserHobby;
-import com.whu.checky.mapper.HobbyMapper;
-import com.whu.checky.mapper.ParameterMapper;
-import com.whu.checky.mapper.UserHobbyMapper;
-import com.whu.checky.service.HobbyService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import javax.print.DocFlavor;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.whu.checky.domain.Hobby;
+import com.whu.checky.domain.UserHobby;
+import com.whu.checky.mapper.HobbyMapper;
+import com.whu.checky.mapper.UserHobbyMapper;
+import com.whu.checky.service.HobbyService;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service("HobbyService")
 public class HobbyServiceImpl implements HobbyService {
@@ -30,14 +28,13 @@ public class HobbyServiceImpl implements HobbyService {
 
     @Override
     public List<String> getUserHobbies(String userId, int num) {
-        List<UserHobby> userHobbies =
-                userHobbyMapper.selectList(new EntityWrapper<UserHobby>().eq("user_id", userId));
+        List<UserHobby> userHobbies = userHobbyMapper.selectList(new EntityWrapper<UserHobby>().eq("user_id", userId));
         List<String> hobbies = new ArrayList<>();
         for (UserHobby userHobby : userHobbies) {
             Hobby hobby = hobbyMapper.selectById(userHobby.getHobbyId());
             hobbies.add(hobby.getHobbyValue());
         }
-        for(int i = userHobbies.size(); i<num; i++){
+        for (int i = userHobbies.size(); i < num; i++) {
             hobbies.add("");
         }
         return hobbies;
@@ -45,8 +42,7 @@ public class HobbyServiceImpl implements HobbyService {
 
     @Override
     public List<String> getHobbies(String userId, int num) {
-        List<UserHobby> userHobbies =
-                userHobbyMapper.selectList(new EntityWrapper<UserHobby>().eq("user_id", userId));
+        List<UserHobby> userHobbies = userHobbyMapper.selectList(new EntityWrapper<UserHobby>().eq("user_id", userId));
         List<String> hobbies = new ArrayList<>();
         List<String> hobbiesRet = new ArrayList<>();
         int total = hobbyMapper.selectCount(new EntityWrapper<>());
@@ -71,13 +67,10 @@ public class HobbyServiceImpl implements HobbyService {
     public void updateUserHobbies(String userId, List<String> hobbies) {
         userHobbyMapper.delete(new EntityWrapper<UserHobby>().eq("user_id", userId));
         for (String hobbyStr : hobbies) {
-            List<Hobby> hobby = hobbyMapper.selectList(new EntityWrapper<Hobby>()
-                    .eq("hobby_value", hobbyStr));
+            List<Hobby> hobby = hobbyMapper.selectList(new EntityWrapper<Hobby>().eq("hobby_value", hobbyStr));
             List<UserHobby> userHobbies = userHobbyMapper.selectList(new EntityWrapper<UserHobby>()
-                    .eq("hobby_id", hobby.get(0).getHobbyId())
-                    .and()
-                    .eq("user_id", userId));
-            if(userHobbies.size()==0){
+                    .eq("hobby_id", hobby.get(0).getHobbyId()).and().eq("user_id", userId));
+            if (userHobbies.size() == 0) {
                 UserHobby userHobby = new UserHobby();
                 userHobby.setHobbyId(hobby.get(0).getHobbyId());
                 userHobby.setUserId(userId);
@@ -89,12 +82,20 @@ public class HobbyServiceImpl implements HobbyService {
 
     @Override
     public List<String> queryUserHobby(String userId) {
-        List<UserHobby> userHobbies = userHobbyMapper.selectList(new EntityWrapper<UserHobby>()
-                .eq("user_id", userId));
+        List<UserHobby> userHobbies = userHobbyMapper.selectList(new EntityWrapper<UserHobby>().eq("user_id", userId));
         List<String> hobbies = new ArrayList<>();
-        for(UserHobby userHobby: userHobbies){
+        for (UserHobby userHobby : userHobbies) {
             hobbies.add(hobbyMapper.selectById(userHobby.getHobbyId()).getHobbyValue());
         }
         return hobbies;
+    }
+
+    public void addHobby(Hobby hobby) {
+        hobbyMapper.insert(hobby);
+    }
+
+    @Override
+    public void delHobby(Hobby hobby) {
+        hobbyMapper.delete(new EntityWrapper<>(hobby));
     }
 }

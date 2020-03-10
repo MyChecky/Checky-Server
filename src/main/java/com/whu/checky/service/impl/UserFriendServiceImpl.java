@@ -60,4 +60,9 @@ public class UserFriendServiceImpl implements UserFriendService {
     public Integer updateUserFriend(String fromUserId, String userId, int addState) {
         return userFriendMapper.updateUserFriend(fromUserId, userId, addState);
     }
+
+    @Override
+    public void delUserFriend(UserFriend userFriend) {
+        userFriendMapper.delete(new EntityWrapper<>(userFriend));
+    }
 }

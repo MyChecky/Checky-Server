@@ -17,4 +17,5 @@ public interface UserFriendService {
 
     Integer updateUserFriend(String fromUserId, String userId, int addState);
 
+    void delUserFriend(UserFriend userFriend);
 }
