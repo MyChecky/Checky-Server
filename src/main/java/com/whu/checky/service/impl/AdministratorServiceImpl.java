@@ -14,10 +14,7 @@ import com.whu.checky.service.RedisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Service("administratorService")
 public class AdministratorServiceImpl implements AdministratorService {
@@ -125,6 +122,19 @@ public class AdministratorServiceImpl implements AdministratorService {
             }
         }
         return re;
+    }
+
+    @Override
+    public List<String> getPermissionsById(String userId) {
+        List<String> res = new ArrayList<String>();
+        List<AdminMenu> adminMenus = adminMenuMapper.selectList(new EntityWrapper<AdminMenu>()
+                .eq("user_id", userId));
+        for (AdminMenu adminMenu : adminMenus) {
+            Menu menu = menuMapper.selectById(adminMenu.getMenuId());
+            if (menu.getFlag() == 1) // 菜单状态可用
+                res.add(menu.getMenuName());
+        }
+        return res;
     }
 
 

@@ -29,4 +29,6 @@ public interface AdministratorService {
     List<Administrator> queryAdminsWithPage(Page<Administrator> p, String keyWord);
 
     Map<String, Boolean> getAdminPowers(java.lang.String userId);
+
+    List<String> getPermissionsById(String userId);
 }

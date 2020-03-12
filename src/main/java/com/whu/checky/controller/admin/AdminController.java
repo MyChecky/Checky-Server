@@ -123,6 +123,8 @@ public class AdminController {
         List<Administrator> adminList = administratorService.getAllAdmins(p);
         for(Administrator administrator: adminList){
             administrator.setUserPassword(null);
+            List<String> permissions = administratorService.getPermissionsById(administrator.getUserId());
+            administrator.setPermissions(permissions);
         }
         HashMap<String,Object> resp = new HashMap<>();
         resp.put("state","ok");
