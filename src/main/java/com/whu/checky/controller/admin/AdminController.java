@@ -1,6 +1,7 @@
 package com.whu.checky.controller.admin;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.whu.checky.domain.Administrator;
@@ -9,10 +10,7 @@ import com.whu.checky.service.RedisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 @RequestMapping("/admin")
@@ -52,7 +50,21 @@ public class AdminController {
         String userName = object.getString("userName");
         String userTel = object.getString("userTel");
         String userEmail = object.getString("userEmail");
-        String department = object.getString("department");
+        /*"menus":[
+            {"0": "money"},
+            {"1": "task"}
+        ]*/
+        JSONArray arrayMenus = object.getJSONArray("menus");
+
+        List<String> menus = new ArrayList<>();
+        int i = 0;
+        for(Object menu: arrayMenus){
+            JSONObject menuJson = (JSONObject) menu;
+            String menuStr = menuJson.getString(String.valueOf(i));
+            menus.add(menuStr);
+            i++;
+        }
+        administratorService.updateAdminMenus(userId, menus);
         Administrator administrator = administratorService.queryAdmin(userId);
         administrator.setUserName(userName);
         administrator.setUserTel(userTel);
@@ -163,9 +175,23 @@ public class AdminController {
         HashMap<String,Object> resp = new HashMap<>();
         resp.put("state","ok");
         resp.put("admin",admin);
-        Map<String, Boolean> menus = administratorService.getAdminPowers(userId);
+        List<String> menus = administratorService.getPermissionsById(userId);
         resp.put("menus", menus);
         return resp;
+    }
+
+    @PostMapping("/deleteAdmin")
+    HashMap<String, Object> deleteAdmin(@RequestBody String body){
+        HashMap<String, Object> res = new HashMap<>();
+        String userId = JSONObject.parseObject(body).getString("userId");
+        Integer deleteResult = administratorService.deleteById(userId);
+        if(deleteResult == 1)
+            res.put("state", "ok");
+        else
+            res.put("state", "fail");
+        return res;
+
+
     }
 
     private Administrator parserJson2User(String body){

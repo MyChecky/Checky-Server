@@ -72,9 +72,9 @@ public class AdministratorServiceImpl implements AdministratorService {
     }
 
     @Override
-    public boolean deleteById(Administrator administrator) {
-        mapper.deleteById(administrator);
-        return false;
+    public Integer deleteById(String userId) {
+        adminMenuMapper.delete(new EntityWrapper<AdminMenu>().eq("user_id", userId));
+        return mapper.deleteById(userId);
     }
 
     @Override
@@ -137,5 +137,15 @@ public class AdministratorServiceImpl implements AdministratorService {
         return res;
     }
 
-
+    @Override
+    public void updateAdminMenus(String userId, List<String> menus) {
+        List<Menu> menuObs = menuMapper.selectList(new EntityWrapper<Menu>().in("menu_name", menus));
+        adminMenuMapper.delete(new EntityWrapper<AdminMenu>().eq("user_id", userId));
+        for(Menu menu: menuObs){
+            AdminMenu adminMenu = new AdminMenu();
+            adminMenu.setUserId(userId);
+            adminMenu.setMenuId(menu.getMenuId());
+            adminMenuMapper.insert(adminMenu);
+        }
+    }
 }

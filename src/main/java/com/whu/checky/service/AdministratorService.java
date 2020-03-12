@@ -16,7 +16,7 @@ public interface AdministratorService {
     //修改管理员信息
     int update(Administrator administrator);
     //删除管理员
-    boolean deleteById(Administrator administrator);
+    Integer deleteById(String userId);
     //获取管理员列表
     List<Administrator> getAllAdmins(Page<Administrator> page);
     //获取管理员数量
@@ -31,4 +31,6 @@ public interface AdministratorService {
     Map<String, Boolean> getAdminPowers(java.lang.String userId);
 
     List<String> getPermissionsById(String userId);
+
+    void updateAdminMenus(String userId, List<String> menus);
 }
