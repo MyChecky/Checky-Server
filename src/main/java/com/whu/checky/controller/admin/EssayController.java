@@ -3,9 +3,11 @@ package com.whu.checky.controller.admin;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.plugins.Page;
+import com.whu.checky.domain.Comment;
 import com.whu.checky.domain.Essay;
 import com.whu.checky.domain.Record;
 import com.whu.checky.domain.User;
+import com.whu.checky.service.CommentService;
 import com.whu.checky.service.EssayService;
 import com.whu.checky.service.RecordService;
 import com.whu.checky.service.UserService;
@@ -28,6 +30,8 @@ public class EssayController {
     private UserService userService;
     @Autowired
     private RecordService recordService;
+    @Autowired
+    private CommentService commentService;
 
     //假删除动态
     @RequestMapping("/delete")
@@ -83,9 +87,39 @@ public class EssayController {
         return res;
     }
 
-    //根据username模糊搜索的动态-->目前逻辑没有分页，无需size
     @RequestMapping("/query")
-    public JSONObject query(@RequestBody String jsonstr) {
+    public JSONObject query(@RequestBody String jsonstr){
+        JSONObject res = new JSONObject();
+        String essayId = JSON.parseObject(jsonstr).getString("essayId");
+
+        Essay essay = essayService.queryEssayById(essayId);
+
+        List<Record> records = recordService.getRecordsByEssayId(essay.getEssayId());
+        for (Record record : records) {
+            if (!record.getRecordType().equals("text"))
+                record.setRecordType(record.getRecordType().substring(0, 5));
+        }
+        AdminEssay adminEssay = new AdminEssay();
+        User user = userService.queryUser(essay.getUserId());
+        adminEssay.setCommentNum(essay.getCommentNum());
+        adminEssay.setEssayContent(essay.getEssayContent());
+        adminEssay.setEssayId(essay.getEssayId());
+        adminEssay.setEssayTime(essay.getEssayTime());
+        adminEssay.setLikeNum(essay.getLikeNum());
+        adminEssay.setUserName(user.getUserName());
+        adminEssay.setImg(records);
+
+        List<Comment> comments = commentService.queryCommentByEssayId(essayId);
+
+        res.put("essay", adminEssay);
+        res.put("comments", comments);
+        res.put("state", "ok");
+        return res;
+    }
+
+    //根据username模糊搜索的动态
+    @RequestMapping("/queryByKeyword")
+    public JSONObject queryByKeyword(@RequestBody String jsonstr) {
         JSONObject res = new JSONObject();
         JSONObject object = (JSONObject) JSON.parse(jsonstr);
         String username = object.getString("username");
@@ -96,6 +130,7 @@ public class EssayController {
         }
         List<AdminEssay> adminEssays = new ArrayList<AdminEssay>();
         List<Essay> essays = essayService.queryEssaysByUserName(username);
+
         int end = Math.min((page + 1) * pageSize, essays.size());
         for (int i = page * pageSize; i< end; i++) {
             List<Record> records = recordService.getRecordsByEssayId(essays.get(i).getEssayId());
