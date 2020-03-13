@@ -76,15 +76,51 @@ public class AppealController {
         return res;
     }
 
-    //根据username模糊搜索的申诉
     @RequestMapping("/query")
     public JSONObject query(@RequestBody String jsonstr){
-        JSONObject res=new JSONObject();
-        JSONObject object= (JSONObject) JSON.parse(jsonstr);
-        String username=object.getString("username");
-        List<Appeal> appeals=appealService.queryAppealByUserName(username);
-        res.put("state","ok");
-        res.put("appeals",appeals);
+        JSONObject res = new JSONObject();
+        JSONObject object = (JSONObject) JSON.parse(jsonstr);
+        String startTime = object.getString("startTime");
+        startTime = startTime != null ? startTime : "1970-01-01";
+        String endTime = object.getString("endTime");
+        endTime = endTime != null ? endTime : "2999-01-01";
+
+        String keyword = object.getString("keyword");
+        String searchType = object.getString("searchType");
+        Integer page = object.getInteger("page");
+        Integer pageSize = object.getInteger("pageSize");
+        Page<Appeal> p = new Page<>(page, pageSize);
+        List<Appeal> appeals = new ArrayList<>();
+
+        if(keyword == null || keyword.equals("")){
+            appeals = appealService.queryAppealsAll(p, startTime, endTime);
+        }
+        else if(searchType.equals("nickname")){
+            appeals = appealService.queryAppealsLikeNickname(p, startTime, endTime, keyword);
+        }else if(searchType.equals("content")){
+            appeals = appealService.queryAppealsLikeContent(p, startTime, endTime, keyword);
+        }else{
+            res.put("state", "fail");
+            return res;
+        }
+        List<AdminAppeal> adminAppeals=new ArrayList<AdminAppeal>();
+        for (Appeal appeal:appeals){
+            AdminAppeal adminAppeal=new AdminAppeal();
+            User user=userService.queryUser(appeal.getUserId());
+            adminAppeal.setAppealContent(appeal.getAppealContent());
+            adminAppeal.setAppealId(appeal.getAppealId());
+            adminAppeal.setAppealTime(appeal.getAppealId());
+            adminAppeal.setCheckId(appeal.getCheckId());
+            adminAppeal.setTaskId(appeal.getTaskId());
+            adminAppeal.setUserId(appeal.getUserId());
+            adminAppeal.setUserName(user.getUserName());
+            adminAppeal.setAppealState(appeal.getProcessResult());
+            adminAppeals.add(adminAppeal);
+        }
+        res.put("state", "ok");
+        res.put("appeals", appeals);
+        res.put("size", (int)Math.ceil(p.getTotal() / (double) pageSize));
+        res.put("total", p.getTotal());
         return res;
     }
 

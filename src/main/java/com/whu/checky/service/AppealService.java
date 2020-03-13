@@ -21,5 +21,11 @@ public interface AppealService {
     //根据用户名检索
     List<Appeal> queryAppealByUserName(String username);
 
+    List<Appeal> queryAppealsAll(Page<Appeal> p, String startTime, String endTime);
+
+    List<Appeal> queryAppealsLikeNickname(Page<Appeal> p, String startTime, String endTime, String keyword);
+
+    List<Appeal> queryAppealsLikeContent(Page<Appeal> p, String startTime, String endTime, String keyword);
+
 //    int queryAllAppealNum();
 }

@@ -5,11 +5,14 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.whu.checky.domain.Appeal;
 import com.whu.checky.domain.Report;
+import com.whu.checky.domain.User;
 import com.whu.checky.mapper.ReportMapper;
+import com.whu.checky.mapper.UserMapper;
 import com.whu.checky.service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service("reportService")
@@ -17,6 +20,8 @@ public class ReportServiceImpl implements ReportService {
     @Autowired
     private ReportMapper reportMapper;
 
+    @Autowired
+    private UserMapper userMapper;
 
     @Override
     public int addReport(Report report) {
@@ -58,5 +63,38 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public List<Report> queryReportByUserName(String username) {
         return reportMapper.queryReportByUserName(username);
+    }
+
+    @Override
+    public List<Report> queryAppealsAll(Page<Report> p, String startTime, String endTime) {
+        return reportMapper.selectPage(p, new EntityWrapper<Report>()
+                .ge("report_time", startTime)
+                .le("report_time", endTime)
+                .orderBy("report_time", false));
+    }
+
+    @Override
+    public List<Report> queryAppealsLikeNickname(Page<Report> p, String startTime, String endTime, String keyword) {
+        List<User> users = userMapper.selectList(new EntityWrapper<User>().like("user_name", keyword));
+        List<String> userIds = new ArrayList<>();
+        for (User user : users) {
+            userIds.add(user.getUserId());
+        }
+
+        List<Report> reports = reportMapper.selectPage(p, new EntityWrapper<Report>()
+                .in("user_id", userIds)
+                .ge("report_time", startTime)
+                .le("report_time", endTime)
+                .orderBy("report_time", false));
+        return reports;
+    }
+
+    @Override
+    public List<Report> queryAppealsLikeContent(Page<Report> p, String startTime, String endTime, String keyword) {
+        return reportMapper.selectPage(p, new EntityWrapper<Report>()
+                .like("report_content", keyword)
+                .ge("report_time", startTime)
+                .le("report_time", endTime)
+                .orderBy("report_time", false));
     }
 }

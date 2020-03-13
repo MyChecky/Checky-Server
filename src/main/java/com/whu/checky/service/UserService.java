@@ -37,4 +37,8 @@ public interface UserService {
     List<User> queryUsersWithPage(Page<User> p);
 
     List<User> getUsersRandomly(int maxNumUsersNeed);
+
+    List<User> queryUsersAll(Page<User> p, String startTime, String endTime);
+
+    List<User> queryUsersLikeNickname(Page<User> p, String startTime, String endTime, String keyword);
 }

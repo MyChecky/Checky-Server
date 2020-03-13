@@ -4,17 +4,23 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.plugins.pagination.Pagination;
 import com.whu.checky.domain.Essay;
+import com.whu.checky.domain.User;
 import com.whu.checky.mapper.EssayMapper;
+import com.whu.checky.mapper.UserMapper;
 import com.whu.checky.service.EssayService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service("essayService")
 public class EssayServiceImpl implements EssayService {
     @Autowired
     private EssayMapper essayMapper;
+
+    @Autowired
+    private UserMapper userMapper;
 
     @Override
     public int addEssay(Essay essay) {
@@ -80,5 +86,38 @@ public class EssayServiceImpl implements EssayService {
     @Override
     public int updateEssay(Essay essay) {
         return essayMapper.updateById(essay);
+    }
+
+    @Override
+    public List<Essay> queryEssaysAll(Page<Essay> p, String startTime, String endTime) {
+        return essayMapper.selectPage(p, new EntityWrapper<Essay>()
+                .ge("essay_time", startTime)
+                .le("essay_time", endTime)
+                .orderBy("essay_time", false));
+    }
+
+    @Override
+    public List<Essay> queryEssaysLikeNickname(Page<Essay> p, String startTime, String endTime, String keyword) {
+        List<User> users = userMapper.selectList(new EntityWrapper<User>().like("user_name", keyword));
+        List<String> userIds = new ArrayList<>();
+        for (User user : users) {
+            userIds.add(user.getUserId());
+        }
+        return essayMapper.selectPage(p, new EntityWrapper<Essay>()
+                .in("user_id", userIds)
+                .andNew()
+                .ge("essay_time", startTime)
+                .or()
+                .le("essay_time", endTime)
+                .orderBy("essay_time", false));
+    }
+
+    @Override
+    public List<Essay> queryEssaysLikeContent(Page<Essay> p, String startTime, String endTime, String keyword) {
+        return essayMapper.selectPage(p, new EntityWrapper<Essay>()
+                .like("essay_content", keyword)
+                .ge("essay_time", startTime)
+                .le("essay_time", endTime)
+                .orderBy("essay_time", false));
     }
 }

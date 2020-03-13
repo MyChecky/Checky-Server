@@ -73,10 +73,31 @@ public class MoneyController {
     //根据username模糊搜索的申诉
     @RequestMapping("/query")
     public JSONObject query(@RequestBody String jsonstr) {
+        /*
+        * moneyType: this.moneyType, moneyTest: this.moneyTest, moneyIO: this.moneyIO,
+          startTime: this.startTime, endTime: this.endTime, searchType: this.searchType,
+          keyword: this.keyword, page: this.page, pageSize: this.pageSize
+        * */
         JSONObject res = new JSONObject();
         JSONObject object = (JSONObject) JSON.parse(jsonstr);
-        String username = object.getString("username");
-        List<MoneyFlow> moneyFlows = moneyService.queryMoneyFlowByUserName(username);
+        String moneyType = object.getString("moneyType");
+        int moneyTest = object.getInteger("moneyTest");
+        String moneyIO = object.getString("moneyIO");
+        String startTime = object.getString("startTime");
+        startTime = startTime != null ? startTime : "1970-01-01";
+        String endTime = object.getString("endTime");
+        endTime = endTime != null ? endTime : "2999-01-01";
+        String keyword = object.getString("keyword");
+//        String searchType = object.getString("searchType");
+        Integer page = object.getInteger("page");
+        Integer pageSize = object.getInteger("pageSize");
+
+        Page<MoneyFlow> p = new Page<>(page, pageSize);
+        List<MoneyFlow> moneyFlows = moneyService.queryMoneyflowsForAdmin(p, startTime, endTime, moneyType, moneyIO,
+                moneyTest, keyword);
+
+        res.put("size", (int)Math.ceil(p.getTotal() / (double) pageSize));
+        res.put("total", p.getTotal());
         res.put("state", "ok");
         res.put("moneyFlows", moneyFlows);
         return res;

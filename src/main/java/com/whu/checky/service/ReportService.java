@@ -23,4 +23,10 @@ public interface ReportService {
     int updateState(String reportId,String result);
 
     List<Report> queryReportByUserName(String username);
+
+    List<Report> queryAppealsAll(Page<Report> p, String startTime, String endTime);
+
+    List<Report> queryAppealsLikeNickname(Page<Report> p, String startTime, String endTime, String keyword);
+
+    List<Report> queryAppealsLikeContent(Page<Report> p, String startTime, String endTime, String keyword);
 }

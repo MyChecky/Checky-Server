@@ -28,4 +28,10 @@ public interface EssayService {
 
 
     int updateEssay(Essay essay);
+
+    List<Essay> queryEssaysAll(Page<Essay> p, String startTime, String endTime);
+
+    List<Essay> queryEssaysLikeNickname(Page<Essay> p, String startTime, String endTime, String keyword);
+
+    List<Essay> queryEssaysLikeContent(Page<Essay> p, String startTime, String endTime, String keyword);
 }

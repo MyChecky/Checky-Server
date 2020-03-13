@@ -9,6 +9,7 @@ import com.whu.checky.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -43,21 +44,34 @@ public class UserController {
 
     @RequestMapping("/queryByKeyWord")
     HashMap<String, Object> queryUserByKeyWord(@RequestBody String body) {
-        int page = JSON.parseObject(body).getInteger("page");
-        Integer pageSize = JSON.parseObject(body).getInteger("pageSize");
-        if (pageSize == null) {
-            pageSize = 5;
-        }
-        String keyWord = JSON.parseObject(body).getString("keyword");
+        HashMap<String, Object> res = new HashMap<>();
+        JSONObject object = (JSONObject) JSON.parse(body);
+        String startTime = object.getString("startTime");
+        startTime = startTime != null ? startTime : "1970-01-01";
+        String endTime = object.getString("endTime");
+        endTime = endTime != null ? endTime : "2999-01-01";
 
+        String keyword = object.getString("keyword");
+        String searchType = object.getString("searchType");
+        Integer page = object.getInteger("page");
+        Integer pageSize = object.getInteger("pageSize");
         Page<User> p = new Page<User>(page, pageSize);
-        List<User> userList = userService.queryUsersWithPage(p, keyWord);
-        HashMap<String, Object> resp = new HashMap<>();
-        resp.put("state", "ok");
-        resp.put("users", userList);
-        resp.put("size", (int) Math.ceil(p.getTotal() / (double) pageSize));
-        resp.put("total", p.getTotal());
-        return resp;
+        List<User> users = new ArrayList<User>();
+
+        if(keyword == null || keyword.equals("")){
+            users = userService.queryUsersAll(p, startTime, endTime);
+        }
+        else if(searchType.equals("nickname")){
+            users = userService.queryUsersLikeNickname(p, startTime, endTime, keyword);
+        }else{
+            res.put("state", "fail");
+            return res;
+        }
+        res.put("state", "ok");
+        res.put("users", users);
+        res.put("size", (int)Math.ceil(p.getTotal() / (double) pageSize));
+        res.put("total", p.getTotal());
+        return res;
     }
 
     @PostMapping("/modify")

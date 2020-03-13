@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.whu.checky.domain.*;
 import com.whu.checky.mapper.TaskSupervisorMapper;
 import com.whu.checky.service.*;
+import com.whu.checky.util.ParseRepeat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -99,15 +100,39 @@ public class TaskController {
         return res;
     }
 
-    //根据username模糊搜索的任务
     @RequestMapping("/query")
     public JSONObject query(@RequestBody String jsonstr) {
         JSONObject res = new JSONObject();
         JSONObject object = (JSONObject) JSON.parse(jsonstr);
-        String username = object.getString("username");
-        List<Task> tasks = taskService.queryTaskByUserName(username);
+        String startTime = object.getString("startTime");
+        startTime = startTime != null ? startTime : "1970-01-01";
+        String endTime = object.getString("endTime");
+        endTime = endTime != null ? endTime : "2999-01-01";
+
+        String keyword = object.getString("keyword");
+        String searchType = object.getString("searchType");
+        Integer page = object.getInteger("page");
+        Integer pageSize = object.getInteger("pageSize");
+
+        Page<Task> p = new Page<>(page, pageSize);
+        List<Task> tasks = new ArrayList<Task>();
+        if(keyword == null || keyword.equals("")){
+            tasks = taskService.queryTaskAll(p, startTime, endTime);
+        }
+        else if(searchType.equals("nickname")){
+            tasks = taskService.queryTaskLikeNickname(p, startTime, endTime, keyword);
+        }else if(searchType.equals("content")){
+            tasks = taskService.queryTaskLikeContent(p, startTime, endTime, keyword);
+        }else if(searchType.equals("title")){
+            tasks = taskService.queryTaskLikeTitle(p, startTime, endTime, keyword);
+        }else{
+            res.put("state", "fail");
+            return res;
+        }
         res.put("state", "ok");
         res.put("tasks", tasks);
+        res.put("size", (int)Math.ceil(p.getTotal() / (double) pageSize));
+        res.put("total", p.getTotal());
         return res;
     }
 

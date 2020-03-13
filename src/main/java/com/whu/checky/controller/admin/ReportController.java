@@ -84,12 +84,55 @@ public class ReportController {
     //根据username模糊搜索的举报
     @RequestMapping("/query")
     public JSONObject query(@RequestBody String jsonstr){
-        JSONObject res=new JSONObject();
-        JSONObject object= (JSONObject) JSON.parse(jsonstr);
-        String username=object.getString("username");
-        List<Report> reports=reportService.queryUserReports(username);
+        JSONObject res = new JSONObject();
+        JSONObject object = (JSONObject) JSON.parse(jsonstr);
+        String startTime = object.getString("startTime");
+        startTime = startTime != null ? startTime : "1970-01-01";
+        String endTime = object.getString("endTime");
+        endTime = endTime != null ? endTime : "2999-01-01";
+
+        String keyword = object.getString("keyword");
+        String searchType = object.getString("searchType");
+        Integer page = object.getInteger("page");
+        Integer pageSize = object.getInteger("pageSize");
+        Page<Report> p = new Page<>(page, pageSize);
+        List<Report> reports = new ArrayList<>();
+
+        if(keyword == null || keyword.equals("")){
+            reports = reportService.queryAppealsAll(p, startTime, endTime);
+        }
+        else if(searchType.equals("nickname")){
+            reports = reportService.queryAppealsLikeNickname(p, startTime, endTime, keyword);
+        }else if(searchType.equals("content")){
+            reports = reportService.queryAppealsLikeContent(p, startTime, endTime, keyword);
+        }else{
+            res.put("state", "fail");
+            return res;
+        }
+
+        List<AdminReport> adminReports=new ArrayList<AdminReport>();
+        for (Report report:reports){
+            AdminReport adminReport=new AdminReport();
+            User user=userService.queryUser(report.getUserId());
+            String objectId=report.getCheckId()!=null?report.getCheckId()
+                    :report.getEssayId()!=null?report.getEssayId()
+                    :report.getSupervisorId()!=null?report.getSupervisorId()
+                    :report.getTaskId()!=null?report.getTaskId():null;
+            adminReport.setObjectId(objectId);
+            adminReport.setReportContent(report.getReportContent());
+            adminReport.setReportId(report.getReportId());
+            adminReport.setReportTime(report.getReportTime());
+            adminReport.setReportType(report.getReportType());
+            adminReport.setUserId(report.getUserId());
+            adminReport.setUserName(user.getUserName());
+            adminReport.setObjectId(report.getEssayId());
+            adminReport.setReportState(report.getProcessResult());
+            adminReports.add(adminReport);
+        }
         res.put("state","ok");
-        res.put("reports",reports);
+        res.put("reports",adminReports);
+        res.put("size", (int)Math.ceil(p.getTotal() / (double)pageSize));
+        res.put("total", p.getTotal());
         return res;
     }
 

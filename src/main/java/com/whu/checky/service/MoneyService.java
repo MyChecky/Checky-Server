@@ -62,4 +62,8 @@ public interface MoneyService {
     int rechargeListSize();
 
     double[] getUserTotalMoneys(String userId);
+
+    List<MoneyFlow> queryMoneyflowsForAdmin(Page<MoneyFlow> p, String startTime, String endTime, String moneyType, String moneyIO, int moneyTest, String keyword);
+
+    List<Pay> queryPaysForAdmin(Page<MoneyFlow> p, String startTime, String endTime, String payType, String keyword);
 }

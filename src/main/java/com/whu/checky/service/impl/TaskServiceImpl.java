@@ -2,12 +2,7 @@ package com.whu.checky.service.impl;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
@@ -17,6 +12,7 @@ import com.whu.checky.domain.TaskSupervisor;
 import com.whu.checky.domain.User;
 import com.whu.checky.mapper.TaskMapper;
 import com.whu.checky.mapper.TaskSupervisorMapper;
+import com.whu.checky.mapper.UserMapper;
 import com.whu.checky.service.TaskService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +22,8 @@ import org.springframework.stereotype.Service;
 public class TaskServiceImpl implements TaskService {
     @Autowired
     private TaskMapper taskMapper;
+    @Autowired
+    private UserMapper userMapper;
 
     @Autowired
     private TaskSupervisorMapper taskSupervisorMapper;
@@ -33,7 +31,7 @@ public class TaskServiceImpl implements TaskService {
     private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
     private Calendar cal = Calendar.getInstance();
-    private int[] weekDays = { 7, 1, 2, 3, 4, 5, 6 };
+    private int[] weekDays = {7, 1, 2, 3, 4, 5, 6};
 
     @Override
     public Integer addTask(Task task) {
@@ -181,20 +179,6 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public int getTasksNum(HashMap<String, String> params) {
-        Wrapper<Task> wrapper = new EntityWrapper<>();
-        for (String key : params.keySet()) {
-            wrapper = wrapper.eq(key, params.get(key));
-        }
-        return taskMapper.selectCount(wrapper);
-    }
-
-    @Override
-    public List<Task> queryTaskByUserName(String username) {
-        return taskMapper.queryTaskByUserName(username);
-    }
-
-    @Override
     public String getTitleById(String taskId) {
         return taskMapper.getTitleById(taskId);
     }
@@ -202,5 +186,68 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public List<Task> getTasksAtNoMatchStateOwnedByUser(User user) {
         return taskMapper.selectList(new EntityWrapper<Task>().eq("user_id", user.getUserId()).eq("task_state", "nomatch"));
+    }
+
+    @Override
+    public List<Task> queryTaskLikeNickname(Page<Task> p, String startTime, String endTime, String keyword) {
+        List<User> users = userMapper.selectList(new EntityWrapper<User>().like("user_name", keyword));
+        List<String> userIds = new ArrayList<>();
+        for (User user : users) {
+            userIds.add(user.getUserId());
+        }
+        List<Task> tasks = taskMapper.selectPage(p, new EntityWrapper<Task>()
+                .in("user_id", userIds)
+                .andNew()
+                .ge("task_start_time", startTime)
+                .or()
+                .le("task_end_time", endTime)
+                .orderBy("task_start_time", false));
+        for (Task task : tasks) {
+            task.setUserName(userMapper.getUsernameById(task.getUserId()));
+        }
+        return tasks;
+    }
+
+    @Override
+    public List<Task> queryTaskLikeContent(Page<Task> p, String startTime, String endTime, String keyword) {
+        List<Task> tasks = taskMapper.selectPage(p, new EntityWrapper<Task>()
+                .like("task_content", keyword)
+                .andNew()
+                .ge("task_start_time", startTime)
+                .or()
+                .le("task_end_time", endTime)
+                .orderBy("task_start_time", false));
+        for (Task task : tasks) {
+            task.setUserName(userMapper.getUsernameById(task.getUserId()));
+        }
+        return tasks;
+    }
+
+    @Override
+    public List<Task> queryTaskLikeTitle(Page<Task> p, String startTime, String endTime, String keyword) {
+        List<Task> tasks = taskMapper.selectPage(p, new EntityWrapper<Task>()
+                .like("task_title", keyword)
+                .andNew()
+                .ge("task_start_time", startTime)
+                .or()
+                .le("task_end_time", endTime)
+                .orderBy("task_start_time", false));
+        for (Task task : tasks) {
+            task.setUserName(userMapper.getUsernameById(task.getUserId()));
+        }
+        return tasks;
+    }
+
+    @Override
+    public List<Task> queryTaskAll(Page<Task> p, String startTime, String endTime) {
+        List<Task> tasks = taskMapper.selectPage(p, new EntityWrapper<Task>()
+                .ge("task_start_time", startTime)
+                .or()
+                .le("task_end_time", endTime)
+                .orderBy("task_start_time", false));
+        for (Task task : tasks) {
+            task.setUserName(userMapper.getUsernameById(task.getUserId()));
+        }
+        return tasks;
     }
 }

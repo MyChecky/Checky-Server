@@ -1,5 +1,6 @@
 package com.whu.checky.controller.admin;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.whu.checky.domain.MoneyFlow;
@@ -67,5 +68,31 @@ public class RechargeController {
         resp.put("size", (int)Math.ceil(p.getTotal() / (double)pageSize));
         resp.put("total", p.getTotal());
         return resp;
+    }
+
+    @PostMapping("queryByKeyword")
+    public HashMap<String, Object> queryByKeyword(@RequestBody String body){
+        /*startTime: this.startTime, endTime: this.endTime, searchType: this.searchType,
+          keyword: this.keyword, page: this.page, pageSize: this.pageSize, payType: this.payType
+        * */
+        HashMap<String, Object> res = new HashMap<>();
+        JSONObject object = (JSONObject) JSON.parse(body);
+        String payType = object.getString("payType");
+        String startTime = object.getString("startTime");
+        startTime = startTime != null ? startTime : "1970-01-01";
+        String endTime = object.getString("endTime");
+        endTime = endTime != null ? endTime : "2999-01-01";
+        String keyword = object.getString("keyword");
+//        String searchType = object.getString("searchType");
+        Integer page = object.getInteger("page");
+        Integer pageSize = object.getInteger("pageSize");
+        Page<MoneyFlow> p = new Page<>(page, pageSize);
+        List<Pay> pays = moneyService.queryPaysForAdmin(p, startTime, endTime, payType, keyword);
+
+        res.put("size", (int)Math.ceil(p.getTotal() / (double) pageSize));
+        res.put("total", p.getTotal());
+        res.put("state", "ok");
+        res.put("pays", pays);
+        return res;
     }
 }

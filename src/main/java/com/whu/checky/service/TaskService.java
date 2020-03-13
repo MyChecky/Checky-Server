@@ -31,9 +31,13 @@ public interface TaskService {
     // void getTaskList();
     List<Task> query(HashMap<String, String> params, Page<Task> page);
 
-    int getTasksNum(HashMap<String, String> params);
-
-    List<Task> queryTaskByUserName(String username);
-
     List<Task> getTasksAtNoMatchStateOwnedByUser(User user);
+
+    List<Task> queryTaskLikeNickname(Page<Task> p, String startTime, String endTime, String keyword);
+
+    List<Task> queryTaskLikeContent(Page<Task> p, String startTime, String endTime, String keyword);
+
+    List<Task> queryTaskLikeTitle(Page<Task> p, String startTime, String endTime, String keyword);
+
+    List<Task> queryTaskAll(Page<Task> p, String startTime, String endTime);
 }

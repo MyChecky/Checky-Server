@@ -6,8 +6,11 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.whu.checky.config.WxPayConfig;
 import com.whu.checky.domain.MoneyFlow;
 import com.whu.checky.domain.Pay;
+import com.whu.checky.domain.Task;
+import com.whu.checky.domain.User;
 import com.whu.checky.mapper.MoneyFlowMapper;
 import com.whu.checky.mapper.PayMapper;
+import com.whu.checky.mapper.TaskMapper;
 import com.whu.checky.mapper.UserMapper;
 import com.whu.checky.service.MoneyService;
 import com.whu.checky.util.WXPayUtil;
@@ -28,6 +31,9 @@ public class MoneyServiceImpl implements MoneyService {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private TaskMapper taskMapper;
 
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -181,6 +187,100 @@ public class MoneyServiceImpl implements MoneyService {
     }
 
     @Override
+    public List<MoneyFlow> queryMoneyflowsForAdmin(Page<MoneyFlow> p, String startTime, String endTime,
+                                                   String moneyType, String moneyIO, int moneyTest, String keyword) {
+        List<String> moneyTypes = new ArrayList<>();
+        List<String> moneyIOs = new ArrayList<>();
+        List<Integer> moneyTests = new ArrayList<>();
+        if(moneyType.equals("all")){
+            moneyTypes.add("pay");
+            moneyTypes.add("refund");
+            moneyTypes.add("benefit");
+        }else{
+            moneyTypes.add(moneyType);
+        }
+        if(moneyIO.equals("all")){
+            moneyIOs.add("I");
+            moneyIOs.add("O");
+        }else{
+            moneyIOs.add(moneyIO);
+        }
+        if(moneyTest == 2){
+            moneyTests.add(0);
+            moneyTests.add(1);
+        }else{
+            moneyTests.add(moneyTest);
+        }
+
+        if(keyword == null || keyword.equals("")){
+            List<MoneyFlow> moneyFlows = moneyFlowMapper.selectPage(p, new EntityWrapper<MoneyFlow>()
+                    .ge("flow_time", startTime)
+                    .le("flow_time", endTime)
+                    .in("if_test", moneyTests)
+                    .in("flow_io", moneyIOs)
+                    .in("flow_type", moneyTypes));
+            for(MoneyFlow moneyFlow: moneyFlows){
+                moneyFlow.setUserName(userMapper.getUsernameById(moneyFlow.getUserID()));
+            }
+            return moneyFlows;
+        }else{
+            List<User> users = userMapper.selectList(new EntityWrapper<User>().like("user_name", keyword));
+            List<String> userIds = new ArrayList<>();
+            for (User user : users) {
+                userIds.add(user.getUserId());
+            }
+            List<MoneyFlow> moneyFlows = moneyFlowMapper.selectPage(p, new EntityWrapper<MoneyFlow>()
+                    .ge("flow_time", startTime)
+                    .le("flow_time", endTime)
+                    .in("user_id", userIds)
+                    .in("if_test", moneyTests)
+                    .in("flow_io", moneyIOs)
+                    .in("flow_type", moneyTypes));
+            for(MoneyFlow moneyFlow: moneyFlows){
+                moneyFlow.setUserName(userMapper.getUsernameById(moneyFlow.getUserID()));
+            }
+            return moneyFlows;
+        }
+
+    }
+
+    @Override
+    public List<Pay> queryPaysForAdmin(Page<MoneyFlow> p, String startTime, String endTime, String payType, String keyword) {
+        List<String> payTypes = new ArrayList<>();
+        if(payType.equals("all")){
+            payTypes.add("withdraw");
+            payTypes.add("pay");
+        }else{
+            payTypes.add(payType);
+        }
+        if(keyword == null || keyword.equals("")){
+            List<Pay> pays = payMapper.selectPage(p, new EntityWrapper<Pay>()
+                    .ge("pay_time", startTime)
+                    .le("pay_time", endTime)
+                    .in("pay_type", payTypes));
+            for(Pay pay: pays){
+                pay.setPayUserName(userMapper.getUsernameById(pay.getPayUserid()));
+            }
+            return pays;
+        }else{
+            List<User> users = userMapper.selectList(new EntityWrapper<User>().like("user_name", keyword));
+            List<String> userIds = new ArrayList<>();
+            for (User user : users) {
+                userIds.add(user.getUserId());
+            }
+            List<Pay> pays = payMapper.selectPage(p, new EntityWrapper<Pay>()
+                    .ge("pay_time", startTime)
+                    .le("pay_time", endTime)
+                    .in("pay_userid", userIds)
+                    .in("pay_type", payTypes));
+            for(Pay pay: pays){
+                pay.setPayUserName(userMapper.getUsernameById(pay.getPayUserid()));
+            }
+            return pays;
+        }
+    }
+
+    @Override
     public List<MoneyFlow> queryUserTestScopeMoneyFlow(String startDate, String endDate, String userId) {
         return moneyFlowMapper.queryUserScopeMoneyFlow(startDate, endDate, userId);
     }
@@ -212,12 +312,17 @@ public class MoneyServiceImpl implements MoneyService {
             try {
                 int month = Integer.parseInt(m.getFlowTime().substring(5, 7)) - 1;
 //                int month = sdf.parse(m.getFlowTime()).getMonth();
-                if (m.getFlowIo().equals("O")) {// no
-                    if (m.getIfTest() == 0)// t num 0 here
-                        trueIncomeList.set(month, m.getFlowMoney() + trueIncomeList.get(month));
-                    else
-                        testIncomeList.set(month, m.getFlowMoney() + testIncomeList.get(month));
-                } else {
+                if (m.getFlowIo().equals("O")) {// flowIO为O,仅支出,尚未结算，需等结算
+                    if (m.getIfTest() == 0) {// t num 0 here
+                        if(taskMapper.selectById(m.getTaskId()).getTaskState().equals("complete")){
+                            trueIncomeList.set(month, m.getFlowMoney() + trueIncomeList.get(month));
+                        }
+                    }
+                    else{
+                        if(taskMapper.selectById(m.getTaskId()).getTaskState().equals("complete"))
+                            testIncomeList.set(month, m.getFlowMoney() + testIncomeList.get(month));
+                    }
+                } else { // 入账，说明已结算，无需判别任务状态
                     if (m.getIfTest() == 0)// t num 0 here
                         trueRefundList.set(month, m.getFlowMoney() + trueRefundList.get(month));
                     else

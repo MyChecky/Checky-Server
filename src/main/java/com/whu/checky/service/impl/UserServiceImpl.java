@@ -100,4 +100,21 @@ public class UserServiceImpl implements UserService {
         int offset = RANDOM.nextInt(cnt-maxNumUsersNeed+1);
         return mapper.selectPage(new RowBounds(offset, maxNumUsersNeed), null);
     }
+
+    @Override
+    public List<User> queryUsersAll(Page<User> p, String startTime, String endTime) {
+        return mapper.selectPage(p, new EntityWrapper<User>()
+                .ge("user_time", startTime)
+                .le("user_time", endTime)
+                .orderBy("user_time", false));
+    }
+
+    @Override
+    public List<User> queryUsersLikeNickname(Page<User> p, String startTime, String endTime, String keyword) {
+        return mapper.selectPage(p, new EntityWrapper<User>()
+                .like("user_name", keyword)
+                .ge("user_time", startTime)
+                .le("user_time", endTime)
+                .orderBy("user_time", false));
+    }
 }
