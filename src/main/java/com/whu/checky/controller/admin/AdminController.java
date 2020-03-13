@@ -34,18 +34,22 @@ public class AdminController {
         String userName = object.getString("userName");
         String userTel = object.getString("userTel");
         String userEmail = object.getString("userEmail");
+        JSONArray arrayMenus = object.getJSONArray("menus");
+        List<String> menus = new ArrayList<>();
         /*"menus":[
             {"0": "money"},
             {"1": "task"}
         ]*/
-        JSONArray arrayMenus = object.getJSONArray("menus");
-        List<String> menus = new ArrayList<>();
-        int i = 0;
+//        int i = 0;
+//        for(Object menu: arrayMenus){
+//            JSONObject menuJson = (JSONObject) menu;
+//            String menuStr = menuJson.getString(String.valueOf(i));
+//            menus.add(menuStr);
+//            i++;
+//        }
+        // "menus":["money", "task"]
         for(Object menu: arrayMenus){
-            JSONObject menuJson = (JSONObject) menu;
-            String menuStr = menuJson.getString(String.valueOf(i));
-            menus.add(menuStr);
-            i++;
+            menus.add(menu.toString());
         }
         // 添加admin到数据库
         Administrator administrator = new Administrator();
@@ -80,19 +84,23 @@ public class AdminController {
         String userName = object.getString("userName");
         String userTel = object.getString("userTel");
         String userEmail = object.getString("userEmail");
-        /*"menus":[
-            {"0": "money"},
-            {"1": "task"}
-        ]*/
         JSONArray arrayMenus = object.getJSONArray("menus");
 
         List<String> menus = new ArrayList<>();
-        int i = 0;
+        /*"menus":[
+            {"0": "money"},
+            {"1": "task"}
+//        ]*/
+//        int i = 0;
+//        for(Object menu: arrayMenus){
+//            JSONObject menuJson = (JSONObject) menu;
+//            String menuStr = menuJson.getString(String.valueOf(i));
+//            menus.add(menuStr);
+//            i++;
+//        }
+        // "menus":["money", "task"]
         for(Object menu: arrayMenus){
-            JSONObject menuJson = (JSONObject) menu;
-            String menuStr = menuJson.getString(String.valueOf(i));
-            menus.add(menuStr);
-            i++;
+            menus.add(menu.toString());
         }
         administratorService.updateAdminMenus(userId, menus);
         Administrator administrator = administratorService.queryAdmin(userId);
