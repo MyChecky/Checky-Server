@@ -7,6 +7,8 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.whu.checky.domain.Administrator;
 import com.whu.checky.service.AdministratorService;
 import com.whu.checky.service.RedisService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,25 +24,53 @@ public class AdminController {
     @Autowired
     private RedisService redisService;
 
-    @PostMapping("/register")
-    public String register(@RequestBody String body){
-        String message = "ok";
+    private static final Logger log = LoggerFactory.getLogger(AdminController.class);
 
-        //构建Administrator
-        Administrator administrator = parserJson2User(body);
-
-        //处理登录
+    @PostMapping("/addAdmin")
+    public HashMap<String, String> addAdmin(@RequestBody String body) throws Exception {
+        JSONObject object = JSONObject.parseObject(body);
+        HashMap<String,String> ans = new HashMap<>(); // 返回值
+        String password = object.getString("password");
+        String userName = object.getString("userName");
+        String userTel = object.getString("userTel");
+        String userEmail = object.getString("userEmail");
+        /*"menus":[
+            {"0": "money"},
+            {"1": "task"}
+        ]*/
+        JSONArray arrayMenus = object.getJSONArray("menus");
+        List<String> menus = new ArrayList<>();
+        int i = 0;
+        for(Object menu: arrayMenus){
+            JSONObject menuJson = (JSONObject) menu;
+            String menuStr = menuJson.getString(String.valueOf(i));
+            menus.add(menuStr);
+            i++;
+        }
+        // 添加admin到数据库
+        Administrator administrator = new Administrator();
+        administrator.setUserName(userName);
+        administrator.setUserTel(userTel);
+        administrator.setUserEmail(userEmail);
+        administrator.setSessionId("has_never_login");
+        administrator.setUserPassword(password);
         try{
-            int result = administratorService.register(administrator);
-            if(result == 1)
-                message = "duplicatename";
+            int registerResult = administratorService.register(administrator);
+            if(registerResult == 1){
+                log.error("Something Wrong When Register An Administrator!");
+                log.error("Please Check The NAME Of The NEW Administrator!");
+                ans.put("state", "fail");
+                return ans;
+            }
+        }catch (Exception ex){
+            log.error("Something Wrong When Register An Administrator!");
+            log.error(ex.getMessage());
+            ans.put("state", "fail");
+            return ans;
         }
-        catch (Exception ex){
-            ex.printStackTrace();
-        }
-
-        //
-        return message;
+        administratorService.updateAdminMenus(administrator.getUserId(), menus);
+        ans.put("state", "ok");
+        return ans;
     }
 
     @PostMapping("/updateAdmin")
