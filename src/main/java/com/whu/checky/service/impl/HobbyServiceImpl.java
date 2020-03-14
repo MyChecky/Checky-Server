@@ -2,6 +2,7 @@ package com.whu.checky.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.whu.checky.domain.Hobby;
+import com.whu.checky.domain.User;
 import com.whu.checky.domain.UserHobby;
 import com.whu.checky.mapper.HobbyMapper;
 import com.whu.checky.mapper.ParameterMapper;
@@ -10,6 +11,7 @@ import com.whu.checky.service.HobbyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.print.DocFlavor;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -83,5 +85,16 @@ public class HobbyServiceImpl implements HobbyService {
                 userHobbyMapper.insert(userHobby);
             }
         }
+    }
+
+    @Override
+    public List<String> queryUserHobby(String userId) {
+        List<UserHobby> userHobbies = userHobbyMapper.selectList(new EntityWrapper<UserHobby>()
+                .eq("user_id", userId));
+        List<String> hobbies = new ArrayList<>();
+        for(UserHobby userHobby: userHobbies){
+            hobbies.add(hobbyMapper.selectById(userHobby.getHobbyId()).getHobbyValue());
+        }
+        return hobbies;
     }
 }

@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.whu.checky.domain.User;
+import com.whu.checky.service.HobbyService;
 import com.whu.checky.service.MoneyService;
 import com.whu.checky.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,22 @@ public class UserController {
 
     @Autowired
     MoneyService moneyService;
+
+    @Autowired
+    HobbyService hobbyService;
+
+    @PostMapping("/queryHobby")
+    HashMap<String, Object> queryHobby(@RequestBody String body){
+        HashMap<String, Object> resp = new HashMap<>();
+        JSONObject object = (JSONObject) JSON.parse(body);
+        String userId = object.getString("userId");
+        List<String> hobbies = hobbyService.queryUserHobby(userId);
+        resp.put("hobbies", hobbies);
+        resp.put("state", "ok");
+        resp.put("total", hobbies.size());
+        return resp;
+    }
+
 
     @PostMapping("/all")
     HashMap<String, Object> getAllUsers(@RequestBody String body) {

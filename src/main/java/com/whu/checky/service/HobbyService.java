@@ -10,4 +10,6 @@ public interface HobbyService {
     List<String> getHobbies(String userId, int num);
 
     void updateUserHobbies(String userId, List<String> hobbies);
+
+    List<String> queryUserHobby(String userId);
 }
