@@ -7,7 +7,6 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.whu.checky.domain.*;
 import com.whu.checky.mapper.TaskSupervisorMapper;
 import com.whu.checky.service.*;
-import com.whu.checky.util.ParseRepeat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PostMapping;
