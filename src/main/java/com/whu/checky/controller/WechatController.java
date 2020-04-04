@@ -83,7 +83,12 @@ public class WechatController {
         ret.put("sessionKey",skey);
         ret.put("userGender", check.getUserGender());
         ret.put("userNickname", check.getUserName());
-        ret.put("userAvatar", check.getUserAvatar());
+        if(check.getUserAvatar().substring(0, 11).equals("/resources/")){
+            String baseIp = object.getString("baseIp");
+            ret.put("userAvatar", baseIp + check.getUserAvatar());
+        }else{
+            ret.put("userAvatar", check.getUserAvatar());
+        }
         return ret;
     }
 

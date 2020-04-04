@@ -291,6 +291,65 @@ public class MoneyServiceImpl implements MoneyService {
     }
 
     @Override
+    public HashMap<String, Object> getUserGraphData(String year, String userId) {
+        List<MoneyFlow> moneyFlows = moneyFlowMapper.selectList(new EntityWrapper<MoneyFlow>()
+                .ge("flow_time", year + "-01-01")
+                .le("flow_time", year + "-12-31")
+                .eq("user_id", userId));
+        List<Double> testIncomeList = new ArrayList<Double>();
+        List<Double> testRefundList = new ArrayList<>();
+        List<Double> testBenefitList = new ArrayList<>();
+        List<Double> trueIncomeList = new ArrayList<Double>();
+        List<Double> trueRefundList = new ArrayList<>();
+        List<Double> trueBenefitList = new ArrayList<>();
+        for (int i = 0; i < 12; i++) {
+            testIncomeList.add(0.0);
+            testRefundList.add(0.0);
+            testBenefitList.add(0.0);
+            trueIncomeList.add(0.0);
+            trueRefundList.add(0.0);
+            trueBenefitList.add(0.0);
+        }
+
+        for (MoneyFlow m : moneyFlows) {
+            try {
+                int month = Integer.parseInt(m.getFlowTime().substring(5, 7)) - 1;
+//                int month = sdf.parse(m.getFlowTime()).getMonth();
+                if (m.getFlowIo().equals("O")) {// flowIO为O,仅支出,尚未结算，需等结算
+                    if (m.getIfTest() == 0) {// t num 0 here
+                        if(taskMapper.selectById(m.getTaskId()).getTaskState().equals("complete")){
+                            trueIncomeList.set(month, m.getFlowMoney() + trueIncomeList.get(month));
+                        }
+                    }
+                    else{
+                        if(taskMapper.selectById(m.getTaskId()).getTaskState().equals("complete"))
+                            testIncomeList.set(month, m.getFlowMoney() + testIncomeList.get(month));
+                    }
+                } else { // 入账，说明已结算，无需判别任务状态
+                    if (m.getIfTest() == 0)// t num 0 here
+                        trueRefundList.set(month, m.getFlowMoney() + trueRefundList.get(month));
+                    else
+                        testRefundList.set(month, m.getFlowMoney() + testRefundList.get(month));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        for (int i = 0; i < 12; i++) {
+            testBenefitList.set(i, testIncomeList.get(i) - testRefundList.get(i));
+            trueBenefitList.set(i, trueIncomeList.get(i) - trueRefundList.get(i));
+        }
+        HashMap<String, Object> ret = new HashMap<>();
+        ret.put("testIncomeList", testIncomeList);
+        ret.put("testRefundList", testRefundList);
+        ret.put("testBenefitList", testBenefitList);
+        ret.put("trueIncomeList", trueIncomeList);
+        ret.put("trueRefundList", trueRefundList);
+        ret.put("trueBenefitList", trueBenefitList);
+        return ret;
+    }
+
+    @Override
     public HashMap<String, Object> getAllGraphData(String year) {
         List<MoneyFlow> moneyFlowList = queryAllScopeMoneyFlow(year + "-01-01", year + "-12-31");
         List<Double> testIncomeList = new ArrayList<Double>();
@@ -299,6 +358,28 @@ public class MoneyServiceImpl implements MoneyService {
         List<Double> trueIncomeList = new ArrayList<Double>();
         List<Double> trueRefundList = new ArrayList<>();
         List<Double> trueBenefitList = new ArrayList<>();
+
+        Double total_1_O = moneyFlowMapper.selectSum(1, "O");
+        Double total_1_I = moneyFlowMapper.selectSum(1, "I");
+        Double total_0_O = moneyFlowMapper.selectSum(0, "O");
+        Double total_0_I = moneyFlowMapper.selectSum(0, "I");
+        // 前期没数据会有null的
+        if(total_1_O==null)
+            total_1_O = 0.0;
+        if(total_1_I==null)
+            total_1_I = 0.0;
+        if(total_0_O==null)
+            total_0_O = 0.0;
+        if(total_0_I==null)
+            total_0_I = 0.0;
+
+        Double payPay = payMapper.selectSum("pay");
+        Double payWithdraw = payMapper.selectSum("withdraw");
+        if(payPay == null)
+            payPay = 0.0;
+        if(payWithdraw == null)
+            payWithdraw = 0.0;
+
         for (int i = 0; i < 12; i++) {
             testIncomeList.add(0.0);
             testRefundList.add(0.0);
@@ -343,6 +424,9 @@ public class MoneyServiceImpl implements MoneyService {
         ret.put("trueIncomeList", trueIncomeList);
         ret.put("trueRefundList", trueRefundList);
         ret.put("trueBenefitList", trueBenefitList);
+        ret.put("totalSystemTestGet", total_1_O - total_1_I);
+        ret.put("totalSystemTrueGet", total_0_O - total_0_I);
+        ret.put("totalPayGet", payPay - payWithdraw);
         return ret;
     }
 

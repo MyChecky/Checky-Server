@@ -33,6 +33,9 @@ public class FriendController {
     @Autowired
     private EssayService essayService;
 
+    @Autowired
+    private ParameterService parameterService;
+
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 
@@ -156,7 +159,12 @@ public class FriendController {
         User publisher = userService.queryUser(essay.getUserId());
         EssayAndRecord essayAndRecord = new EssayAndRecord();
         essayAndRecord.setUserId(publisher.getUserId());
-        essayAndRecord.setUserAvatar(publisher.getUserAvatar());
+        if(publisher.getUserAvatar().substring(0, 11).equals("/resources/")){
+            String baseIp = parameterService.getValueByParam("baseIp").getParamValue();
+            essayAndRecord.setUserAvatar(baseIp + publisher.getUserAvatar());
+        }else{
+            essayAndRecord.setUserAvatar(publisher.getUserAvatar());
+        }
         essayAndRecord.setUserName(publisher.getUserName());
         essayAndRecord.setFileRecord(records);
         essayAndRecord.setEssay(essay);
@@ -178,7 +186,12 @@ public class FriendController {
             FriendListWithMessage friendListWithMessage = new FriendListWithMessage();
             friendListWithMessage.setUserId(user.getUserId());
             friendListWithMessage.setContent(user.getUserName());
-            friendListWithMessage.setAvatarUrl(user.getUserAvatar());
+            if(user.getUserAvatar().substring(0, 11).equals("/resources/")) {
+                String baseIp = parameterService.getValueByParam("baseIp").getParamValue();
+                friendListWithMessage.setAvatarUrl(baseIp + user.getUserAvatar());
+            }else{
+                friendListWithMessage.setAvatarUrl(user.getUserAvatar());
+            }
             friendListWithMessages.add(friendListWithMessage);
         }
         ans.put("state", "ok");

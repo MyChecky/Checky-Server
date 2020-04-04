@@ -31,7 +31,9 @@ public interface  MoneyFlowMapper extends BaseMapper<MoneyFlow> {
             "        AND (user_id=#{userId})")
     List<MoneyFlow> queryUserScopeMoneyFlow(@Param("startDate") String startDate, @Param("endDate")String endDate,
                                             @Param("userId")String userId);
-
+    @Select("SELECT SUM(moneyflow.flow_money) FROM moneyflow,task WHERE moneyflow.if_test = #{ifTest} AND moneyflow.flow_io = #{flowIo} \n" +
+            "AND moneyflow.task_id = task.task_id AND task.task_state = 'complete'")
+    Double selectSum(@Param("ifTest") int ifTest, @Param("flowIo") String flowIo);
 //    String moneyFlowsWithNameSql = "SELECT flow_id AS `flowId`, f.user_id AS `userId`, flow_money AS `flowMoney`, \n" +
 //            "flow_time AS `flowTime`, task_id AS `taskId` \n" +
 //            ", userName AS `userName`, flow_io AS `flowIo`, flow_type AS `flowType`, remark AS `remark` \n"+

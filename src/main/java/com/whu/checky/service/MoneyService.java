@@ -40,6 +40,7 @@ public interface MoneyService {
 //    List<MoneyFlow> queryUserMoneyFlow(String userId, Page page);
     // 查询年度流水数据，供图表显示
     HashMap<String, Object> getAllGraphData(String year);
+    HashMap<String, Object> getUserGraphData(String year, String userId);
     // 根据用户名模糊查询流水记录
     List<MoneyFlow> queryMoneyFlowByUserName(String username);
     //查看一段日期内系统的所有流水

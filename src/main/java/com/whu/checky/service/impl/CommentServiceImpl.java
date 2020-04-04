@@ -9,6 +9,7 @@ import com.whu.checky.mapper.CommentMapper;
 import com.whu.checky.mapper.UserMapper;
 import com.whu.checky.service.AppealService;
 import com.whu.checky.service.CommentService;
+import com.whu.checky.service.ParameterService;
 import com.whu.checky.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,7 +23,8 @@ public class CommentServiceImpl implements CommentService {
     private CommentMapper commentMapper;
     @Autowired
     private UserMapper userMapper;
-
+    @Autowired
+    private ParameterService parameterService;
 
     @Override
     public List<Comment> queryCommentByEssayId(String essayId) {
@@ -35,7 +37,12 @@ public class CommentServiceImpl implements CommentService {
         for (Comment comment:comments){
             User user=userMapper.selectById(comment.getUserId());
             comment.setUserName(user.getUserName());
-            comment.setUserAvatar(user.getUserAvatar());
+            if(user.getUserAvatar().substring(0, 11).equals("/resources/")) {
+                String baseIp = parameterService.getValueByParam("baseIp").getParamValue();
+                comment.setUserAvatar(baseIp + user.getUserAvatar());
+            }else{
+                comment.setUserAvatar(user.getUserAvatar());
+            }
         }
         return comments;
     }

@@ -4,14 +4,19 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.whu.checky.config.UploadConfig;
 import com.whu.checky.domain.Hobby;
+import com.whu.checky.domain.ServiceTerms;
 import com.whu.checky.domain.User;
 import com.whu.checky.service.HobbyService;
+import com.whu.checky.service.ServiceTermsService;
 import com.whu.checky.service.UserService;
 import com.whu.checky.util.FileUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,9 +37,12 @@ public class UserAndHobbyController {
     @Autowired
     private UploadConfig uploadConfig;
 
+    @Autowired
+    private ServiceTermsService serviceTermsService;
+
     private static final Logger log = LoggerFactory.getLogger(WebSocketServer.class);
 
-    @PostMapping("/initUserHobbies")
+    @RequestMapping("/initUserHobbies")
     public HashMap<String, Object> login(@RequestBody String body) {
         HashMap<String, Object> ret = new HashMap<>(); // 返回值
         JSONObject object = JSONObject.parseObject(body);
@@ -48,7 +56,7 @@ public class UserAndHobbyController {
         return ret;
     }
 
-    @PostMapping("/updateUser")
+    @RequestMapping("/updateUser")
     public HashMap<String, Object> updateUser(@RequestBody String body) {
         HashMap<String, Object> ret = new HashMap<>(); // 返回值
         JSONObject object = JSONObject.parseObject(body);
@@ -65,7 +73,7 @@ public class UserAndHobbyController {
         return ret;
     }
 
-    @PostMapping("/updateHobbies")
+    @RequestMapping("/updateHobbies")
     public HashMap<String, Object> updateHobbies(@RequestBody String body) {
         HashMap<String, Object> ret = new HashMap<>(); // 返回值
         JSONObject object = JSONObject.parseObject(body);
@@ -77,7 +85,7 @@ public class UserAndHobbyController {
         return ret;
     }
 
-    @PostMapping("/getHobbies")
+    @RequestMapping("/getHobbies")
     public HashMap<String, Object> getHobbies(@RequestBody String body) {
         HashMap<String, Object> ret = new HashMap<>(); // 返回值
         JSONObject object = JSONObject.parseObject(body);
@@ -155,7 +163,8 @@ public class UserAndHobbyController {
         return newHobbiesStrStart.toString();
     }
 
-    @PostMapping("/uploadAvatar")
+
+    @RequestMapping("/uploadAvatar")
     public HashMap<String, String> uploadFile(HttpServletRequest request, @RequestParam("file") MultipartFile[] files) {
         // 文件地址: yml-x-cloud地址/userId/day/image/filename
         HashMap<String, String> response = new HashMap<>();
@@ -164,13 +173,13 @@ public class UserAndHobbyController {
                 for (MultipartFile file : files) {
                     String contentType = "image";
                     String userId = request.getParameter("userId");
-                    String baseIp = request.getParameter("baseIp");
+//                    String baseIp = request.getParameter("baseIp");
                     String type = FileUtil.getFileTypePostFix(Objects.requireNonNull(file.getOriginalFilename())); // 后缀
                     String fileName = UUID.randomUUID().toString() + type;
                     String day = new SimpleDateFormat("yyyyMMdd").format(new Date());
                     String filePath = uploadConfig.getUploadPath() + userId + "/" + day + "/" + contentType + "/";
                     FileUtil.uploadFile(file.getBytes(), filePath, fileName);
-                    String avatarURL = baseIp + "/resources/" + userId + "/" + day + "/" + contentType + "/" + fileName;
+                    String avatarURL = "/resources/" + userId + "/" + day + "/" + contentType + "/" + fileName;
                     response.put("avatarUrl", avatarURL);
                     response.put("state", "ok");
                 }
@@ -180,6 +189,18 @@ public class UserAndHobbyController {
             }
         }
         return response;
+    }
+
+    @RequestMapping("/getServiceTerms")
+    public HashMap<String, Object> getServiceTerms(@RequestBody String body){
+        HashMap<String, Object> ret = new HashMap<>(); // 返回值
+//        JSONObject object = JSONObject.parseObject(body);
+//        String userId = (String) object.get("userId");
+        ServiceTerms serviceTerms = serviceTermsService.getLatestServiceTerms();
+        ret.put("serviceTermsContent", serviceTerms.getServiceContent());
+        ret.put("serviceTermsTime", serviceTerms.getServiceTime());
+        ret.put("state", "ok");
+        return ret;
     }
 }
 

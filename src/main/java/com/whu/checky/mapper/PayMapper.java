@@ -20,4 +20,7 @@ public interface PayMapper extends BaseMapper<Pay> {
             "        AND (pay_userid=#{userId})")
     List<Pay> queryUserScopePay(@Param("startDate")String startDate, @Param("endDate")String endDate,
                                 @Param("userId")String userId);
+
+    @Select("SELECT SUM(PAY_MONEY) FROM pay WHERE PAY_TYPE = #{payType}")
+    Double selectSum(@Param("payType")String payType);
 }

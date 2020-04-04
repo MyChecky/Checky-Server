@@ -37,6 +37,9 @@ public class EssayController {
     @Autowired
     private UploadConfig uploadConfig;
 
+    @Autowired
+    private ParameterService parameterService;
+
 //    @Autowired
 //    private FileService fileService;
 
@@ -174,7 +177,12 @@ public class EssayController {
         User publisher = userService.queryUser(essay.getUserId());
         EssayAndRecord essayAndRecord = new EssayAndRecord();
         essayAndRecord.setUserId(publisher.getUserId());
-        essayAndRecord.setUserAvatar(publisher.getUserAvatar());
+        if(publisher.getUserAvatar().substring(0, 11).equals("/resources/")){
+            String baseIp = parameterService.getValueByParam("baseIp").getParamValue();
+            essayAndRecord.setUserAvatar(baseIp + publisher.getUserAvatar());
+        }else{
+            essayAndRecord.setUserAvatar(publisher.getUserAvatar());
+        }
         essayAndRecord.setUserName(publisher.getUserName());
         essayAndRecord.setFileRecord(records);
         essayAndRecord.setEssay(essay);

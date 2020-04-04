@@ -67,7 +67,16 @@ public class MoneyController {
         HashMap<String, Object> ret = moneyService.getAllGraphData(year);
         ret.put("state", "ok");
         return ret;
+    }
 
+    @PostMapping("/userGraph")
+    public HashMap<String, Object> userGraph(@RequestBody String body) {
+        JSONObject json = JSONObject.parseObject(body);
+        String year = json.getString("year");
+        String userId = json.getString("userId");
+        HashMap<String, Object> ret = moneyService.getUserGraphData(year, userId);
+        ret.put("state", "ok");
+        return ret;
     }
 
     //根据username模糊搜索的申诉
