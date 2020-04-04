@@ -49,7 +49,7 @@ public class WebSecurityConfig {
 //                    .antMatchers("/**").permitAll()
 
 //                    暂时关闭权限认证
-                    .antMatchers("/wechat/login","/admin/login","/resources/**","/socket/**").permitAll()
+                    .antMatchers("/wechat/login","/admin/login","/resources/**","/socket/**", "/userAndHobby/getServiceTerms").permitAll()
                     .antMatchers("/admin","/**/admin/**").hasRole("ADMIN")
                     .antMatchers("/**").hasRole("USER")
                     .and()
