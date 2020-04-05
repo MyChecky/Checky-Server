@@ -122,7 +122,7 @@ public class CheckController {
         List<DayCheckAndTask> unKnownChecks = new ArrayList<>();
 
         for (Task t : taksList) {
-            if (t.getTaskState().equals("nomatch"))
+            if (t.getTaskState().equals("nomatch") || t.getTaskState().equals("save")) // 余额不足的save状态
                 continue;
             Check check = checkService.getCheckByTask(t.getTaskId(), date);
 //            List<Object> temp = new ArrayList<>();

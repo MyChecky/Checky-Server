@@ -86,7 +86,7 @@ public class Match {
         MatchType matchType = resolveMatchType(task);
 
         if (matchType.isRand) {
-            selectedSupervisors = userService.getUsersRandomly(gap);
+            selectedSupervisors = userService.getUsersRandomly(gap, task.getUserId());
         } else {
             selectedSupervisors = new ArrayList<>();
             User taskOwner = userService.queryUser(task.getUserId());

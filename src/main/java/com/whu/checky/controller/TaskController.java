@@ -3,14 +3,8 @@ package com.whu.checky.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
-import com.whu.checky.domain.MoneyFlow;
-import com.whu.checky.domain.Parameter;
-import com.whu.checky.domain.Task;
-import com.whu.checky.domain.User;
-import com.whu.checky.service.MoneyService;
-import com.whu.checky.service.ParameterService;
-import com.whu.checky.service.TaskService;
-import com.whu.checky.service.UserService;
+import com.whu.checky.domain.*;
+import com.whu.checky.service.*;
 import com.whu.checky.util.Match;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -38,6 +32,8 @@ public class TaskController {
     private UserService userService;
     @Autowired
     private ParameterService parameterService;
+    @Autowired
+    private TaskTypeService taskTypeService;
 
     private SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -46,7 +42,12 @@ public class TaskController {
     public String addTask(@RequestBody String jsonstr) {
         Task task = JSON.parseObject(jsonstr, new TypeReference<Task>() {
         });
-        task.setTaskId(UUID.randomUUID().toString());
+        if(task.getTaskId() == null || task.getTaskId().equals("")){
+            task.setTaskId(UUID.randomUUID().toString());
+        }else{
+            taskService.updateTask(task);
+            return updateTaskAboutMoney(task);
+        }
         int result = taskService.addTask(task);
         if (result == 0) {
             //添加失败
@@ -113,6 +114,8 @@ public class TaskController {
             }else{
                 res.put("userAvatar", user.getUserAvatar());
             }
+            TaskType taskType = taskTypeService.QueryTaskType(task.getTypeId());
+            res.put("typeContent", taskType.getTypeContent());
         } else {
             res.put("state", "FAIL");
         }
@@ -162,37 +165,33 @@ public class TaskController {
 
     //进行余额判断，更新余额，更新流水记录
     private String updateTaskAboutMoney(Task task) {
-        //微信支付相关
+        // 判断余额是否充足；这里余额不足会导致task的save状态
         User user = userService.queryUser(task.getUserId());
-        if (task.getIfTest() == 1) {
-            if (task.getTaskMoney() <= user.getTestMoney()) {
-                user.setTestMoney(user.getTestMoney() - task.getTaskMoney());
-                userService.updateUser(user);
-            } else {
-                return "noEnoughTestMoney";
-            }
-        } else if (task.getIfTest() == 0) {
-            if (task.getTaskMoney() <= user.getUserMoney()) {
-                user.setUserMoney(user.getUserMoney() - task.getTaskMoney());
-                userService.updateUser(user);
-            } else {
-                return "noEnoughUserMoney";
-            }
+        if(task.getIfTest() == 1 && task.getTaskMoney() > user.getTestMoney()){
+            return "noEnoughTestMoney";
+        }else if(task.getIfTest() == 0 && task.getTaskMoney() > user.getUserMoney()){
+            return "noEnoughUserMoney";
         }
-        // 已扣款，更改任务状态
+        // 监督者匹配以及扣款相关
         try{
-            if(match.matchSupervisorForOneTask(task)){
+            if(match.matchSupervisorForOneTask(task)){ // 匹配监督者成功，进行扣款
+                if (task.getIfTest() == 1){
+                    user.setTestMoney(user.getTestMoney() - task.getTaskMoney());
+                    userService.updateUser(user);
+                }else if(task.getIfTest() == 0){
+                    user.setUserMoney(user.getUserMoney() - task.getTaskMoney());
+                    userService.updateUser(user);
+                }
                 task.setTaskState("during");
-            }else{
+                taskService.updateTask(task);
+            }else{ // 匹配监督者失败，保存任务为未匹配状态，用户可继续修改任务
                 task.setTaskState("nomatch");
+                taskService.updateTask(task);
+                return "noEnoughSupervisor";
             }
         }catch (Exception ex){
             task.setTaskState("nomatch");
-        }
-
-        int updateResult = taskService.updateTask(task);
-        if (updateResult == 0) {
-            //出现异常，用户新建任务保存并付款后，未能更待任务匹配监督者的状态
+            taskService.updateTask(task);
             return ("matchSupervisorError");
         }
         // 已扣款且已更改任务状态，在Money表当中插入一条用户交付押金的记录
