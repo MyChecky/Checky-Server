@@ -87,6 +87,7 @@ public class Match {
 
         if (matchType.isRand) {
             selectedSupervisors = userService.getUsersRandomly(gap, task.getUserId());
+            gap -= selectedSupervisors.size();
         } else {
             selectedSupervisors = new ArrayList<>();
             User taskOwner = userService.queryUser(task.getUserId());
@@ -127,7 +128,6 @@ public class Match {
 
             supervisor.setSuperviseNum(supervisor.getSuperviseNum() + 1);
             userService.updateUser(supervisor);
-            gap--;
         }
 
         task.setMatchNum(task.getSupervisorNum() - gap);
