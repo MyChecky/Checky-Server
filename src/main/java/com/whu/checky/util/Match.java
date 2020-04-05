@@ -127,6 +127,7 @@ public class Match {
 
             supervisor.setSuperviseNum(supervisor.getSuperviseNum() + 1);
             userService.updateUser(supervisor);
+            gap--;
         }
 
         task.setMatchNum(task.getSupervisorNum() - gap);

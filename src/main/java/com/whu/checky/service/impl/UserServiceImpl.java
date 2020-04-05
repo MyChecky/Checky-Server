@@ -96,11 +96,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getUsersRandomly(int maxNumUsersNeed, String userSelfId) {
-        int cnt = mapper.selectCount(null);
-        int offset = RANDOM.nextInt(cnt-maxNumUsersNeed+1);
-        return mapper.selectPage(new RowBounds(offset, maxNumUsersNeed), new EntityWrapper<User>()
+//        int cnt = mapper.selectCount(null);
+//        int offset = RANDOM.nextInt(cnt-maxNumUsersNeed+1);
+//        return mapper.selectPage(new RowBounds(offset, maxNumUsersNeed), new EntityWrapper<User>()
+//                .ne("user_id", "System")
+//                .ne("user_id", userSelfId));\
+        return mapper.selectPage(new Page<User>(0, maxNumUsersNeed), new EntityWrapper<User>()
                 .ne("user_id", "System")
-                .ne("user_id", userSelfId));
+                .ne("user_id", userSelfId)
+                .orderBy("RAND()"));
     }
 
     @Override
