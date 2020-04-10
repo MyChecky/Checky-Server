@@ -35,6 +35,19 @@ public class WechatController {
     @Autowired
     private ParameterService parameterService;
 
+    @PostMapping("/logout")
+    public HashMap<String,Object> logout(@RequestBody String body){
+        HashMap<String,Object> ans = new HashMap<>();
+        try {
+            JSONObject data = JSON.parseObject(body);
+            String sessionKey = data.getString("sessionKey");
+            redisService.delSessionId(sessionKey);
+        }catch (Exception e){
+            ans.put("state","fail");
+        }
+        return ans;
+    }
+
     @PostMapping("/login")
     public HashMap<String,Object> login(@RequestBody String body) throws IOException {
         HashMap<String,Object> ret = new HashMap<>(); // 返回值
@@ -51,8 +64,8 @@ public class WechatController {
 //        String sessionKey = node.get("session_key").asText(); // 微信返回的没用到
 
         JSONObject location = (JSONObject) object.get("location");
-        double latitude = Double.parseDouble(location.get("latitude").toString());
-        double longitude = Double.parseDouble(location.get("longitude").toString());
+        double latitude = location==null?Double.parseDouble(location.get("latitude").toString()):0.0;
+        double longitude = location==null?Double.parseDouble(location.get("longitude").toString()):0.0;
 
         User user = new User();
         user.setUserId(openid);
