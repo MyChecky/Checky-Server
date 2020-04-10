@@ -1,6 +1,5 @@
 package com.whu.checky.service.impl;
 
-import com.whu.checky.domain.Administrator;
 import com.whu.checky.domain.User;
 import com.whu.checky.service.RedisService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +32,7 @@ public class RedisServiceImpl implements RedisService {
 
     @Override
     public void saveSessionId(String sessionId, String username) {
-        stringRedisTemplate.opsForValue().set(sessionId, username, 30, TimeUnit.DAYS);
+        stringRedisTemplate.opsForValue().set(sessionId,username,30, TimeUnit.DAYS);
 
     }
 
@@ -46,22 +45,18 @@ public class RedisServiceImpl implements RedisService {
     @Override
     public void saveUserOrAdminBySessionId(String sessionId, Object obj) {
         ValueOperations<String, Object> operations = redisTemplate.opsForValue();
-        if (obj instanceof User)
-            operations.set(sessionId, obj, 2, TimeUnit.HOURS);
-        else if (obj instanceof Administrator)
-            operations.set(sessionId, obj, 60, TimeUnit.MINUTES);
-        else
-            operations.set(sessionId, obj, 2, TimeUnit.HOURS);
+        if(obj instanceof User) operations.set(sessionId, obj,2,TimeUnit.HOURS);
+        else operations.set(sessionId, obj,60,TimeUnit.MINUTES);
     }
 
     @Override
-    public Object getUserOrAdminBySessionId(String sessionId) {
+    public Object getUserOrAdminBySessionId(String sessionId){
         return redisTemplate.opsForValue().get(sessionId);
     }
 
     @Override
     public void updateExpireTime(String key) {
-        redisTemplate.expire(key, 30, TimeUnit.MINUTES);
+        redisTemplate.expire(key,30,TimeUnit.MINUTES);
     }
 
 
