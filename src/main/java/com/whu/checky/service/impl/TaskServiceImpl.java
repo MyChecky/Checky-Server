@@ -174,7 +174,7 @@ public class TaskServiceImpl implements TaskService {
             return taskMapper.getTasksWithName(wrapper);
         } else {
             // return taskMapper.selectPage(new Page<Task>(page, 10), wrapper);
-            return taskMapper.getTasksWithName(wrapper, page);
+            return taskMapper.getTasksWithNameAndPage(wrapper, page);
         }
     }
 
