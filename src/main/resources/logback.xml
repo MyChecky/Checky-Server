@@ -8,12 +8,12 @@
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
      -->
 
-    <!-- 设置日志的目录值logger.path，从springboot配置文件中读取参数logging.path -->
-    <springProperty scope="context" name="logger.path" source="logging.path" defaultValue="./logs/DataServer"/>
+    <!-- 设置日志的目录值logger.path，从springboot配置文件中读取参数logging.path
+    <springProperty scope="context" name="logger.path" source="logging.path" defaultValue="./logs/Checky"/>
+    -->
+    <!-- 设置日志的目录制-->
+    <property name="logger.path" value="e:/logs/Checky" />
 
-    <!-- 设置日志的目录制
-    <property name="logger.path" value="e:/logs/DataServer" />
-     -->
 
     <!-- 彩色日志 -->
     <!-- 彩色日志依赖的渲染类 -->
