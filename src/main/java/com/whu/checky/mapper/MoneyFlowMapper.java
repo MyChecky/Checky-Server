@@ -22,13 +22,13 @@ public interface  MoneyFlowMapper extends BaseMapper<MoneyFlow> {
             "        WHERE flow_time\n" +
             "        between date (#{startDate}) and date (#{endDate})")
     List<MoneyFlow> queryAllScopeMoneyFlow(@Param("startDate") String startDate, @Param("endDate") String endDate);
-    @Select("SELECT flow_id as `flowId`, user_id as `userId`," +
-            "       flow_money as `flowMoney`, flow_time as `flowTime`,  \n" +
-            "       task_id as `taskId`, if_test as ifTest, flow_io as flowIO, \n" +
-            "       flow_type as flowType FROM moneyflow\n" +
-            "        WHERE flow_time\n" +
-            "        between date (#{startDate}) and date (#{endDate})" +
-            "        AND (user_id=#{userId})")
+//    @Select("SELECT flow_id as `flowId`, user_id as `userId`," +
+//            "       flow_money as `flowMoney`, flow_time as `flowTime`,  \n" +
+//            "       task_id as `taskId`, if_test as ifTest, flow_io as flowIO, \n" +
+//            "       flow_type as flowType FROM moneyflow\n" +
+//            "        WHERE flow_time\n" +
+//            "        between date (#{startDate}) and date (#{endDate})" +
+//            "        AND (user_id=#{userId})")
     List<MoneyFlow> queryUserScopeMoneyFlow(@Param("startDate") String startDate, @Param("endDate")String endDate,
                                             @Param("userId")String userId);
     @Select("SELECT SUM(moneyflow.flow_money) FROM moneyflow,task WHERE moneyflow.if_test = #{ifTest} AND moneyflow.flow_io = #{flowIo} \n" +

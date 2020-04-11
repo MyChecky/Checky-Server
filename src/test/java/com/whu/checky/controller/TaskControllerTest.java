@@ -175,7 +175,7 @@ public class TaskControllerTest {
 //        wrapper.eq("user_id","oM2yQ4jR0La_jZ8hyxkERsqNTh_8");
 //        wrapper.eq("user_id","oM2yQ4jR0La_jZ8hyxkERsqNTh_8");
 //        System.out.println(wrapper.getSqlSegment());
-        List<Task> taskList = taskMapper.getTasksWithName(wrapper, new Page<>(0, 4));
+        List<Task> taskList = taskMapper.getTasksWithNameAndPage(wrapper, new Page<>(0, 4));
         for (Task t : taskList) {
             System.out.println(t.getUserId());
             System.out.println(t.getUserName());
