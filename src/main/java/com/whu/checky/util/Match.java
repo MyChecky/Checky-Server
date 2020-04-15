@@ -3,7 +3,9 @@ package com.whu.checky.util;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.baomidou.mybatisplus.plugins.Page;
 import com.whu.checky.domain.Task;
@@ -80,8 +82,9 @@ public class Match {
      * @return true if the task is fully matched
      */
     public boolean matchSupervisorForOneTask(Task task) {
-        int gap = task.getSupervisorNum() - task.getMatchNum();
+        int gap = task.getSupervisorNum();
         List<User> selectedSupervisors;
+        Set<String> selectedSupervisorIds = new HashSet<>();
 
         MatchType matchType = resolveMatchType(task);
 
@@ -105,8 +108,11 @@ public class Match {
                     if (matchType.isAcq == isAcq(taskOwner, potentialSupervisor)
                             || (matchType.isInSameArea == isInSameArea(taskOwner, potentialSupervisor))
                             || (matchType.hasSameHobby == hasSameHobby(taskOwner, potentialSupervisor))) {
-                        selectedSupervisors.add(potentialSupervisor);
-                        --gap;
+                        if(!selectedSupervisorIds.contains(potentialSupervisor.getUserId())) {
+                            selectedSupervisorIds.add(potentialSupervisor.getUserId());
+                            selectedSupervisors.add(potentialSupervisor);
+                            --gap;
+                        }
                     }
 
                     if (gap == 0)
@@ -119,23 +125,24 @@ public class Match {
             }
         }
 
-        for (User supervisor : selectedSupervisors) {
-            TaskSupervisor newTaskSupervisor = new TaskSupervisor();
-            newTaskSupervisor.setAddTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-            newTaskSupervisor.setTaskId(task.getTaskId());
-            newTaskSupervisor.setSupervisorId(supervisor.getUserId());
-            taskSupervisorService.addTaskSupervisor(newTaskSupervisor);
-
-            supervisor.setSuperviseNum(supervisor.getSuperviseNum() + 1);
-            userService.updateUser(supervisor);
-        }
-
-        task.setMatchNum(task.getSupervisorNum() - gap);
-        if (gap == 0)
+        if(gap == 0) {
+            for (User supervisor : selectedSupervisors) {
+                TaskSupervisor newTaskSupervisor = new TaskSupervisor();
+                newTaskSupervisor.setAddTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+                newTaskSupervisor.setTaskId(task.getTaskId());
+                newTaskSupervisor.setSupervisorId(supervisor.getUserId());
+                taskSupervisorService.addTaskSupervisor(newTaskSupervisor);
+    
+                supervisor.setSuperviseNum(supervisor.getSuperviseNum() + 1);
+                userService.updateUser(supervisor);
+            }
+    
+            task.setMatchNum(task.getSupervisorNum());
             task.setTaskState("during");
-        taskService.updateTask(task);
-
-        return task.getMatchNum() == task.getSupervisorNum();
+            taskService.updateTask(task);
+            return true;
+        }
+        return false;
     }
 
     /**
