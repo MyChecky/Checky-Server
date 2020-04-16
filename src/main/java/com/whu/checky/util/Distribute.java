@@ -8,6 +8,7 @@ import com.whu.checky.domain.*;
 import com.whu.checky.mapper.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 //分成模块
@@ -22,8 +23,19 @@ public class Distribute {
 
     @Autowired
     TaskSupervisorMapper taskSupervisorMapper;
+    
+    @Scheduled(cron = "${jobs.distribute.cron}")
+    public void assignMoney() {
+        List<Task> tasks = taskMapper.selectList(new EntityWrapper<Task>()
+            .eq("task_state", "success").or().eq("task_state", "fail")
+        );
 
-    public void assignMoney(Task task) {
+        for(Task task : tasks) {
+            assignMoney(task);
+        }
+    }
+
+    void assignMoney(Task task) {
         assignMoney(task, task.getSystemBenifit());
     }
 
@@ -91,6 +103,8 @@ public class Distribute {
             supervisorUser.setUserMoney(moneyCur);
             userMapper.updateById(supervisorUser);
         }
+        
+        task.setTaskState("complete");
 
         taskMapper.updateById(task);
     }
