@@ -51,6 +51,8 @@ jobs:
             cron: 0 0 0 * * ?
         task:
             cron: 0 5 0 * * ?
+    distribute:
+        cron: 0 5 0 * * ?
 spring:
     servlet:
         multipart:
