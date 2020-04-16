@@ -37,6 +37,17 @@ public class TaskController {
 
     private SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
 
+    @PostMapping("/initConfig")
+    public HashMap<String, Object> initConfig(@RequestBody String body) {
+        HashMap<String, Object> ret = new HashMap<>();
+        JSONObject jsonObject = (JSONObject) JSON.parseObject(body);
+//        String userId = jsonObject.getString("userId"); // 未来也许会用
+        ret.put("minPass", parameterService.getValueByParam("task_lowest_pass").getParamValue());
+        ret.put("minCheck", parameterService.getValueByParam("check_lowest_pass").getParamValue());
+        ret.put("state", "ok");
+        return ret;
+    }
+
     @PostMapping("/taskDetail")
     public HashMap<String, Object> taskDetail(@RequestBody String body) {
         JSONObject object = (JSONObject) JSON.parse(body);
@@ -76,7 +87,7 @@ public class TaskController {
 
     //新建打卡
     @RequestMapping("/addTask")
-    public String addTask(@RequestBody String jsonstr) {
+    public HashMap<String, Object> addTask(@RequestBody String jsonstr) {
         Task task = JSON.parseObject(jsonstr, new TypeReference<Task>() {
         });
         if (task.getTaskId() == null || task.getTaskId().equals("")) {
@@ -88,7 +99,9 @@ public class TaskController {
         int result = taskService.addTask(task);
         if (result == 0) {
             //添加失败
-            return "addTaskFail";
+            HashMap<String, Object> ret = new HashMap<>();
+            ret.put("state", "addTaskFail");
+            return ret;
         } else {
             //添加成功
             return updateTaskAboutMoney(task);
@@ -184,34 +197,31 @@ public class TaskController {
         return taskService.distribute(taskService.queryTask(taskId));
     }
 
-    @RequestMapping("/getIfHighSetting")
-    public int getIfHighSetting(@RequestBody String jsonstr) {
-        JSONObject object = (JSONObject) JSON.parse(jsonstr);
-        String userId = (String) object.get("userId");
-        return 0;//1允许，0不允许进行高级设置（指的是总任务与单词打卡通过率及监督者类型,地域，爱好等）
-    }
-
     //发布已经保存的打卡任务
-    @RequestMapping("/publicSavedTask")
-    public String publicSavedTask(@RequestBody String jsonstr) {
-        Task tmp = JSON.parseObject(jsonstr, new TypeReference<Task>() {
-        });
-        Task task = taskService.queryTask(tmp.getTaskId());
-        return updateTaskAboutMoney(task);
-    }
+//    @RequestMapping("/publicSavedTask")
+//    public HashMap<String, Object> publicSavedTask(@RequestBody String jsonstr) {
+//        Task tmp = JSON.parseObject(jsonstr, new TypeReference<Task>() {
+//        });
+//        Task task = taskService.queryTask(tmp.getTaskId());
+//        return updateTaskAboutMoney(task);
+//    }
 
     //进行余额判断，更新余额，更新流水记录
-    private String updateTaskAboutMoney(Task task) {
+    private HashMap<String, Object> updateTaskAboutMoney(Task task) {
+        HashMap<String, Object> ret = new HashMap<>();
         // 判断余额是否充足；这里余额不足会导致task的save状态
         User user = userService.queryUser(task.getUserId());
         if (task.getIfTest() == 1 && task.getTaskMoney() > user.getTestMoney()) {
-            return "noEnoughTestMoney";
+            ret.put("state", "noEnoughTestMoney");
+            return ret;
         } else if (task.getIfTest() == 0 && task.getTaskMoney() > user.getUserMoney()) {
-            return "noEnoughUserMoney";
+            ret.put("state", "noEnoughUserMoney");
+            return ret;
         }
         // 监督者匹配以及扣款相关
         try {
             if (match.matchSupervisorForOneTask(task)) { // 匹配监督者成功，进行扣款
+                user.setTaskNum(user.getTaskNum() + 1);
                 if (task.getIfTest() == 1) {
                     user.setTestMoney(user.getTestMoney() - task.getTaskMoney());
                     userService.updateUser(user);
@@ -224,12 +234,16 @@ public class TaskController {
             } else { // 匹配监督者失败，保存任务为未匹配状态，用户可继续修改任务
                 task.setTaskState("nomatch");
                 taskService.updateTask(task);
-                return "noEnoughSupervisor";
+                ret.put("state", "noEnoughSupervisor");
+                ret.put("failTaskId", task.getTaskId());
+                ret.put("failNum", task.getMatchNum());
+                return ret;
             }
         } catch (Exception ex) {
             task.setTaskState("nomatch");
             taskService.updateTask(task);
-            return ("matchSupervisorError");
+            ret.put("state","matchSupervisorError");
+            return ret;
         }
         // 已扣款且已更改任务状态，在Money表当中插入一条用户交付押金的记录
         MoneyFlow moneyFlow = new MoneyFlow();
@@ -243,10 +257,11 @@ public class TaskController {
         moneyFlow.setFlowId(UUID.randomUUID().toString());
         int addMoneyRes = moneyService.addTestMoneyRecord(moneyFlow);
         if (addMoneyRes == 1) {
-            return "addTaskSuccess";
+            ret.put("state", "addTaskSuccess");
         } else {
-            return "insertMoneyFlowError";
+            ret.put("state", "insertMoneyFlowError");
         }
+        return ret;
     }
 }
 
