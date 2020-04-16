@@ -3,6 +3,7 @@ package com.whu.checky.service.impl;
 import java.util.List;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.whu.checky.domain.TaskSupervisor;
 import com.whu.checky.mapper.TaskSupervisorMapper;
 import com.whu.checky.service.TaskSupervisorService;
@@ -35,5 +36,12 @@ public class TaskSupervisorServiceImpl implements TaskSupervisorService {
     @Override
     public void delTaskSupervisor(TaskSupervisor taskSupervisor) {
         taskSupervisorMapper.delete(new EntityWrapper<>(taskSupervisor));
+    }
+
+    @Override
+    public List<TaskSupervisor> getTasksSupByTaskId(String taskId) {
+        return taskSupervisorMapper.selectList(new EntityWrapper<TaskSupervisor>()
+                .eq("task_id", taskId)
+                .isNull("remove_time"));
     }
 }

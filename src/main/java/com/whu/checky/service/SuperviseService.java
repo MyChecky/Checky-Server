@@ -1,5 +1,6 @@
 package com.whu.checky.service;
 
+import com.baomidou.mybatisplus.plugins.Page;
 import com.whu.checky.domain.Check;
 import com.whu.checky.domain.Supervise;
 import com.whu.checky.domain.SupervisorState;
@@ -25,4 +26,6 @@ public interface SuperviseService {
 
     //监督者监督状态
     List<SupervisorState> querySuperviseState(String taskId, String checkId);
+
+    List<Supervise> getCheckSupsBySupId(Page<Supervise> supervisePage, String userId);
 }
