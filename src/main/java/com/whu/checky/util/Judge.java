@@ -55,7 +55,7 @@ public class Judge {
 //    若监督的数量已足够则进行判定
 //    否则判断是否过期（过了一定的天数还没有足够的监督人数
 //    若过期则从监督人数通过是否过半进行判定，无人监督则算通过
-    @Scheduled(cron = "${jobs.judge.check.cron}")
+    @Deprecated
     public void dailyCheckSupervisedJudge(){
         System.out.println("Task start!");
         List<Check> checkList = checkMapper.selectList(new EntityWrapper<Check>()
@@ -115,8 +115,8 @@ public class Judge {
 //            }
 
 
-    @Scheduled(cron = "${jobs.judge.task.cron}")
 //    @Scheduled(initialDelay = 0,fixedRate = 1000000000)
+    @Deprecated
     public void taskFinishJudge(){
         Date today = new Date();
         String now = sdf.format(today);
@@ -191,7 +191,7 @@ public class Judge {
         }
     }
 
-    boolean supervisorPass(String checkId, String supervisorId) {
+    private boolean supervisorPass(String checkId, String supervisorId) {
         boolean isPass = true;
 
         List<Supervise> supervises = superviseMapper.selectList(new EntityWrapper<Supervise>()
@@ -232,6 +232,7 @@ public class Judge {
         return isPass;
     }
 
+    @Scheduled(cron = "${jobs.judge.check.cron}")
     public void checkin() {
         Date today = new Date();
         String todayStr = sdf.format(today);
@@ -301,6 +302,7 @@ public class Judge {
         }
     }
 
+    @Scheduled(cron = "${jobs.judge.task.cron}")
     public void checkTaskSuccess() {
         Date today = new Date();
         String todayStr = sdf.format(today);
@@ -321,7 +323,7 @@ public class Judge {
                 .isNull("process_time")
             );
 
-            if(appeals == null && appeals.size() == 0) {
+            if(appeals == null || appeals.size() == 0) {
                 int numPasses = task.getCheckPass();
                 int numShould = task.getCheckTimes();
 
