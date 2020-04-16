@@ -8,11 +8,14 @@ import com.whu.checky.config.UploadConfig;
 import com.whu.checky.domain.*;
 import com.whu.checky.service.*;
 import com.whu.checky.util.FileUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -40,12 +43,8 @@ public class EssayController {
     @Autowired
     private ParameterService parameterService;
 
-//    @Autowired
-//    private FileService fileService;
-
-
-
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private static final Logger log = LoggerFactory.getLogger(EssayController.class);
 
     //发表动态
     @RequestMapping("/addEssay")
@@ -95,15 +94,15 @@ public class EssayController {
         essayToDelete.setIfDelete(1);
         int deleteResult = essayService.updateEssay(essayToDelete);
 
-        if(deleteResult == 1){
+        if (deleteResult == 1) {
             List<EssayAndRecord> res = new ArrayList<>();
             List<Essay> essays = essayService.queryUserEssays(userId);
             for (Essay essay : essays) {
-                EssayAndRecord essayAndRecord = getEssayAndRecord(essay);
+                EssayAndRecord essayAndRecord = getEssayAndRecord(essay, userId);
                 res.add(essayAndRecord);
             }
             return res;
-        }else{
+        } else {
             return null;
         }
     }
@@ -129,7 +128,7 @@ public class EssayController {
         List<EssayAndRecord> res = new ArrayList<>();
         List<Essay> essays = essayService.queryUserEssays(userId);
         for (Essay essay : essays) {
-            EssayAndRecord essayAndRecord = getEssayAndRecord(essay);
+            EssayAndRecord essayAndRecord = getEssayAndRecord(essay, userId);
             res.add(essayAndRecord);
         }
         return res;
@@ -140,9 +139,9 @@ public class EssayController {
     public EssayAndRecord queryEssayById(@RequestBody String jsonstr) {
         JSONObject object = (JSONObject) JSON.parse(jsonstr);
         String essayId = (String) object.get("essayId");
-//        String userId = (String) object.get("userId");
+        String userId = (String) object.get("userId");
         Essay essay = essayService.queryEssayById(essayId);
-        EssayAndRecord essayAndRecord = getEssayAndRecord(essay);
+        EssayAndRecord essayAndRecord = getEssayAndRecord(essay, userId);
         return essayAndRecord;
     }
 
@@ -151,20 +150,20 @@ public class EssayController {
     @RequestMapping("/displayEssay")
     public List<EssayAndRecord> displayEssay(@RequestBody String jsonstr) {
         JSONObject object = (JSONObject) JSON.parse(jsonstr);
-//        String userId = (String) object.get("userId");
+        String userId = (String) object.get("userId");
         int currentPage = (Integer) object.get("cPage");
         Page<Essay> page = new Page<>(currentPage, 5);
         List<EssayAndRecord> res = new ArrayList<EssayAndRecord>();
         List<Essay> essays = essayService.displayEssay(page);
         for (Essay essay : essays) {
-            EssayAndRecord essayAndRecord = getEssayAndRecord(essay);
+            EssayAndRecord essayAndRecord = getEssayAndRecord(essay, userId);
             res.add(essayAndRecord);
         }
         return res;
     }
 
     // 要返回给前端的动态列表，多处调用
-    private EssayAndRecord getEssayAndRecord(Essay essay) {
+    private EssayAndRecord getEssayAndRecord(Essay essay, String userId) {
         List<Record> records = recordService.getRecordsByEssayId(essay.getEssayId());
         for (int i = 0; i < records.size(); ) {
             if (records.get(i).getRecordType().equals("text")) {
@@ -177,19 +176,16 @@ public class EssayController {
         User publisher = userService.queryUser(essay.getUserId());
         EssayAndRecord essayAndRecord = new EssayAndRecord();
         essayAndRecord.setUserId(publisher.getUserId());
-        if(publisher.getUserAvatar().substring(0, 11).equals("/resources/")){
+        if (publisher.getUserAvatar().substring(0, 11).equals("/resources/")) {
             String baseIp = parameterService.getValueByParam("baseIp").getParamValue();
             essayAndRecord.setUserAvatar(baseIp + publisher.getUserAvatar());
-        }else{
+        } else {
             essayAndRecord.setUserAvatar(publisher.getUserAvatar());
         }
         essayAndRecord.setUserName(publisher.getUserName());
         essayAndRecord.setFileRecord(records);
         essayAndRecord.setEssay(essay);
-//            List<EssayLike> essayLikes = likeService.queryAllLikeByEssayId(essay.getEssayId());
-//            essayAndRecord.setLikeNum(essayLikes.size());
-//            essayAndRecord.setCommentNum(commentService.queryCommentByEssayId(essay.getEssayId()).size());
-        EssayLike essayLike = likeService.queryLike(essay.getUserId(), essay.getEssayId());
+        EssayLike essayLike = likeService.queryLike(userId, essay.getEssayId());
         boolean like = essayLike != null;
         essayAndRecord.setLike(like);
         return essayAndRecord;
@@ -201,7 +197,14 @@ public class EssayController {
         EssayLike essayLike = JSON.parseObject(jsonstr, new TypeReference<EssayLike>() {
         });
         essayLike.setAddTime(dateFormat.format(new Date()));
-        int res = likeService.Like(essayLike);
+        int res = 0;
+        try {
+            res = likeService.Like(essayLike);
+        } catch (Exception ex) { // SQLIntegrityConstraintViolationException不让catch
+            log.error("用户重复点赞了某文章!\t用户Id:" + essayLike.getUserId() + "\t文章Id:" + essayLike.getEssayId()
+                    + "\n" + ex.getMessage());
+        }
+
         JSONObject object = new JSONObject();
         if (res == 1) {
             //点赞成功
@@ -327,8 +330,6 @@ class EssayAndRecord {
     private Essay essay;
     private List<Record> fileRecord;
     private boolean Like;
-//    private int likeNum;
-//    private int commentNum;
 
     public String getUserId() {
         return userId;
