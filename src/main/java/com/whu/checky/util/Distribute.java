@@ -23,10 +23,8 @@ public class Distribute {
     @Autowired
     TaskSupervisorMapper taskSupervisorMapper;
 
-    private double defaultSystemRate = 0.01;
-
     public void assignMoney(Task task) {
-        assignMoney(task, defaultSystemRate);
+        assignMoney(task, task.getSystemBenifit());
     }
 
     void assignMoney(Task task, double systemRate) {
