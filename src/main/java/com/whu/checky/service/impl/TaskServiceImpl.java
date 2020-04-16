@@ -131,19 +131,16 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public HashMap<String, Double> distribute(String taskId) {
+    public HashMap<String, Double> distribute(Task task) {
         HashMap<String, Double> result = new HashMap<>();
         Date now = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
-        Task t = taskMapper.selectById(taskId);
-
         List<TaskSupervisor> supervisors = taskSupervisorMapper
-                .selectList(new EntityWrapper<TaskSupervisor>().eq("task_id", taskId));
+                .selectList(new EntityWrapper<TaskSupervisor>().eq("task_id", task.getTaskId()));
         supervisors.sort(Comparator.comparingInt(TaskSupervisor::getSuperviseNum));
 
-        int length = supervisors.size();
-        double money = t.getTaskMoney() * 0.8;
+        double money = task.getTaskMoney() * 0.8;
         int superviseNum = 0;
 
         for (TaskSupervisor supvisor : supervisors) {

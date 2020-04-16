@@ -23,7 +23,7 @@ public interface TaskService {
 
     Task queryTask(String taskId);
 
-    HashMap<String, Double> distribute(String taskId);
+    HashMap<String, Double> distribute(Task task);
 
     // //打卡日历
     // void getTasks();

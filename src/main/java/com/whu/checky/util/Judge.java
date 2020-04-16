@@ -160,7 +160,7 @@ public class Judge {
                 t.setTaskState("fail");
 
                 //失败全部分成
-                HashMap<String,Double> distribute = taskService.distribute(t.getTaskId());
+                HashMap<String,Double> distribute = taskService.distribute(t);
                 for(Map.Entry<String,Double> pair:distribute.entrySet()){
 
                     MoneyFlow record = new MoneyFlow();

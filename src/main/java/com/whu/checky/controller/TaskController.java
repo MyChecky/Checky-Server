@@ -144,7 +144,7 @@ public class TaskController {
         JSONObject object = (JSONObject) JSON.parse(body);
         String taskId = (String) object.get("taskId");
 
-        return taskService.distribute(taskId);
+        return taskService.distribute(taskService.queryTask(taskId));
     }
 
     @RequestMapping("/getIfHighSetting")
