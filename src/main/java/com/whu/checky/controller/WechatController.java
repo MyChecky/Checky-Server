@@ -8,6 +8,8 @@ import com.whu.checky.domain.User;
 import com.whu.checky.service.ParameterService;
 import com.whu.checky.service.RedisService;
 import com.whu.checky.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -34,6 +36,8 @@ public class WechatController {
 
     @Autowired
     private ParameterService parameterService;
+
+    private static final Logger log = LoggerFactory.getLogger(WechatController.class);
 
     @PostMapping("/logout")
     public HashMap<String,Object> logout(@RequestBody String body){
@@ -63,9 +67,14 @@ public class WechatController {
         String openid = node.get("openid").asText();
 //        String sessionKey = node.get("session_key").asText(); // 微信返回的没用到
 
-        JSONObject location = (JSONObject) object.get("location");
-        double latitude = location==null?Double.parseDouble(location.get("latitude").toString()):0.0;
-        double longitude = location==null?Double.parseDouble(location.get("longitude").toString()):0.0;
+        double latitude = 0.0;
+        double longitude = 0.0;
+        try{
+            latitude = Double.parseDouble(((JSONObject) object.get("location")).get("latitude").toString());
+            longitude = Double.parseDouble(((JSONObject) object.get("location")).get("longitude").toString());
+        }catch (Exception ex){
+            log.warn("发现新用户登录，而此时小程序尚未获得经纬度返回值");
+        }
 
         User user = new User();
         user.setUserId(openid);

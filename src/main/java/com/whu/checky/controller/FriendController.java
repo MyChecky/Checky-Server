@@ -186,6 +186,7 @@ public class FriendController {
             FriendListWithMessage friendListWithMessage = new FriendListWithMessage();
             friendListWithMessage.setUserId(user.getUserId());
             friendListWithMessage.setContent(user.getUserName());
+            friendListWithMessage.setUserTime(user.getUserTime());
             if(user.getUserAvatar().substring(0, 11).equals("/resources/")) {
                 String baseIp = parameterService.getValueByParam("baseIp").getParamValue();
                 friendListWithMessage.setAvatarUrl(baseIp + user.getUserAvatar());
@@ -313,6 +314,15 @@ class FriendListWithMessage {
     private String operation = "";
     private String userId;
     private String avatarUrl;
+    private String userTime;
+
+    public String getUserTime() {
+        return userTime;
+    }
+
+    public void setUserTime(String userTime) {
+        this.userTime = userTime;
+    }
 
     public String getUserId() {
         return userId;
