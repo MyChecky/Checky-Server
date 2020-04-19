@@ -6,6 +6,7 @@ import com.alibaba.fastjson.TypeReference;
 import com.whu.checky.domain.*;
 import com.whu.checky.service.*;
 import com.whu.checky.util.Match;
+import com.whu.checky.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -44,7 +45,10 @@ public class TaskController {
 //        String userId = jsonObject.getString("userId"); // 未来也许会用
         ret.put("minPass", parameterService.getValueByParam("task_lowest_pass").getParamValue());
         ret.put("minCheck", parameterService.getValueByParam("check_lowest_pass").getParamValue());
-        ret.put("state", "ok");
+
+        String ymd = JSONObject.parseObject(body).getString("ymd");
+        String state = Util.judgeDate(ymd) ? "ok" : "fail";
+        ret.put("state", state);
         return ret;
     }
 
@@ -152,6 +156,12 @@ public class TaskController {
         String taskId = (String) object.get("taskId");
         Task task = taskService.queryTask(taskId);
         JSONObject res = new JSONObject();
+        String ymd = object.getString("ymd");
+        if(! Util.judgeDate(ymd)){
+            res.put("state", "fail");
+            return res;
+        }
+
         if (task != null) {
             User user = userService.queryUser(task.getUserId());
             res.put("state", "OK");

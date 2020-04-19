@@ -9,6 +9,7 @@ import com.whu.checky.domain.*;
 import com.whu.checky.service.*;
 //import com.whu.checky.service.FileService;
 import com.whu.checky.util.FileUtil;
+import com.whu.checky.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,6 +39,15 @@ public class CheckController {
 
     @Autowired
     private ParameterService parameterService;
+
+    @PostMapping("/checkDate")
+    public HashMap<String, String> checkDate(@RequestBody String body) {
+        String ymd = JSONObject.parseObject(body).getString("ymd");
+        HashMap<String, String> ret = new HashMap<>();
+        String state = Util.judgeDate(ymd) ? "ok" : "fail";
+        ret.put("state", state);
+        return ret;
+    }
 
     @PostMapping("/addCheck")
     public HashMap<String, String> addCheck(@RequestBody String body) {
@@ -95,7 +105,7 @@ public class CheckController {
             for (Record record : records) {
                 if (record.getRecordType().equals("text")) {
                     textRecord = record;
-                }else {
+                } else {
                     record.setRecordType(record.getRecordType().substring(0, 5));
                 }
             }
