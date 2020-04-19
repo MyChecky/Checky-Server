@@ -206,10 +206,9 @@ public class TaskController {
 //        return updateTaskAboutMoney(task);
 //    }
 
-    //进行余额判断，更新余额，更新流水记录
     private HashMap<String, Object> updateTaskAboutMoney(Task task) {
         HashMap<String, Object> ret = new HashMap<>();
-        // 判断余额是否充足；这里余额不足会导致task的save状态
+        // 判断余额是否充足
         User user = userService.queryUser(task.getUserId());
         if (task.getIfTest() == 1 && task.getTaskMoney() > user.getTestMoney()) {
             ret.put("state", "noEnoughTestMoney");
@@ -217,49 +216,6 @@ public class TaskController {
         } else if (task.getIfTest() == 0 && task.getTaskMoney() > user.getUserMoney()) {
             ret.put("state", "noEnoughUserMoney");
             return ret;
-        }
-        // 监督者匹配以及扣款相关
-        try {
-            if (match.matchSupervisorForOneTask(task)) { // 匹配监督者成功，进行扣款
-                user.setTaskNum(user.getTaskNum() + 1);
-                if (task.getIfTest() == 1) {
-                    user.setTestMoney(user.getTestMoney() - task.getTaskMoney());
-                    userService.updateUser(user);
-                } else if (task.getIfTest() == 0) {
-                    user.setUserMoney(user.getUserMoney() - task.getTaskMoney());
-                    userService.updateUser(user);
-                }
-                task.setTaskState("during");
-                taskService.updateTask(task);
-            } else { // 匹配监督者失败，保存任务为未匹配状态，用户可继续修改任务
-                task.setTaskState("nomatch");
-                taskService.updateTask(task);
-                ret.put("state", "noEnoughSupervisor");
-                ret.put("failTaskId", task.getTaskId());
-                ret.put("failNum", task.getMatchNum());
-                return ret;
-            }
-        } catch (Exception ex) {
-            task.setTaskState("nomatch");
-            taskService.updateTask(task);
-            ret.put("state","matchSupervisorError");
-            return ret;
-        }
-        // 已扣款且已更改任务状态，在Money表当中插入一条用户交付押金的记录
-        MoneyFlow moneyFlow = new MoneyFlow();
-        moneyFlow.setUserID(task.getUserId());
-        moneyFlow.setIfTest(task.getIfTest());
-        moneyFlow.setFlowIo("O");//阿拉伯字母大写O
-        moneyFlow.setFlowType("pay");
-        moneyFlow.setFlowMoney(task.getTaskMoney());
-        moneyFlow.setTaskId(task.getTaskId());
-        moneyFlow.setFlowTime(ft.format(new Date()));
-        moneyFlow.setFlowId(UUID.randomUUID().toString());
-        int addMoneyRes = moneyService.addTestMoneyRecord(moneyFlow);
-        if (addMoneyRes == 1) {
-            ret.put("state", "addTaskSuccess");
-        } else {
-            ret.put("state", "insertMoneyFlowError");
         }
         return ret;
     }

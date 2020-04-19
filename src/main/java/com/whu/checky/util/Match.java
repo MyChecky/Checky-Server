@@ -6,13 +6,16 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import com.baomidou.mybatisplus.plugins.Page;
+import com.whu.checky.domain.MoneyFlow;
 import com.whu.checky.domain.Task;
 import com.whu.checky.domain.TaskSupervisor;
 import com.whu.checky.domain.User;
 import com.whu.checky.domain.UserFriend;
 import com.whu.checky.domain.UserHobby;
+import com.whu.checky.service.MoneyService;
 import com.whu.checky.service.TaskService;
 import com.whu.checky.service.TaskSupervisorService;
 import com.whu.checky.service.UserFriendService;
@@ -35,6 +38,9 @@ public class Match {
     private TaskService taskService;
 
     @Autowired
+    private MoneyService moneyService;
+
+    @Autowired
     private UserFriendService userFriendService;
 
     @Autowired
@@ -51,6 +57,8 @@ public class Match {
     // private HashMap<String, User> tempUserList;
 
     private static final double DEFAULT_AREA_THRESHOLD = 1.0;
+
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
     @Scheduled(cron = "${jobs.match.cron}")
     public void match() {
@@ -86,6 +94,8 @@ public class Match {
         List<User> selectedSupervisors;
         Set<String> selectedSupervisorIds = new HashSet<>();
 
+        User taskOwner = userService.queryUser(task.getUserId());
+
         MatchType matchType = resolveMatchType(task);
 
         if (matchType.isRand) {
@@ -93,8 +103,7 @@ public class Match {
             gap -= selectedSupervisors.size();
         } else {
             selectedSupervisors = new ArrayList<>();
-            User taskOwner = userService.queryUser(task.getUserId());
-
+            
             final int pageSize = 5;
             int curPage = 1;
             endIterateUsers: while (true) {
@@ -140,8 +149,30 @@ public class Match {
             task.setMatchNum(task.getSupervisorNum());
             task.setTaskState("during");
             taskService.updateTask(task);
+
+            taskOwner.setTaskNum(taskOwner.getTaskNum() + 1);
+            if (task.getIfTest() == 1) {
+                taskOwner.setTestMoney(taskOwner.getTestMoney() - task.getTaskMoney());
+                userService.updateUser(taskOwner);
+            } else if (task.getIfTest() == 0) {
+                taskOwner.setUserMoney(taskOwner.getUserMoney() - task.getTaskMoney());
+                userService.updateUser(taskOwner);
+            }
+
+            MoneyFlow moneyFlow = new MoneyFlow();
+            moneyFlow.setUserID(task.getUserId());
+            moneyFlow.setIfTest(task.getIfTest());
+            moneyFlow.setFlowIo("O");
+            moneyFlow.setFlowType("pay");
+            moneyFlow.setFlowMoney(task.getTaskMoney());
+            moneyFlow.setTaskId(task.getTaskId());
+            moneyFlow.setFlowTime(DATE_FORMAT.format(new Date()));
+            moneyFlow.setFlowId(UUID.randomUUID().toString());
+            moneyService.addTestMoneyRecord(moneyFlow);
+
             return true;
         }
+
         return false;
     }
 
