@@ -157,7 +157,7 @@ public class TaskController {
         Task task = taskService.queryTask(taskId);
         JSONObject res = new JSONObject();
         String ymd = object.getString("ymd");
-        if(! Util.judgeDate(ymd)){
+        if(ymd != null && ! Util.judgeDate(ymd)){
             res.put("state", "fail");
             return res;
         }
