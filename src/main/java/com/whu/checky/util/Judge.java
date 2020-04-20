@@ -194,6 +194,7 @@ public class Judge {
     private boolean supervisorPass(String checkId, String supervisorId) {
         boolean isPass = true;
 
+        //找到当前打卡与监督者的监督清单
         List<Supervise> supervises = superviseMapper.selectList(new EntityWrapper<Supervise>()
             .eq("check_id", checkId)
             .eq("supervisor_id", supervisorId)
@@ -201,16 +202,21 @@ public class Judge {
 
         String status = "unknown";
 
+        //对监督记录进行判断
+        //如果有监督记录
         if(supervises != null && supervises.size() > 0) {
             Supervise supervise = supervises.get(0);
 
             status = supervise.getSuperviseState();
 
+            //如果已完成监督
             if(status == "pass") {
                 isPass = true;
             } else if(status == "deny") {
                 isPass = false;
-            } else if(status == "unknown") {
+            }
+            //没有完成监督，则累计其记录其不作为记录?
+            else if(status == "unknown") {
                 isPass = true;
     
                 Check check = checkMapper.selectById(checkId);
@@ -229,6 +235,9 @@ public class Judge {
             }
         }        
 
+        //如果没有监督记录呢？
+        //added by lhw on 2020.4.20
+
         return isPass;
     }
 
@@ -245,9 +254,11 @@ public class Judge {
             .eq("check_state", "unknown")
         );
 
+        //遍历打卡
         for(Check check : checks) {
             String checkId = check.getCheckId();
 
+            //找到监督者
             String taskId = check.getTaskId();
             List<TaskSupervisor> supervisors = taskSupervisorMapper.selectList(new EntityWrapper<TaskSupervisor>()
                 .eq("task_id", taskId)
@@ -256,6 +267,7 @@ public class Judge {
             int numPasses = check.getPassNum();
             int numSupers = check.getSuperviseNum();
 
+            //对打卡监督者的监督记录进行判断，并综合计算当前打卡是否通过
             for(TaskSupervisor supervisor : supervisors) {
                 String supervisorId = supervisor.getSupervisorId();
                 boolean isPass = supervisorPass(checkId, supervisorId);
