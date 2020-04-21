@@ -17,8 +17,12 @@ public  class MyConstants {
     public static final int MENU_FLAG_ENABLE = 1;
     public static final int MENU_FLAG_DISABLE = 0;
 
+    // 基本返回
     public static final String RESULT_OK = "ok";
     public static final String RESULT_FAIL = "fail";
+    // 带有意义的特殊返回
+    public static final String RESULT_NO_ENOUGH_MONEY = "noEnoughMoney";    // 资金不足
+    public static final String RESULT_NO_ENOUGH_SUP = "noEnoughSupervisor"; // 监督者不够
 
     //任务状态
     public static final String TASK_STATE_SAVE = "save";          //草稿/未发布状态

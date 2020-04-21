@@ -6,6 +6,7 @@ import com.alibaba.fastjson.TypeReference;
 import com.whu.checky.domain.*;
 import com.whu.checky.service.*;
 import com.whu.checky.util.Match;
+import com.whu.checky.util.MyConstants;
 import com.whu.checky.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,8 +26,6 @@ public class TaskController {
 
     @Autowired
     private TaskService taskService;
-    @Autowired
-    private MoneyService moneyService;
     @Autowired
     private UserService userService;
     @Autowired
@@ -94,21 +93,21 @@ public class TaskController {
     public HashMap<String, Object> addTask(@RequestBody String jsonstr) {
         Task task = JSON.parseObject(jsonstr, new TypeReference<Task>() {
         });
-        if (task.getTaskId() == null || task.getTaskId().equals("")) {
+        if (task.getTaskId() == null || task.getTaskId().equals("")) { // add new task
             task.setTaskId(UUID.randomUUID().toString());
-        } else {
+            int result = taskService.addTask(task);
+            if (result == 0) {
+                //添加失败
+                HashMap<String, Object> ret = new HashMap<>();
+                ret.put("state", "addTaskFail");
+                return ret;
+            } else {
+                //添加成功
+                return matchTask(task);
+            }
+        } else {  // update exiting task
             taskService.updateTask(task);
-            return updateTaskAboutMoney(task);
-        }
-        int result = taskService.addTask(task);
-        if (result == 0) {
-            //添加失败
-            HashMap<String, Object> ret = new HashMap<>();
-            ret.put("state", "addTaskFail");
-            return ret;
-        } else {
-            //添加成功
-            return updateTaskAboutMoney(task);
+            return matchTask(task);
         }
     }
 
@@ -207,25 +206,24 @@ public class TaskController {
         return taskService.distribute(taskService.queryTask(taskId));
     }
 
-    //发布已经保存的打卡任务
-//    @RequestMapping("/publicSavedTask")
-//    public HashMap<String, Object> publicSavedTask(@RequestBody String jsonstr) {
-//        Task tmp = JSON.parseObject(jsonstr, new TypeReference<Task>() {
-//        });
-//        Task task = taskService.queryTask(tmp.getTaskId());
-//        return updateTaskAboutMoney(task);
-//    }
-
-    private HashMap<String, Object> updateTaskAboutMoney(Task task) {
+    private HashMap<String, Object> matchTask(Task task) {
         HashMap<String, Object> ret = new HashMap<>();
         // 判断余额是否充足
         User user = userService.queryUser(task.getUserId());
         if (task.getIfTest() == 1 && task.getTaskMoney() > user.getTestMoney()) {
-            ret.put("state", "noEnoughTestMoney");
+            ret.put("state", MyConstants.RESULT_NO_ENOUGH_MONEY);
             return ret;
         } else if (task.getIfTest() == 0 && task.getTaskMoney() > user.getUserMoney()) {
-            ret.put("state", "noEnoughUserMoney");
+            ret.put("state", MyConstants.RESULT_NO_ENOUGH_MONEY);
             return ret;
+        }
+
+        if(match.matchSupervisorForOneTask(task)){
+            ret.put("state", MyConstants.RESULT_OK);
+        }else{
+            ret.put("state", MyConstants.RESULT_NO_ENOUGH_SUP);
+            ret.put("matchNum", task.getMatchNum());
+            ret.put("taskId", task.getTaskId());
         }
         return ret;
     }
