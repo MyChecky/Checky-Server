@@ -117,8 +117,8 @@ public class Match {
                         continue;
 
                     if (matchType.isAcq == isAcq(taskOwner, potentialSupervisor)
-                            || (matchType.isInSameArea == isInSameArea(taskOwner, potentialSupervisor))
-                            || (matchType.hasSameHobby == hasSameHobby(taskOwner, potentialSupervisor))) {
+                            && (matchType.isInSameArea == isInSameArea(taskOwner, potentialSupervisor))
+                            && (matchType.hasSameHobby == hasSameHobby(taskOwner, potentialSupervisor))) {
                         if(!selectedSupervisorIds.contains(potentialSupervisor.getUserId())) {
                             selectedSupervisorIds.add(potentialSupervisor.getUserId());
                             selectedSupervisors.add(potentialSupervisor);
