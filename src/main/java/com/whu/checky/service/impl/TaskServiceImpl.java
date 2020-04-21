@@ -15,6 +15,7 @@ import com.whu.checky.mapper.TaskSupervisorMapper;
 import com.whu.checky.mapper.UserMapper;
 import com.whu.checky.service.TaskService;
 
+import com.whu.checky.util.MyConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -75,6 +76,8 @@ public class TaskServiceImpl implements TaskService {
         int checkTimes = weekNum * Frec;
         res += checkTimes;
         task.setCheckTimes(res);
+
+        task.setTaskState(MyConstants.TASK_STATE_SAVE);
         return taskMapper.insert(task);
     }
 
@@ -182,7 +185,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public List<Task> getTasksAtNoMatchStateOwnedByUser(User user) {
-        return taskMapper.selectList(new EntityWrapper<Task>().eq("user_id", user.getUserId()).eq("task_state", "nomatch"));
+        return taskMapper.selectList(new EntityWrapper<Task>().eq("user_id", user.getUserId()).eq("task_state", MyConstants.TASK_STATE_NOMATCH));
     }
 
     @Override

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.whu.checky.domain.*;
 import com.whu.checky.mapper.*;
 import com.whu.checky.service.SuperviseService;
+import com.whu.checky.util.MyConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -91,7 +92,7 @@ public class SuperviseServiceImpl implements SuperviseService {
             supervisorState.setSupervisorName(userMapper.getUsernameById(supervisorId));
             supervisorState.setSupervisorState(superviseMapper.getStateByIds(supervisorId, checkId));
             if (supervisorState.getSupervisorState() == null) {
-                supervisorState.setSupervisorState("unknown");
+                supervisorState.setSupervisorState(MyConstants.SUPERVISE_STATE_UNKNOWN);
             }
             supervisorsState.add(supervisorState);
         }

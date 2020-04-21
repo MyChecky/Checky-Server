@@ -27,7 +27,7 @@ public class Distribute {
     @Scheduled(cron = "${jobs.distribute.cron}")
     public void assignMoney() {
         List<Task> tasks = taskMapper.selectList(new EntityWrapper<Task>()
-            .eq("task_state", "success").or().eq("task_state", "fail")
+            .eq("task_state", MyConstants.TASK_STATE_SUCCESS).or().eq("task_state", MyConstants.TASK_STATE_FAIL)
         );
 
         for(Task task : tasks) {
@@ -104,7 +104,7 @@ public class Distribute {
             userMapper.updateById(supervisorUser);
         }
         
-        task.setTaskState("complete");
+        task.setTaskState(MyConstants.TASK_STATE_COMPLETE);
 
         taskMapper.updateById(task);
     }

@@ -1,23 +1,21 @@
 package com.whu.checky.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.whu.checky.config.WxPayConfig;
 import com.whu.checky.domain.MoneyFlow;
 import com.whu.checky.domain.Pay;
-import com.whu.checky.domain.Task;
 import com.whu.checky.domain.User;
 import com.whu.checky.mapper.MoneyFlowMapper;
 import com.whu.checky.mapper.PayMapper;
 import com.whu.checky.mapper.TaskMapper;
 import com.whu.checky.mapper.UserMapper;
 import com.whu.checky.service.MoneyService;
+import com.whu.checky.util.MyConstants;
 import com.whu.checky.util.WXPayUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -192,22 +190,22 @@ public class MoneyServiceImpl implements MoneyService {
         List<String> moneyTypes = new ArrayList<>();
         List<String> moneyIOs = new ArrayList<>();
         List<Integer> moneyTests = new ArrayList<>();
-        if(moneyType.equals("all")){
-            moneyTypes.add("pay");
-            moneyTypes.add("refund");
-            moneyTypes.add("benefit");
+        if(moneyType.equals(MyConstants.MONEY_FLOW_TYPE_ALL)){
+            moneyTypes.add(MyConstants.MONEY_FLOW_TYPE_PAY);
+            moneyTypes.add(MyConstants.MONEY_FLOW_TYPE_REFUND);
+            moneyTypes.add(MyConstants.MONEY_FLOW_TYPE_BENEFIT);
         }else{
             moneyTypes.add(moneyType);
         }
-        if(moneyIO.equals("all")){
-            moneyIOs.add("I");
-            moneyIOs.add("O");
+        if(moneyIO.equals(MyConstants.MONEY_FLOW_IO_ALL)){
+            moneyIOs.add(MyConstants.MONEY_FLOW_IN);
+            moneyIOs.add(MyConstants.MONEY_FLOW_OUT);
         }else{
             moneyIOs.add(moneyIO);
         }
-        if(moneyTest == 2){
-            moneyTests.add(0);
-            moneyTests.add(1);
+        if(moneyTest == MyConstants.MONEY_TEST_ALL){
+            moneyTests.add(MyConstants.MONEY_TEST_TRUE);
+            moneyTests.add(MyConstants.MONEY_TEST_FALSE);
         }else{
             moneyTests.add(moneyTest);
         }
@@ -247,9 +245,9 @@ public class MoneyServiceImpl implements MoneyService {
     @Override
     public List<Pay> queryPaysForAdmin(Page<MoneyFlow> p, String startTime, String endTime, String payType, String keyword) {
         List<String> payTypes = new ArrayList<>();
-        if(payType.equals("all")){
-            payTypes.add("withdraw");
-            payTypes.add("pay");
+        if(payType.equals(MyConstants.PAY_TYPE_ALL)){
+            payTypes.add(MyConstants.PAY_TYPE_WITHDRAW);
+            payTypes.add(MyConstants.PAY_TYPE_PAY);
         }else{
             payTypes.add(payType);
         }
@@ -315,18 +313,18 @@ public class MoneyServiceImpl implements MoneyService {
             try {
                 int month = Integer.parseInt(m.getFlowTime().substring(5, 7)) - 1;
 //                int month = sdf.parse(m.getFlowTime()).getMonth();
-                if (m.getFlowIo().equals("O")) {// flowIO为O,仅支出,尚未结算，需等结算
-                    if (m.getIfTest() == 0) {// t num 0 here
-                        if(taskMapper.selectById(m.getTaskId()).getTaskState().equals("complete")){
+                if (m.getFlowIo().equals(MyConstants.MONEY_FLOW_OUT)) {// flowIO为O,仅支出,尚未结算，需等结算
+                    if (m.getIfTest() == MyConstants.MONEY_TEST_FALSE) {// t num 0 here
+                        if(taskMapper.selectById(m.getTaskId()).getTaskState().equals(MyConstants.TASK_STATE_COMPLETE)){
                             trueIncomeList.set(month, m.getFlowMoney() + trueIncomeList.get(month));
                         }
                     }
                     else{
-                        if(taskMapper.selectById(m.getTaskId()).getTaskState().equals("complete"))
+                        if(taskMapper.selectById(m.getTaskId()).getTaskState().equals(MyConstants.TASK_STATE_COMPLETE))
                             testIncomeList.set(month, m.getFlowMoney() + testIncomeList.get(month));
                     }
                 } else { // 入账，说明已结算，无需判别任务状态
-                    if (m.getIfTest() == 0)// t num 0 here
+                    if (m.getIfTest() == MyConstants.MONEY_TEST_FALSE)// t num 0 here
                         trueRefundList.set(month, m.getFlowMoney() + trueRefundList.get(month));
                     else
                         testRefundList.set(month, m.getFlowMoney() + testRefundList.get(month));
@@ -359,10 +357,10 @@ public class MoneyServiceImpl implements MoneyService {
         List<Double> trueRefundList = new ArrayList<>();
         List<Double> trueBenefitList = new ArrayList<>();
 
-        Double total_1_O = moneyFlowMapper.selectSum(1, "O");
-        Double total_1_I = moneyFlowMapper.selectSum(1, "I");
-        Double total_0_O = moneyFlowMapper.selectSum(0, "O");
-        Double total_0_I = moneyFlowMapper.selectSum(0, "I");
+        Double total_1_O = moneyFlowMapper.selectSum(MyConstants.MONEY_TEST_TRUE, MyConstants.MONEY_FLOW_OUT);
+        Double total_1_I = moneyFlowMapper.selectSum(MyConstants.MONEY_TEST_TRUE, MyConstants.MONEY_FLOW_IN);
+        Double total_0_O = moneyFlowMapper.selectSum(MyConstants.MONEY_TEST_FALSE, MyConstants.MONEY_FLOW_OUT);
+        Double total_0_I = moneyFlowMapper.selectSum(MyConstants.MONEY_TEST_FALSE, MyConstants.MONEY_FLOW_IN);
         // 前期没数据会有null的
         if(total_1_O==null)
             total_1_O = 0.0;
@@ -373,8 +371,8 @@ public class MoneyServiceImpl implements MoneyService {
         if(total_0_I==null)
             total_0_I = 0.0;
 
-        Double payPay = payMapper.selectSum("pay");
-        Double payWithdraw = payMapper.selectSum("withdraw");
+        Double payPay = payMapper.selectSum(MyConstants.PAY_TYPE_PAY);
+        Double payWithdraw = payMapper.selectSum(MyConstants.PAY_TYPE_WITHDRAW);
         if(payPay == null)
             payPay = 0.0;
         if(payWithdraw == null)
@@ -395,12 +393,12 @@ public class MoneyServiceImpl implements MoneyService {
 //                int month = sdf.parse(m.getFlowTime()).getMonth();
                 if (m.getFlowIo().equals("O")) {// flowIO为O,仅支出,尚未结算，需等结算
                     if (m.getIfTest() == 0) {// t num 0 here
-                        if(taskMapper.selectById(m.getTaskId()).getTaskState().equals("complete")){
+                        if(taskMapper.selectById(m.getTaskId()).getTaskState().equals(MyConstants.TASK_STATE_COMPLETE)){
                             trueIncomeList.set(month, m.getFlowMoney() + trueIncomeList.get(month));
                         }
                     }
                     else{
-                        if(taskMapper.selectById(m.getTaskId()).getTaskState().equals("complete"))
+                        if(taskMapper.selectById(m.getTaskId()).getTaskState().equals(MyConstants.TASK_STATE_COMPLETE))
                             testIncomeList.set(month, m.getFlowMoney() + testIncomeList.get(month));
                     }
                 } else { // 入账，说明已结算，无需判别任务状态

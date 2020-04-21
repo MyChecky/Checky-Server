@@ -11,6 +11,7 @@ import com.whu.checky.service.AppealService;
 import com.whu.checky.service.CommentService;
 import com.whu.checky.service.ParameterService;
 import com.whu.checky.service.UserService;
+import com.whu.checky.util.MyConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +32,7 @@ public class CommentServiceImpl implements CommentService {
         List<Comment> comments= commentMapper.selectList(new EntityWrapper<Comment>()
                 .eq("essay_id",essayId)
                 .and()
-                .eq("if_delete", 0)
+                .eq("if_delete", MyConstants.IF_DELETE_FALSE)
                 .orderBy("comment_time",true)
         );
         for (Comment comment:comments){

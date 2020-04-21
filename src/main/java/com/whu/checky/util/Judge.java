@@ -47,7 +47,7 @@ public class Judge {
     @Autowired
     AppealMapper appealMapper;
 
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    SimpleDateFormat sdf = new SimpleDateFormat(MyConstants.FORMAT_DATE);
 
 
 //    业务逻辑
@@ -59,7 +59,7 @@ public class Judge {
     public void dailyCheckSupervisedJudge(){
         System.out.println("Task start!");
         List<Check> checkList = checkMapper.selectList(new EntityWrapper<Check>()
-                .eq("check_state","unknown")
+                .eq("check_state",MyConstants.CHECK_STATE_UNKNOWN)
         );
 
         for(Check c: checkList){
@@ -69,11 +69,11 @@ public class Judge {
                 double timeDiff = (new Date().getTime() - sdf.parse(c.getCheckTime()).getTime()) / (1000 * 60 * 60 * 24);//超过一定天数后监督人数不足自动判定
                 if(c.getSuperviseNum()==supervisorNum||timeDiff>=timeoutDay) {
                     if (c.getPassNum() * 2 >= c.getSuperviseNum()) {
-                        c.setCheckState("pass");
+                        c.setCheckState(MyConstants.CHECK_STATE_PASS);
                         task.setCheckNum(task.getCheckNum()+1);
                         taskMapper.updateById(task);
                     }
-                    else c.setCheckState("deny");
+                    else c.setCheckState(MyConstants.CHECK_STATE_DENY);
 
                     checkMapper.updateById(c);
                 }
@@ -122,7 +122,7 @@ public class Judge {
         String now = sdf.format(today);
         String before = sdf.format(new Date(today.getTime()-timeoutDay* 24 * 60 * 60 * 1000));
         List<Task> taskList = taskMapper.selectList(new EntityWrapper<Task>()
-            .eq("task_state","during")
+            .eq("task_state",MyConstants.TASK_STATE_DURING)
             .and()
             .between("task_end_time",before,now)
         );
@@ -135,7 +135,7 @@ public class Judge {
 //            );
             int count = t.getCheckNum();
             if(count>=t.getCheckTimes()) {
-                t.setTaskState("success");
+                t.setTaskState(MyConstants.TASK_STATE_SUCCESS);
                 //成功全额退款
                 MoneyFlow record = new MoneyFlow();
                 record.setFlowId(UUID.randomUUID().toString());
@@ -143,8 +143,8 @@ public class Judge {
                 record.setFlowTime(sdf.format(new Date()));
                 record.setUserID(t.getUserId());
                 record.setIfTest(t.getIfTest());
-                record.setFlowIo("I");
-                record.setFlowType("refund");
+                record.setFlowIo(MyConstants.MONEY_FLOW_IN);
+                record.setFlowType(MyConstants.MONEY_FLOW_TYPE_REFUND);
                 record.setTaskId(t.getTaskId());
                 moneyFlowMapper.insert(record);
                 // 根据是否试玩，更新账户余额
@@ -157,7 +157,7 @@ public class Judge {
                 userMapper.updateById(user);
             }
             else if(count-timeoutDay<=t.getCheckTimes()) {
-                t.setTaskState("fail");
+                t.setTaskState(MyConstants.TASK_STATE_FAIL);
 
                 //失败全部分成
                 HashMap<String,Double> distribute = taskService.distribute(t);
@@ -169,8 +169,8 @@ public class Judge {
                     record.setFlowTime(sdf.format(new Date()));
                     record.setUserID(t.getUserId());
                     record.setIfTest(t.getIfTest());
-                    record.setFlowIo("I");
-                    record.setFlowType("benefit");
+                    record.setFlowIo(MyConstants.MONEY_FLOW_IN);
+                    record.setFlowType(MyConstants.MONEY_FLOW_TYPE_BENEFIT);
                     record.setTaskId(t.getTaskId());
                     moneyFlowMapper.insert(record);
 
@@ -200,7 +200,7 @@ public class Judge {
             .eq("supervisor_id", supervisorId)
         );
 
-        String status = "unknown";
+        String status = MyConstants.SUPERVISE_STATE_UNKNOWN;
 
         //对监督记录进行判断
         //如果有监督记录
@@ -210,13 +210,13 @@ public class Judge {
             status = supervise.getSuperviseState();
 
             //如果已完成监督
-            if(status == "pass") {
+            if(status == MyConstants.SUPERVISE_STATE_PASS) {
                 isPass = true;
-            } else if(status == "deny") {
+            } else if(status == MyConstants.SUPERVISE_STATE_DENY) {
                 isPass = false;
             }
             //没有完成监督，则累计其记录其不作为记录?
-            else if(status == "unknown") {
+            else if(status == MyConstants.SUPERVISE_STATE_UNKNOWN) {
                 isPass = true;
     
                 Check check = checkMapper.selectById(checkId);
@@ -251,7 +251,7 @@ public class Judge {
 
         List<Check> checks = checkMapper.selectList(new EntityWrapper<Check>()
             .between("check_time", yesterdayStr, todayStr)
-            .eq("check_state", "unknown")
+            .eq("check_state", MyConstants.CHECK_STATE_UNKNOWN)
         );
 
         //遍历打卡
@@ -285,26 +285,26 @@ public class Judge {
             Task task = taskMapper.selectById(taskId);
 
             String checkType = task.getMinCheckType();
-            if(checkType == "proportion") {
+            if(checkType == MyConstants.CHECK_TYPE_PROPORTION) {
                 double proportion = task.getMinCheck();
                 double proportionCur = (double)numPasses / numSupers;
                 
-                String resultState = "pass";
+                String resultState = MyConstants.CHECK_STATE_PASS;
                 if(proportionCur >= proportion) {
-                    resultState = "pass";
+                    resultState = MyConstants.CHECK_STATE_PASS;
                 } else {
-                    resultState = "deny";
+                    resultState = MyConstants.CHECK_STATE_DENY;
                 }
                 
                 check.setCheckState(resultState);
-            } else if(checkType == "number") {
+            } else if(checkType == MyConstants.CHECK_TYPE_NUMBER) {
                 double minPasses = task.getMinCheck();
 
-                String resultState = "pass";
+                String resultState = MyConstants.CHECK_STATE_PASS;
                 if(numPasses >= minPasses) {
-                    resultState = "pass";
+                    resultState = MyConstants.CHECK_STATE_PASS;
                 } else {
-                    resultState = "deny";
+                    resultState = MyConstants.CHECK_STATE_DENY;
                 }
 
                 check.setCheckState(resultState);
@@ -324,7 +324,7 @@ public class Judge {
 
         List<Task> tasks = taskMapper.selectList(new EntityWrapper<Task>()
             .between("task_end_time", yesterdayStr, todayStr)
-            .eq("task_state", "during")
+            .eq("task_state", MyConstants.TASK_STATE_DURING)
         );
 
         for(Task task : tasks) {
@@ -342,11 +342,11 @@ public class Judge {
                 double rate = (double)numPasses / numShould;
                 double minRate = task.getMinPass();
                 
-                String finalStates = "success";
+                String finalStates = MyConstants.TASK_STATE_SUCCESS;
                 if(rate >= minRate) {
-                    finalStates = "success";
+                    finalStates = MyConstants.TASK_STATE_SUCCESS;
                 } else {
-                    finalStates = "fail";
+                    finalStates = MyConstants.TASK_STATE_FAIL;
                 }
                 task.setTaskState(finalStates);
 

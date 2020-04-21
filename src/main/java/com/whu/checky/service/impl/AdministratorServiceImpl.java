@@ -11,6 +11,7 @@ import com.whu.checky.mapper.AdministratorMapper;
 import com.whu.checky.mapper.MenuMapper;
 import com.whu.checky.service.AdministratorService;
 import com.whu.checky.service.RedisService;
+import com.whu.checky.util.MyConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -111,7 +112,7 @@ public class AdministratorServiceImpl implements AdministratorService {
         Map<String, Boolean> re = new HashMap<>();
         for (AdminMenu adminMenu : adminMenus) {
             Menu menu = menuMapper.selectById(adminMenu.getMenuId());
-            if (menu.getFlag() == 1) // 菜单状态可用
+            if (menu.getFlag() == MyConstants.MENU_FLAG_ENABLE) // 菜单状态可用
                 re.put(menu.getMenuName(), true);
         }
         // 要把false的菜单一并返回
@@ -131,7 +132,7 @@ public class AdministratorServiceImpl implements AdministratorService {
                 .eq("user_id", userId));
         for (AdminMenu adminMenu : adminMenus) {
             Menu menu = menuMapper.selectById(adminMenu.getMenuId());
-            if (menu.getFlag() == 1) // 菜单状态可用
+            if (menu.getFlag() == MyConstants.MENU_FLAG_ENABLE) // 菜单状态可用
                 res.add(menu.getMenuName());
         }
         return res;

@@ -13,6 +13,7 @@ import com.whu.checky.mapper.HobbyMapper;
 import com.whu.checky.mapper.UserHobbyMapper;
 import com.whu.checky.service.HobbyService;
 
+import com.whu.checky.util.MyConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +25,7 @@ public class HobbyServiceImpl implements HobbyService {
     @Autowired
     private UserHobbyMapper userHobbyMapper;
 
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private SimpleDateFormat dateFormat = new SimpleDateFormat(MyConstants.FORMAT_DATETIME);
 
     @Override
     public List<String> getUserHobbies(String userId, int num) {
