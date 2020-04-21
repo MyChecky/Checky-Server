@@ -10,6 +10,7 @@ import com.whu.checky.service.HobbyService;
 import com.whu.checky.service.ServiceTermsService;
 import com.whu.checky.service.UserService;
 import com.whu.checky.util.FileUtil;
+import com.whu.checky.util.MyConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +53,7 @@ public class UserAndHobbyController {
         ret.put("newHobbiesJson", newHobbiesStrStart);
         String hobbiesStrStart = getHobbiesStrStart(userId, numSize);
         ret.put("hobbiesJson", hobbiesStrStart);
-        ret.put("state", "ok");
+        ret.put("state", MyConstants.RESULT_OK);
         return ret;
     }
 
@@ -69,7 +70,7 @@ public class UserAndHobbyController {
         user.setUserAvatar(userAvatar);
         user.setUserGender(userGender);
         userService.updateUser(user);
-        ret.put("state", "ok");
+        ret.put("state", MyConstants.RESULT_OK);
         return ret;
     }
 
@@ -81,7 +82,7 @@ public class UserAndHobbyController {
         JSONArray hobbiesArray = object.getJSONArray("hobbies");
         List<String> hobbies = JSONObject.parseArray(hobbiesArray.toJSONString(), String.class);
         hobbyService.updateUserHobbies(userId, hobbies);
-        ret.put("state", "ok");
+        ret.put("state", MyConstants.RESULT_OK);
         return ret;
     }
 
@@ -93,7 +94,7 @@ public class UserAndHobbyController {
         int numSize = 9;
         String newHobbiesStrStart = getNewHobbiesStrStart(userId, numSize);
         ret.put("newHobbiesJson", newHobbiesStrStart);
-        ret.put("state", "ok");
+        ret.put("state", MyConstants.RESULT_OK);
         return ret;
     }
 
@@ -181,11 +182,11 @@ public class UserAndHobbyController {
                     FileUtil.uploadFile(file.getBytes(), filePath, fileName);
                     String avatarURL = "/resources/" + userId + "/" + day + "/" + contentType + "/" + fileName;
                     response.put("avatarUrl", avatarURL);
-                    response.put("state", "ok");
+                    response.put("state", MyConstants.RESULT_OK);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                response.put("state", "fail");
+                response.put("state", MyConstants.RESULT_FAIL);
             }
         }
         return response;
@@ -199,7 +200,7 @@ public class UserAndHobbyController {
         ServiceTerms serviceTerms = serviceTermsService.getLatestServiceTerms();
         ret.put("serviceTermsContent", serviceTerms.getServiceContent());
         ret.put("serviceTermsTime", serviceTerms.getServiceTime());
-        ret.put("state", "ok");
+        ret.put("state", MyConstants.RESULT_OK);
         return ret;
     }
 }

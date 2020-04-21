@@ -46,7 +46,7 @@ public class TaskController {
         ret.put("minCheck", parameterService.getValueByParam("check_lowest_pass").getParamValue());
 
         String ymd = JSONObject.parseObject(body).getString("ymd");
-        String state = Util.judgeDate(ymd) ? "ok" : "fail";
+        String state = Util.judgeDate(ymd) ? MyConstants.RESULT_OK : MyConstants.RESULT_FAIL;
         ret.put("state", state);
         return ret;
     }
@@ -68,9 +68,9 @@ public class TaskController {
         ret.put("passTimes", task.getCheckPass() + "/" + task.getCheckNum());
         ret.put("taskDescribe", task.getTaskContent());
         // 金额与退还数
-        if (task.getTaskState().equals("complete"))
+        if (task.getTaskState().equals(MyConstants.TASK_STATE_COMPLETE))
             ret.put("taskMoneyState", "总:" + task.getTaskMoney() + "￥/返回:" + task.getRefundMoney() + "￥");
-        else if (task.getTaskState().equals("during")) {
+        else if (task.getTaskState().equals(MyConstants.TASK_STATE_DURING)) {
             ret.put("taskMoneyState", "总:" + task.getTaskMoney() + "￥");
         } else {
             ret.put("taskMoneyState", "总:" + task.getTaskMoney() + "￥/即将返回:" + task.getRefundMoney() + "￥");
@@ -84,7 +84,7 @@ public class TaskController {
             sups.add(userService.queryUser(taskSupervisor.getSupervisorId()).getUserName());
         }
         ret.put("taskSups", sups);
-        ret.put("state", "ok");
+        ret.put("state", MyConstants.RESULT_OK);
         return ret;
     }
 
@@ -121,7 +121,7 @@ public class TaskController {
         String passTask = decimalFormat.format(passTaskDouble);
         ret.put("passCheck", passCheck);
         ret.put("passTask", passTask);
-        ret.put("state", "ok");
+        ret.put("state", MyConstants.RESULT_OK);
         return ret;
     }
 
@@ -157,13 +157,13 @@ public class TaskController {
         JSONObject res = new JSONObject();
         String ymd = object.getString("ymd");
         if(ymd != null && ! Util.judgeDate(ymd)){
-            res.put("state", "fail");
+            res.put("state", MyConstants.RESULT_FAIL);
             return res;
         }
 
         if (task != null) {
             User user = userService.queryUser(task.getUserId());
-            res.put("state", "OK");
+            res.put("state", MyConstants.RESULT_OK);
             task.setUserName(user.getUserName());
             res.put("task", task);
             res.put("userName", user.getUserName());
@@ -176,7 +176,7 @@ public class TaskController {
             TaskType taskType = taskTypeService.QueryTaskType(task.getTypeId());
             res.put("typeContent", taskType.getTypeContent());
         } else {
-            res.put("state", "FAIL");
+            res.put("state", MyConstants.RESULT_FAIL);
         }
         return res;
     }

@@ -32,7 +32,7 @@ public class AdminTests {
         Page<User> p = new Page<User>(page, pageSize);
         List<User> userList = userService.getAllUsers(p, isAsc);
         HashMap<String,Object> resp = new HashMap<>();
-        resp.put("state","ok");
+        resp.put("state",MyConstants.RESULT_OK);
         resp.put("size",(int)Math.floor(userService.getAllUsersNum()/ (double)pageSize) );
         resp.put("users",userList);
         System.out.println(resp.toString());
@@ -57,7 +57,7 @@ public class AdminTests {
         }
         resp.put("tasks", taskList);
         if (p != null) resp.put("tasksSize", p.getTotal());
-        resp.put("state", "ok");
+        resp.put("state", MyConstants.RESULT_OK);
         System.out.println(resp);
     }
 }

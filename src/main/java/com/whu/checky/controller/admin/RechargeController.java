@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.whu.checky.domain.MoneyFlow;
 import com.whu.checky.domain.Pay;
 import com.whu.checky.service.MoneyService;
+import com.whu.checky.util.MyConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -41,7 +42,7 @@ public class RechargeController {
 
         HashMap<String, Object> resp = new HashMap<>();
         resp.put("pays", pays);
-        resp.put("state", "ok");
+        resp.put("state", MyConstants.RESULT_OK);
         resp.put("size", (int)Math.ceil(p.getTotal() / (double)pageSize));
         resp.put("total", p.getTotal());
         return resp;
@@ -64,7 +65,7 @@ public class RechargeController {
 
         HashMap<String, Object> resp = new HashMap<>();
         resp.put("pays", pays);
-        resp.put("state", "ok");
+        resp.put("state", MyConstants.RESULT_OK);
         resp.put("size", (int)Math.ceil(p.getTotal() / (double)pageSize));
         resp.put("total", p.getTotal());
         return resp;
@@ -91,7 +92,7 @@ public class RechargeController {
 
         res.put("size", (int)Math.ceil(p.getTotal() / (double) pageSize));
         res.put("total", p.getTotal());
-        res.put("state", "ok");
+        res.put("state", MyConstants.RESULT_OK);
         res.put("pays", pays);
         return res;
     }

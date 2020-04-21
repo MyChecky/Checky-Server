@@ -8,6 +8,7 @@ import com.whu.checky.domain.User;
 import com.whu.checky.service.ParameterService;
 import com.whu.checky.service.RedisService;
 import com.whu.checky.service.UserService;
+import com.whu.checky.util.MyConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +48,7 @@ public class WechatController {
             String sessionKey = data.getString("sessionKey");
             redisService.delSessionId(sessionKey);
         }catch (Exception e){
-            ans.put("state","fail");
+            ans.put("state", MyConstants.RESULT_FAIL);
         }
         return ans;
     }

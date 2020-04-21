@@ -152,7 +152,7 @@ public class Match {
              }
 
 //             task.setMatchNum(task.getSupervisorNum());
-             task.setTaskState("during");
+             task.setTaskState(MyConstants.TASK_STATE_DURING);
              taskService.updateTask(task);
 
              taskOwner.setTaskNum(taskOwner.getTaskNum() + 1);
@@ -278,7 +278,7 @@ public class Match {
     // @Deprecated
     // public void matchSupervisor() {
     // List<Task> taskList = taskMapper.selectList(new
-    // EntityWrapper<Task>().eq("task_state", "nomatch"));
+    // EntityWrapper<Task>().eq("task_state", MyConstants.TASK_STATE_NOMATCH));
 
     // // String [] judgements = {"supervise_num",""};
     // List<User> userList = userMapper.selectList(new
@@ -315,8 +315,8 @@ public class Match {
 
     // // get all tasks needing supervisors
     // List<Task> taskList = taskMapper.selectList(new
-    // EntityWrapper<Task>().eq("task_state", "nomatch").or()
-    // .eq("task_state", "during").and().lt("match_num", matchMax)
+    // EntityWrapper<Task>().eq("task_state", MyConstants.TASK_STATE_NOMATCH).or()
+    // .eq("task_state", MyConstants.TASK_STATE_DURING).and().lt("match_num", matchMax)
     // // .or()
     // // .lt("supervisor_num",matchMax)
     // );
@@ -328,7 +328,7 @@ public class Match {
     // }
 
     // for (Task t : taskList) {
-    // // if(t.getTaskState().equals("during")) continue;
+    // // if(t.getTaskState().equals(MyConstants.TASK_STATE_DURING)) continue;
     // PriorityQueue<Pair<Integer, Double>> queue = new PriorityQueue<>(new
     // Comparator<Pair<Integer, Double>>() {
     // @Override
@@ -369,7 +369,7 @@ public class Match {
     // HH:mm:ss").format(new Date()));
     // taskSupervisorMapper.insert(taskSupervisor);
     // t.setSupervisorNum(t.getSupervisorNum() + 1);
-    // t.setTaskState("during");
+    // t.setTaskState(MyConstants.TASK_STATE_DURING);
     // temp.setMatchNum(temp.getMatchNum() + 1);
     // }
     // }

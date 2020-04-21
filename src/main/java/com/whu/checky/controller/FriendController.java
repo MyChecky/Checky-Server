@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.whu.checky.domain.*;
 import com.whu.checky.service.*;
+import com.whu.checky.util.MyConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -53,12 +54,12 @@ public class FriendController {
         HashMap<String, Object> ans = new HashMap<>();
         for(UserFriend userFriend: userFriends){
             if(userFriend.getToUserId().equals(targetUserId) || userFriend.getFromUserId().equals(targetUserId)){
-                ans.put("state", "ok");
+                ans.put("state", MyConstants.RESULT_OK);
                 ans.put("ifFriend", 1);
                 return ans;
             }
         }
-        ans.put("state", "ok");
+        ans.put("state", MyConstants.RESULT_OK);
         ans.put("ifFriend", 0);
         return ans;
     }
@@ -99,7 +100,7 @@ public class FriendController {
             }
             msgLists.add(msgList);
         }
-        ans.put("state", "ok");
+        ans.put("state", MyConstants.RESULT_OK);
         ans.put("msgLists", msgLists);
         return ans;
     }
@@ -195,7 +196,7 @@ public class FriendController {
             }
             friendListWithMessages.add(friendListWithMessage);
         }
-        ans.put("state", "ok");
+        ans.put("state", MyConstants.RESULT_OK);
         ans.put("friendList", friendListWithMessages);
         return ans;
     }
@@ -209,7 +210,7 @@ public class FriendController {
         String userId = data.getString("userId");
         String targetUserId = data.getString("targetUserId");
         userFriendService.updateUserFriend(targetUserId, userId, Integer.parseInt(op));
-        ans.put("state", "ok");
+        ans.put("state", MyConstants.RESULT_OK);
         return ans;
     }
 
@@ -230,7 +231,7 @@ public class FriendController {
             friendListWithMessage.setDate(userFriend.getAddTime());
             friendListWithMessages.add(friendListWithMessage);
         }
-        ans.put("state", "ok");
+        ans.put("state", MyConstants.RESULT_OK);
         ans.put("friendList", friendListWithMessages);
         return ans;
     }
@@ -262,7 +263,7 @@ public class FriendController {
             }
             friendListWithMessages.add(friendListWithMessage);
         }
-        ans.put("state", "ok");
+        ans.put("state", MyConstants.RESULT_OK);
         ans.put("friendList", friendListWithMessages);
         return ans;
     }

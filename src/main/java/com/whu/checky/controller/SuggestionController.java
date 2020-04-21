@@ -7,6 +7,7 @@ import com.whu.checky.domain.Suggestion;
 import com.whu.checky.domain.TaskType;
 import com.whu.checky.service.SuggestionService;
 import com.whu.checky.service.TaskTypeService;
+import com.whu.checky.util.MyConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,20 +50,20 @@ public class SuggestionController {
         //改变这个suggestion的state
         JSONObject object= (JSONObject) JSON.parse(jsonstr);
         String state= (String) object.get("state");
-        if(state=="pass"){
+        if(state.equals("pass")){
             //审核通过，新添类型
             TaskType taskType= JSON.parseObject((String) object.get("taskType"),new TypeReference<TaskType>(){});
             int addTyperesult=taskTypeService.addTaskType(taskType);
             int updateSuggesionState=suggestionService.updataSuggestion((String) object.get("suggesionid"),"pass");
             if(addTyperesult==1&&updateSuggesionState==1)
-                return "success";
+                return MyConstants.RESULT_OK;
         }else {
             //审核未通过
             int updateSuggesionState=suggestionService.updataSuggestion((String) object.get("suggesionid"),"fail");
             return "updateToFailfail";
         }
 
-        return "fail";
+        return MyConstants.RESULT_FAIL;
     }
 
     @RequestMapping("/listSuggestion")
@@ -85,9 +86,9 @@ public class SuggestionController {
 
         JSONObject ans = new JSONObject();
         if (result == 1) {
-            ans.put("state", "OK");
+            ans.put("state", MyConstants.RESULT_OK);
         } else {
-            ans.put("state", "FAIL"); // 插入失败
+            ans.put("state", MyConstants.RESULT_FAIL); // 插入失败
         }
         return ans;
     }

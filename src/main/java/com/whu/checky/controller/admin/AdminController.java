@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.whu.checky.domain.Administrator;
 import com.whu.checky.service.AdministratorService;
 import com.whu.checky.service.RedisService;
+import com.whu.checky.util.MyConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,17 +64,17 @@ public class AdminController {
             if(registerResult == 1){
                 log.error("Something Wrong When Register An Administrator!");
                 log.error("Please Check The NAME Of The NEW Administrator!");
-                ans.put("state", "fail");
+                ans.put("state", MyConstants.RESULT_FAIL);
                 return ans;
             }
         }catch (Exception ex){
             log.error("Something Wrong When Register An Administrator!");
             log.error(ex.getMessage());
-            ans.put("state", "fail");
+            ans.put("state", MyConstants.RESULT_FAIL);
             return ans;
         }
         administratorService.updateAdminMenus(administrator.getUserId(), menus);
-        ans.put("state", "ok");
+        ans.put("state", MyConstants.RESULT_OK);
         return ans;
     }
 
@@ -111,15 +112,15 @@ public class AdminController {
 
         HashMap<String,String> ans = new HashMap<>();
         if(updateState == 1)
-            ans.put("state", "ok");
+            ans.put("state", MyConstants.RESULT_OK);
         else
-            ans.put("state", "fail");
+            ans.put("state", MyConstants.RESULT_FAIL);
         return ans;
     }
 
     @PostMapping("/login")
     public HashMap<String,Object> login(@RequestBody String body) {
-        String message = "ok";
+        String message = MyConstants.RESULT_OK;
         HashMap<String,Object> ans = new HashMap<>();
         //构建Administrator
         Administrator administrator = parserJson2User(body);
@@ -154,9 +155,9 @@ public class AdminController {
             JSONObject data = JSON.parseObject(body);
             String sessionKey = data.getString("sessionKey");
             redisService.delSessionId(sessionKey);
-            ans.put("state","ok");
+            ans.put("state",MyConstants.RESULT_OK);
         }catch (Exception e){
-            ans.put("state","fail");
+            ans.put("state",MyConstants.RESULT_FAIL);
         }
         return ans;
     }
@@ -177,7 +178,7 @@ public class AdminController {
             administrator.setPermissions(permissions);
         }
         HashMap<String,Object> resp = new HashMap<>();
-        resp.put("state","ok");
+        resp.put("state",MyConstants.RESULT_OK);
         resp.put("size",(int)Math.ceil(p.getTotal() / (double)pageSize));
         resp.put("total", p.getTotal());
         resp.put("admins",adminList);
@@ -200,7 +201,7 @@ public class AdminController {
         HashMap<String,Object> resp = new HashMap<>();
         resp.put("size", (int) Math.ceil(p.getTotal() / (double) pageSize));
         resp.put("total", p.getTotal());
-        resp.put("state","ok");
+        resp.put("state",MyConstants.RESULT_OK);
         resp.put("admins",adminList);
         return resp;
     }
@@ -211,7 +212,7 @@ public class AdminController {
         Administrator admin = administratorService.queryAdmin(userId);
         admin.setUserPassword(null);
         HashMap<String,Object> resp = new HashMap<>();
-        resp.put("state","ok");
+        resp.put("state",MyConstants.RESULT_OK);
         resp.put("admin",admin);
         List<String> menus = administratorService.getPermissionsById(userId);
         resp.put("menus", menus);
@@ -224,9 +225,9 @@ public class AdminController {
         String userId = JSONObject.parseObject(body).getString("userId");
         Integer deleteResult = administratorService.deleteById(userId);
         if(deleteResult == 1)
-            res.put("state", "ok");
+            res.put("state", MyConstants.RESULT_OK);
         else
-            res.put("state", "fail");
+            res.put("state", MyConstants.RESULT_FAIL);
         return res;
 
 

@@ -7,6 +7,7 @@ import com.whu.checky.domain.Appeal;
 import com.whu.checky.domain.User;
 import com.whu.checky.service.AppealService;
 import com.whu.checky.service.UserService;
+import com.whu.checky.util.MyConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -54,7 +55,7 @@ public class AppealController {
             adminAppeals.add(adminAppeal);
         }
 //        res.put("size", appealService.queryAllAppealNum());
-        res.put("state","ok");
+        res.put("state", MyConstants.RESULT_OK);
         res.put("appeals",adminAppeals);
         res.put("size", (int)Math.ceil(page.getTotal()/ (double)pageSize));
         res.put("total", page.getTotal());
@@ -69,9 +70,9 @@ public class AppealController {
         String appealId=object.getString("appealId");
         String result=object.getString("result");
         if(appealService.updateAppeal(appealId,result)==1) {
-            res.put("state","ok");
+            res.put("state",MyConstants.RESULT_OK);
         }else {
-            res.put("state","fail");
+            res.put("state",MyConstants.RESULT_FAIL);
         }
         return res;
     }
@@ -100,7 +101,7 @@ public class AppealController {
         }else if(searchType.equals("content")){
             appeals = appealService.queryAppealsLikeContent(p, startTime, endTime, keyword);
         }else{
-            res.put("state", "fail");
+            res.put("state", MyConstants.RESULT_FAIL);
             return res;
         }
         List<AdminAppeal> adminAppeals=new ArrayList<AdminAppeal>();
@@ -117,7 +118,7 @@ public class AppealController {
             adminAppeal.setAppealState(appeal.getProcessResult());
             adminAppeals.add(adminAppeal);
         }
-        res.put("state", "ok");
+        res.put("state", MyConstants.RESULT_OK);
         res.put("appeals", appeals);
         res.put("size", (int)Math.ceil(p.getTotal() / (double) pageSize));
         res.put("total", p.getTotal());

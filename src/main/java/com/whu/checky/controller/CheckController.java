@@ -9,6 +9,7 @@ import com.whu.checky.domain.*;
 import com.whu.checky.service.*;
 //import com.whu.checky.service.FileService;
 import com.whu.checky.util.FileUtil;
+import com.whu.checky.util.MyConstants;
 import com.whu.checky.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -44,7 +45,7 @@ public class CheckController {
     public HashMap<String, String> checkDate(@RequestBody String body) {
         String ymd = JSONObject.parseObject(body).getString("ymd");
         HashMap<String, String> ret = new HashMap<>();
-        String state = Util.judgeDate(ymd) ? "ok" : "fail";
+        String state = Util.judgeDate(ymd) ? MyConstants.RESULT_OK : MyConstants.RESULT_FAIL;
         ret.put("state", state);
         return ret;
     }
@@ -73,10 +74,10 @@ public class CheckController {
             ans.put("checkId", check.getCheckId());
         } catch (Exception ex) {
             ex.printStackTrace();
-            ans.put("state", "fail");
-//            return "fail";
+            ans.put("state", MyConstants.RESULT_FAIL);
+//            return MyConstants.RESULT_FAIL;
         }
-        ans.put("state", "success");
+        ans.put("state", MyConstants.RESULT_OK);
         return ans;
     }
 
@@ -132,7 +133,7 @@ public class CheckController {
         List<DayCheckAndTask> unKnownChecks = new ArrayList<>();
 
         for (Task t : taksList) {
-            if (t.getTaskState().equals("nomatch") || t.getTaskState().equals("save")) // 余额不足的save状态
+            if (t.getTaskState().equals(MyConstants.TASK_STATE_NOMATCH) || t.getTaskState().equals(MyConstants.TASK_STATE_SAVE)) // 余额不足的save状态
                 continue;
             Check check = checkService.getCheckByTask(t.getTaskId(), date);
 //            List<Object> temp = new ArrayList<>();
@@ -141,7 +142,7 @@ public class CheckController {
 //                temp.add(check);
 //                if(check.getCheckState().equals("success")){
 //                    passChecks.add(temp);
-//                }else if(check.getCheckState().equals("fail")){
+//                }else if(check.getCheckState().equals(MyConstants.RESULT_FAIL)){
 //                    failChecks.add(temp);
 //                }else if(check.getCheckState().equals("unknown")){
 //                    unKnownChecks.add(temp);
@@ -166,7 +167,7 @@ public class CheckController {
         }
         int supOutDay = Integer.parseInt(parameterService.getValueByParam("time_out_day").getParamValue());
         ans.put("supOutDay", supOutDay);
-        ans.put("state", "ok");
+        ans.put("state", MyConstants.RESULT_OK);
         ans.put("toCheck", toChecks);
         ans.put("checked", AlreadyChecks);
         ans.put("unknown", unKnownChecks);
@@ -181,9 +182,9 @@ public class CheckController {
             checkService.updateCheck(check);
         } catch (Exception ex) {
             ex.printStackTrace();
-            return "fail";
+            return MyConstants.RESULT_FAIL;
         }
-        return "success";
+        return MyConstants.RESULT_OK;
     }
 
     @PostMapping("/deleteCheck")
@@ -202,9 +203,9 @@ public class CheckController {
             checkService.deleteCheck(checkId);
         } catch (Exception ex) {
             ex.printStackTrace();
-            return "fail";
+            return MyConstants.RESULT_FAIL;
         }
-        return "success";
+        return MyConstants.RESULT_OK;
     }
 
     private Check paserJson2NewCheck(JSONObject object) {
@@ -280,11 +281,11 @@ public class CheckController {
                     String recordId = UUID.randomUUID().toString().substring(0, 12);
                     record.setRecordId(recordId);
                     recordService.addRecord(record);
-                    response.put("state", "ok");
+                    response.put("state", MyConstants.RESULT_OK);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                response.put("state", "fail");
+                response.put("state", MyConstants.RESULT_FAIL);
             }
         }
         return response;

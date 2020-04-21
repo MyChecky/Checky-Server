@@ -16,6 +16,7 @@ import com.whu.checky.domain.FriendChat;
 import com.whu.checky.domain.User;
 import com.whu.checky.service.FriendChatService;
 import com.whu.checky.service.UserService;
+import com.whu.checky.util.MyConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.slf4j.Logger;
@@ -144,7 +145,7 @@ public class WebSocketServer {
                     JSONObject ans = new JSONObject();
                     ans.put("content", content);
                     ans.put("date", date);
-                    ans.put("state", "ok");
+                    ans.put("state", MyConstants.RESULT_OK);
                     webSocketMap.get(toUserId).sendMessage(ans.toJSONString());
                     friendChat.setIfRead(1); // 对方在聊天框，消息状态已读
                 } else {

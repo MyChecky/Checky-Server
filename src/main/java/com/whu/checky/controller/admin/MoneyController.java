@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.whu.checky.domain.MoneyFlow;
 import com.whu.checky.service.MoneyService;
+import com.whu.checky.util.MyConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +34,7 @@ public class MoneyController {
 
         List<MoneyFlow> moneyFlows = moneyService.queryUserMoneyFlowWithName(userId, p, isAsc);
         HashMap<String, Object> resp = new HashMap<>();
-        resp.put("state", "ok");
+        resp.put("state", MyConstants.RESULT_OK);
         resp.put("moneyFlow", moneyFlows);
         resp.put("size", (int)Math.ceil(p.getTotal() / (double)pageSize));
         resp.put("total", p.getTotal());
@@ -53,7 +54,7 @@ public class MoneyController {
 
         List<MoneyFlow> moneyFlows = moneyService.queryAllMoneyFlows(p, isAsc);
         HashMap<String, Object> resp = new HashMap<>();
-        resp.put("state", "ok");
+        resp.put("state", MyConstants.RESULT_OK);
         resp.put("moneyFlow", moneyFlows);
         resp.put("size",  (int)Math.ceil(p.getTotal() / (double)pageSize));
         resp.put("total", p.getTotal());
@@ -65,7 +66,7 @@ public class MoneyController {
         JSONObject json = JSONObject.parseObject(body);
         String year = json.getString("year");
         HashMap<String, Object> ret = moneyService.getAllGraphData(year);
-        ret.put("state", "ok");
+        ret.put("state", MyConstants.RESULT_OK);
         return ret;
     }
 
@@ -75,7 +76,7 @@ public class MoneyController {
         String year = json.getString("year");
         String userId = json.getString("userId");
         HashMap<String, Object> ret = moneyService.getUserGraphData(year, userId);
-        ret.put("state", "ok");
+        ret.put("state", MyConstants.RESULT_OK);
         return ret;
     }
 
@@ -107,7 +108,7 @@ public class MoneyController {
 
         res.put("size", (int)Math.ceil(p.getTotal() / (double) pageSize));
         res.put("total", p.getTotal());
-        res.put("state", "ok");
+        res.put("state", MyConstants.RESULT_OK);
         res.put("moneyFlows", moneyFlows);
         return res;
     }

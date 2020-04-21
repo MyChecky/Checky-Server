@@ -7,6 +7,7 @@ import com.whu.checky.domain.Report;
 import com.whu.checky.domain.User;
 import com.whu.checky.service.ReportService;
 import com.whu.checky.service.UserService;
+import com.whu.checky.util.MyConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -59,7 +60,7 @@ public class ReportController {
             adminReport.setReportState(report.getProcessResult());
             adminReports.add(adminReport);
         }
-        res.put("state","ok");
+        res.put("state", MyConstants.RESULT_OK);
         res.put("reports",adminReports);
         res.put("size", (int)Math.ceil(page.getTotal() / (double)pageSize));
         res.put("total", page.getTotal());
@@ -74,9 +75,9 @@ public class ReportController {
         String reportId=object.getString("reportId");
         String result=object.getString("result");
         if(reportService.updateState(reportId,result)==1) {
-            res.put("state","ok");
+            res.put("state",MyConstants.RESULT_OK);
         }else {
-            res.put("state","fail");
+            res.put("state",MyConstants.RESULT_FAIL);
         }
         return res;
     }
@@ -106,7 +107,7 @@ public class ReportController {
         }else if(searchType.equals("content")){
             reports = reportService.queryAppealsLikeContent(p, startTime, endTime, keyword);
         }else{
-            res.put("state", "fail");
+            res.put("state", MyConstants.RESULT_FAIL);
             return res;
         }
 
@@ -129,7 +130,7 @@ public class ReportController {
             adminReport.setReportState(report.getProcessResult());
             adminReports.add(adminReport);
         }
-        res.put("state","ok");
+        res.put("state",MyConstants.RESULT_OK);
         res.put("reports",adminReports);
         res.put("size", (int)Math.ceil(p.getTotal() / (double)pageSize));
         res.put("total", p.getTotal());

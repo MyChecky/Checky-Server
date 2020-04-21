@@ -31,7 +31,7 @@ public class Task {
     /**
      * 任务状态
      */
-    private String taskState="save";
+    private String taskState=MyConstants.TASK_STATE_SAVE;
     /**
      * 任务押金
      */

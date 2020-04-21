@@ -7,6 +7,7 @@ import com.whu.checky.domain.User;
 import com.whu.checky.service.HobbyService;
 import com.whu.checky.service.MoneyService;
 import com.whu.checky.service.UserService;
+import com.whu.checky.util.MyConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,7 +35,7 @@ public class UserController {
         String userId = object.getString("userId");
         List<String> hobbies = hobbyService.queryUserHobby(userId);
         resp.put("hobbies", hobbies);
-        resp.put("state", "ok");
+        resp.put("state", MyConstants.RESULT_OK);
         resp.put("total", hobbies.size());
         return resp;
     }
@@ -52,7 +53,7 @@ public class UserController {
 
         List<User> userList = userService.getAllUsers(p, isAsc);
         HashMap<String, Object> resp = new HashMap<>();
-        resp.put("state", "ok");
+        resp.put("state", MyConstants.RESULT_OK);
         resp.put("size", (int) Math.floor(p.getTotal() / (double) pageSize));
         resp.put("total", p.getTotal());
         resp.put("users", userList);
@@ -81,10 +82,10 @@ public class UserController {
         else if(searchType.equals("nickname")){
             users = userService.queryUsersLikeNickname(p, startTime, endTime, keyword);
         }else{
-            res.put("state", "fail");
+            res.put("state", MyConstants.RESULT_FAIL);
             return res;
         }
-        res.put("state", "ok");
+        res.put("state", MyConstants.RESULT_OK);
         res.put("users", users);
         res.put("size", (int)Math.ceil(p.getTotal() / (double) pageSize));
         res.put("total", p.getTotal());
@@ -98,7 +99,7 @@ public class UserController {
         User newUser = json.getObject("user", User.class);
         userService.updateUser(newUser);
         HashMap<String, Object> resp = new HashMap<>();
-        resp.put("state", "ok");
+        resp.put("state", MyConstants.RESULT_OK);
         return resp;
     }
 
@@ -107,7 +108,7 @@ public class UserController {
         String userId = JSONObject.parseObject(body).getString("userId");
         userService.deleteUser(userId);
         HashMap<String, Object> resp = new HashMap<>();
-        resp.put("state", "ok");
+        resp.put("state", MyConstants.RESULT_OK);
         return resp;
     }
 
@@ -121,7 +122,7 @@ public class UserController {
         resp.put("totalTrueIn", userTotalMoneys[1]);
         resp.put("totalTestOut", userTotalMoneys[2]);
         resp.put("totalTestIn", userTotalMoneys[3]);
-        resp.put("state", "ok");
+        resp.put("state", MyConstants.RESULT_OK);
         resp.put("user", user);
         return resp;
     }

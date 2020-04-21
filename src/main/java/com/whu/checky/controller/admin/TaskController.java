@@ -71,7 +71,7 @@ public class TaskController {
             resp.put("size", (int)Math.ceil(p.getTotal() / (double) pageSize));
             resp.put("total", p.getTotal());
         }
-        resp.put("state", "ok");
+        resp.put("state", MyConstants.RESULT_OK);
         return resp;
     }
 
@@ -83,7 +83,7 @@ public class TaskController {
         String taskId = (String) object.get("taskId");
         Task task = taskService.queryTask(taskId);
         task.setTypeContent(taskTypeService.QueryTaskType(task.getTypeId()).getTypeContent());
-        res.put("state", "ok");
+        res.put("state", MyConstants.RESULT_OK);
         res.put("task", task);
         return res;
     }
@@ -95,7 +95,7 @@ public class TaskController {
         JSONObject object = (JSONObject) JSON.parse(body);
         String taskId = (String) object.get("taskId");
         List<Check> checks = checkService.getTaskChecks(taskId);
-        res.put("state", "ok");
+        res.put("state", MyConstants.RESULT_OK);
         res.put("checks", checks);
         return res;
     }
@@ -126,10 +126,10 @@ public class TaskController {
         }else if(searchType.equals("title")){
             tasks = taskService.queryTaskLikeTitle(p, startTime, endTime, keyword);
         }else{
-            res.put("state", "fail");
+            res.put("state", MyConstants.RESULT_FAIL);
             return res;
         }
-        res.put("state", "ok");
+        res.put("state", MyConstants.RESULT_OK);
         res.put("tasks", tasks);
         res.put("size", (int)Math.ceil(p.getTotal() / (double) pageSize));
         res.put("total", p.getTotal());
@@ -165,7 +165,7 @@ public class TaskController {
         //监督详情
         List<SupervisorState> supervisorStates = superviseService.querySuperviseState(taskId, checkId);
         adminCheckDetail.setSupervisorStates(supervisorStates);
-        res.put("state", "ok");
+        res.put("state", MyConstants.RESULT_OK);
         res.put("adminCheckDetail", adminCheckDetail);
         return res;
     }
@@ -190,7 +190,7 @@ public class TaskController {
             adminTaskSupervisor.setUserName(user.getUserName());
             adminTaskSupervisors.add(adminTaskSupervisor);
         }
-        res.put("state", "ok");
+        res.put("state", MyConstants.RESULT_OK);
         res.put("supervisors", adminTaskSupervisors);
         return res;
     }

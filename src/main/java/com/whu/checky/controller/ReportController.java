@@ -8,6 +8,7 @@ import com.whu.checky.service.CheckService;
 import com.whu.checky.service.EssayService;
 import com.whu.checky.service.RecordService;
 import com.whu.checky.service.ReportService;
+import com.whu.checky.util.MyConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -54,10 +55,10 @@ public class ReportController {
         JSONObject object=new JSONObject();
         if(result==1){
             //插入成功
-            object.put("state","OK");
+            object.put("state", MyConstants.RESULT_OK);
         }else {
             //插入失败
-            object.put("state","FAIL");
+            object.put("state",MyConstants.RESULT_FAIL);
         }
         return object;
 
@@ -79,10 +80,10 @@ public class ReportController {
         JSONObject object=new JSONObject();
         if(result==1){
             //插入成功
-            object.put("state","OK");
+            object.put("state",MyConstants.RESULT_OK);
         }else {
             //插入失败
-            object.put("state","FAIL");
+            object.put("state",MyConstants.RESULT_FAIL);
         }
         return object;
 
@@ -95,10 +96,10 @@ public class ReportController {
         JSONObject object=new JSONObject();
         if(result==1){
             //插入成功
-            object.put("state","OK");
+            object.put("state",MyConstants.RESULT_OK);
         }else {
             //插入失败
-            object.put("state","FAIL");
+            object.put("state",MyConstants.RESULT_FAIL);
         }
         return object;
 

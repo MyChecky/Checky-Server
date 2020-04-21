@@ -10,6 +10,7 @@ import com.whu.checky.domain.User;
 import com.whu.checky.service.MoneyService;
 import com.whu.checky.service.TaskService;
 import com.whu.checky.service.UserService;
+import com.whu.checky.util.MyConstants;
 import com.whu.checky.util.WXPayUtil;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,7 +67,7 @@ public class MoneyController {
         String userId = (String) object.get("userId");
         HashMap<String, Object> ans = new HashMap<>();  // 返回值
         User user = userService.queryUser(userId);
-        ans.put("state", "ok");
+        ans.put("state", MyConstants.RESULT_OK);
         ans.put("userMoney", user.getUserMoney());
         ans.put("testMoney", user.getTestMoney());
         return ans;
@@ -90,7 +91,7 @@ public class MoneyController {
             ans.put("year", year);
             getRecordGraph(userId, year, moneyTypeIndex, ans);
         }
-        ans.put("state", "ok");
+        ans.put("state", MyConstants.RESULT_OK);
         return ans;
     }
 
@@ -245,7 +246,7 @@ public class MoneyController {
         int recordResult = moneyService.addTrueMoneyRecord(pay);
 
         HashMap<String, Object> ans = new HashMap<>();  // 返回值
-        //        ans.put("state", "ok");
+        //        ans.put("state", MyConstants.RESULT_OK);
         ans.put("state", "test");
         return ans;
     }
@@ -310,7 +311,7 @@ public class MoneyController {
 //
 //        ans.put("timeStamp", times);
 //        ans.put("paySign", sign);
-//        ans.put("state", "ok");
+//        ans.put("state", MyConstants.RESULT_OK);
         ans.put("state", "test");
         return ans;
     }
@@ -338,7 +339,7 @@ public class MoneyController {
         stringSignTemp += "&key=" + WxPayConfig.sandBoxKey;
         String paySign = DigestUtils.md5Hex(WXPayUtil.getContentBytes(stringSignTemp, "utf-8")).toUpperCase();
         ans.put("paySign", paySign);
-        ans.put("state", "ok");
+        ans.put("state", MyConstants.RESULT_OK);
         return ans;
     }
 

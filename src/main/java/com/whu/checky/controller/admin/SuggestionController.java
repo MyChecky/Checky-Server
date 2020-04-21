@@ -10,6 +10,7 @@ import com.whu.checky.domain.User;
 import com.whu.checky.service.SuggestionService;
 import com.whu.checky.service.TaskTypeService;
 import com.whu.checky.service.UserService;
+import com.whu.checky.util.MyConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -57,7 +58,7 @@ public class SuggestionController {
 
             adminSuggestions.add(adminSuggestion);
         }
-        res.put("state","ok");
+        res.put("state", MyConstants.RESULT_OK);
         res.put("suggestions",adminSuggestions);
         res.put("size", (int)Math.ceil(page.getTotal() / (double)pageSize));
         res.put("total", page.getTotal());
@@ -73,9 +74,9 @@ public class SuggestionController {
         Suggestion suggestion = suggestionService.QuerySuggestion(suggestionId);
         suggestion.setSuggestionState("deny");
         if(suggestionService.updateSuggestionByKeyId(suggestion)==1) {
-            res.put("state","ok");
+            res.put("state",MyConstants.RESULT_OK);
         }else {
-            res.put("state","fail");
+            res.put("state",MyConstants.RESULT_FAIL);
         }
         return res;
     }
@@ -89,9 +90,9 @@ public class SuggestionController {
         Suggestion suggestion = suggestionService.QuerySuggestion(suggestionId);
         suggestion.setSuggestionState("pass");
         if(suggestionService.updateSuggestionByKeyId(suggestion)==1) {
-            res.put("state","ok");
+            res.put("state",MyConstants.RESULT_OK);
         }else {
-            res.put("state","fail");
+            res.put("state",MyConstants.RESULT_FAIL);
         }
         return res;
 //        JSONObject res=new JSONObject();
@@ -102,9 +103,9 @@ public class SuggestionController {
 //        taskType.setTypeContent(typeContent);
 //        taskType.setTypeId(UUID.randomUUID().toString());
 //        if(suggestionService.deleteSuggestion(suggestionId)==1&&taskTypeService.addTaskType(taskType)==1) {
-//            res.put("state","ok");
+//            res.put("state",MyConstants.RESULT_OK);
 //        }else {
-//            res.put("state","fail");
+//            res.put("state",MyConstants.RESULT_FAIL);
 //        }
 //        return res;
     }

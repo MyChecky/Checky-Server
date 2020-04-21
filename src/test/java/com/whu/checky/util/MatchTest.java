@@ -156,7 +156,7 @@ public class MatchTest {
 
         task.setUserId(taskOwner.getUserId());
         task.setSupervisorNum(3);
-        task.setTaskState("nomatch");
+        task.setTaskState(MyConstants.TASK_STATE_NOMATCH);
         task.setSupervisorType(2); // Match for strangers
         task.setIfArea(2); // Match users far away
         task.setIfHobby(1); // Match users with same hobbies
@@ -169,7 +169,7 @@ public class MatchTest {
         task = taskService.queryTask(task.getTaskId());
         final int expectedMatchNum = 2;
         Assert.assertEquals(expectedMatchNum, task.getMatchNum());
-        Assert.assertEquals("nomatch", task.getTaskState());
+        Assert.assertEquals(MyConstants.TASK_STATE_NOMATCH, task.getTaskState());
 
         user1 = userService.queryUser(user1.getUserId());
         Assert.assertEquals(1, user1.getSuperviseNum().intValue());

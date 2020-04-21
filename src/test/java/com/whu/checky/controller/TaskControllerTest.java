@@ -129,7 +129,7 @@ public class TaskControllerTest {
         ObjectMapper mapper=new ObjectMapper();
         JSONObject request=new JSONObject();
         request.put("taskid","00");
-        request.put("state","fail");
+        request.put("state",MyConstants.RESULT_FAIL);
         String json=mapper.writeValueAsString(request);
         System.out.println("before--------------------post");
         System.out.println(json.toString());

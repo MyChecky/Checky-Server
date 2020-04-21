@@ -8,6 +8,7 @@ import com.whu.checky.config.UploadConfig;
 import com.whu.checky.domain.*;
 import com.whu.checky.service.*;
 import com.whu.checky.util.FileUtil;
+import com.whu.checky.util.MyConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,10 +76,10 @@ public class EssayController {
 //        }
         JSONObject ans = new JSONObject();
         if (result == 1) {
-            ans.put("state", "OK");
+            ans.put("state", MyConstants.RESULT_OK);
             ans.put("essayId", essay.getEssayId());  // 插入成功
         } else {
-            ans.put("state", "FAIL"); // 插入失败
+            ans.put("state", MyConstants.RESULT_FAIL); // 插入失败
         }
         return ans;
     }
@@ -208,9 +209,9 @@ public class EssayController {
         JSONObject object = new JSONObject();
         if (res == 1) {
             //点赞成功
-            object.put("state", "OK");
+            object.put("state", MyConstants.RESULT_OK);
         } else {
-            object.put("state", "FAIL");
+            object.put("state", MyConstants.RESULT_FAIL);
         }
         return object;
 
@@ -225,9 +226,9 @@ public class EssayController {
         int res = likeService.UnLike(userId, essayId);
         JSONObject object = new JSONObject();
         if (res == 1) {
-            object.put("state", "OK");
+            object.put("state", MyConstants.RESULT_OK);
         } else {
-            object.put("state", "FAIL");
+            object.put("state", MyConstants.RESULT_FAIL);
         }
         return object;
 
@@ -245,10 +246,10 @@ public class EssayController {
         if (res == 1) {
             //添加评论成功
             List<Comment> comments = commentService.queryCommentByEssayId(comment.getEssayId());
-            object.put("state", "OK");
+            object.put("state", MyConstants.RESULT_OK);
             object.put("comments", comments);
         } else {
-            object.put("state", "FAIL");
+            object.put("state", MyConstants.RESULT_FAIL);
         }
         return object;
     }
@@ -268,10 +269,10 @@ public class EssayController {
             essay.setCommentNum(essay.getCommentNum() - 1);
             essayService.updateEssay(essay);
             List<Comment> comments = commentService.queryCommentByEssayId(essayId);
-            res.put("state", "OK");
+            res.put("state", MyConstants.RESULT_OK);
             res.put("comments", comments);
         } else {
-            res.put("state", "FAIL");
+            res.put("state", MyConstants.RESULT_FAIL);
         }
         return res;
     }
@@ -312,11 +313,11 @@ public class EssayController {
                     recordService.addRecord(record);
 //                    fileService.saveFile2Database(record);
 //                    response.put("recordId",recordId);
-                    response.put("state", "ok");
+                    response.put("state", MyConstants.RESULT_OK);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                response.put("state", "fail");
+                response.put("state", MyConstants.RESULT_FAIL);
             }
         }
         return response;

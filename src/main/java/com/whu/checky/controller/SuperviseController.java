@@ -8,6 +8,7 @@ import com.whu.checky.domain.Check;
 import com.whu.checky.domain.Supervise;
 import com.whu.checky.domain.SupervisorState;
 import com.whu.checky.service.*;
+import com.whu.checky.util.MyConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -52,7 +53,7 @@ public class SuperviseController {
                     check.getTaskId(), title, state, avatar));
         }
         ret.put("supList", supHistories);
-        ret.put("state", "ok");
+        ret.put("state", MyConstants.RESULT_OK);
         return ret;
     }
 
@@ -63,6 +64,8 @@ public class SuperviseController {
         });
         supervise.setSuperviseId(UUID.randomUUID().toString());
         superviseService.addSupervise(supervise);
+        // 更新
+
         String checkId = supervise.getCheckId();
         if (supervise.getSuperviseState().equals("pass")) {
             //如果通过,对应check的supervise_num+1
@@ -72,8 +75,6 @@ public class SuperviseController {
             //如果没有通过，那么只有check的supervise_num+1
             checkService.updateDenySuperviseCheck(checkId);
         }
-
-
     }
 
 
@@ -116,7 +117,7 @@ public class SuperviseController {
     @RequestMapping("/modifySuperviseToSuccess")
     public void modifySuperviseToSuccess(@RequestBody String jsonstr) {
         String superviseId = (String) JSON.parse(jsonstr);
-        superviseService.updateSupervise(superviseId, "Success");
+        superviseService.updateSupervise(superviseId, MyConstants.TASK_STATE_SUCCESS);
     }
 
     //提供给管理员修改状态的

@@ -11,6 +11,7 @@ import com.whu.checky.service.CommentService;
 import com.whu.checky.service.EssayService;
 import com.whu.checky.service.RecordService;
 import com.whu.checky.service.UserService;
+import com.whu.checky.util.MyConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -43,9 +44,9 @@ public class EssayController {
         essay.setIfDelete(1);
         int deleteResult = essayService.updateEssay(essay);
         if (deleteResult == 1)
-            res.put("state", "ok");
+            res.put("state", MyConstants.RESULT_OK);
         else
-            res.put("state", "fail");
+            res.put("state", MyConstants.RESULT_FAIL);
         return res;
 
     }
@@ -80,7 +81,7 @@ public class EssayController {
             adminEssay.setImg(records);
             adminEssays.add(adminEssay);
         }
-        res.put("state", "ok");
+        res.put("state", MyConstants.RESULT_OK);
         res.put("essays", adminEssays);
         res.put("size", (int)Math.ceil(page.getTotal() / (double) pageSize));
         res.put("total", page.getTotal());
@@ -113,7 +114,7 @@ public class EssayController {
 
         res.put("essay", adminEssay);
         res.put("comments", comments);
-        res.put("state", "ok");
+        res.put("state", MyConstants.RESULT_OK);
         return res;
     }
 
@@ -143,7 +144,7 @@ public class EssayController {
         }else if(searchType.equals("content")){
             essays = essayService.queryEssaysLikeContent(p, startTime, endTime, keyword);
         }else{
-            res.put("state", "fail");
+            res.put("state", MyConstants.RESULT_FAIL);
             return res;
         }
 
@@ -167,7 +168,7 @@ public class EssayController {
         }
         res.put("total",p.getTotal());
         res.put("size",(int)Math.ceil(p.getTotal() / (double)pageSize));
-        res.put("state", "ok");
+        res.put("state", MyConstants.RESULT_OK);
         res.put("essays", adminEssays);
 
         return res;
