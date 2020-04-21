@@ -35,13 +35,11 @@ public class ReportController {
     @Autowired
     private RecordService recordService;
 
-    private SimpleDateFormat dateFormat= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
     @RequestMapping("/addReport")
     public JSONObject addReport(@RequestBody String jsonstr){
         Report report= JSON.parseObject(jsonstr,new TypeReference<Report>(){});
         report.setReportId(UUID.randomUUID().toString());
-        report.setReportTime(dateFormat.format(new Date()));
+        report.setReportTime(MyConstants.DATETIME_FORMAT.format(new Date()));
 
         String essayId = report.getEssayId();
         String userReportedId = essayService.queryEssayById(essayId).getUserId();

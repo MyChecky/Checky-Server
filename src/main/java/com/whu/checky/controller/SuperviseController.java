@@ -47,7 +47,7 @@ public class SuperviseController {
         for (Supervise supervise : supervises) {
             Check check = checkService.queryCheckById(supervise.getCheckId());
             String title = taskService.getTitleById(check.getTaskId());
-            String state = supervise.getSuperviseState().equals("pass") ? "通过" : "拒绝";
+            String state = supervise.getSuperviseState().equals(MyConstants.SUPERVISE_STATE_PASS) ? "通过" : "拒绝";
             String avatar = userService.queryUser(check.getUserId()).getUserAvatar();
             supHistories.add(new SupHistory(supervise.getSuperviseId(), supervise.getCheckId(),
                     check.getTaskId(), title, state, avatar));
@@ -67,7 +67,7 @@ public class SuperviseController {
         // 更新
 
         String checkId = supervise.getCheckId();
-        if (supervise.getSuperviseState().equals("pass")) {
+        if (supervise.getSuperviseState().equals(MyConstants.SUPERVISE_STATE_PASS)) {
             //如果通过,对应check的supervise_num+1
             //同时pass_num也+1
             checkService.updatePassSuperviseCheck(checkId);
@@ -124,7 +124,7 @@ public class SuperviseController {
     @RequestMapping("/modifySuperviseToFail")
     public void modifySuperviseToFail(@RequestBody String jsonstr) {
         String superviseId = (String) JSON.parse(jsonstr);
-        superviseService.updateSupervise(superviseId, "Fail");
+        superviseService.updateSupervise(superviseId, MyConstants.SUPERVISE_STATE_DENY); // 这里应该有问题，看impl
     }
 
 

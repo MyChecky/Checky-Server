@@ -94,9 +94,9 @@ public class MoneyController {
         int moneyTest = object.getInteger("moneyTest");
         String moneyIO = object.getString("moneyIO");
         String startTime = object.getString("startTime");
-        startTime = startTime != null ? startTime : "1970-01-01";
+        startTime = startTime != null ? startTime : MyConstants.START_TIME;
         String endTime = object.getString("endTime");
-        endTime = endTime != null ? endTime : "2999-01-01";
+        endTime = endTime != null ? endTime :  MyConstants.END_TIME;
         String keyword = object.getString("keyword");
 //        String searchType = object.getString("searchType");
         Integer page = object.getInteger("page");

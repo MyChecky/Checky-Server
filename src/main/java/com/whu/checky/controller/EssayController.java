@@ -44,7 +44,6 @@ public class EssayController {
     @Autowired
     private ParameterService parameterService;
 
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private static final Logger log = LoggerFactory.getLogger(EssayController.class);
 
     //发表动态
@@ -61,7 +60,7 @@ public class EssayController {
         Essay essay = new Essay();
         String essayId = UUID.randomUUID().toString();
         essay.setEssayId(essayId);
-        essay.setEssayTime(dateFormat.format(new Date()));
+        essay.setEssayTime(MyConstants.DATETIME_FORMAT.format(new Date()));
         essay.setLatitude(latitude);
         essay.setLongtitude(longitude);
         essay.setUserId(userId);
@@ -153,7 +152,7 @@ public class EssayController {
         JSONObject object = (JSONObject) JSON.parse(jsonstr);
         String userId = (String) object.get("userId");
         int currentPage = (Integer) object.get("cPage");
-        Page<Essay> page = new Page<>(currentPage, 5);
+        Page<Essay> page = new Page<>(currentPage, MyConstants.PAGE_LENGTH_MINI);
         List<EssayAndRecord> res = new ArrayList<EssayAndRecord>();
         List<Essay> essays = essayService.displayEssay(page);
         for (Essay essay : essays) {
@@ -177,7 +176,7 @@ public class EssayController {
         User publisher = userService.queryUser(essay.getUserId());
         EssayAndRecord essayAndRecord = new EssayAndRecord();
         essayAndRecord.setUserId(publisher.getUserId());
-        if (publisher.getUserAvatar().substring(0, 11).equals("/resources/")) {
+        if (publisher.getUserAvatar().substring(0, 11).equals("/" + MyConstants.RESOURCES + "/")) { // 说明用户修改过头像
             String baseIp = parameterService.getValueByParam("baseIp").getParamValue();
             essayAndRecord.setUserAvatar(baseIp + publisher.getUserAvatar());
         } else {
@@ -197,7 +196,7 @@ public class EssayController {
     public JSONObject likeEssay(@RequestBody String jsonstr) {
         EssayLike essayLike = JSON.parseObject(jsonstr, new TypeReference<EssayLike>() {
         });
-        essayLike.setAddTime(dateFormat.format(new Date()));
+        essayLike.setAddTime(MyConstants.DATETIME_FORMAT.format(new Date()));
         int res = 0;
         try {
             res = likeService.Like(essayLike);
@@ -240,7 +239,7 @@ public class EssayController {
         Comment comment = JSON.parseObject(jsonstr, new TypeReference<Comment>() {
         });
         comment.setCommentId(UUID.randomUUID().toString());
-        comment.setCommentTime(dateFormat.format(new Date()));
+        comment.setCommentTime(MyConstants.DATETIME_FORMAT.format(new Date()));
         int res = commentService.addComment(comment);
         JSONObject object = new JSONObject();
         if (res == 1) {
@@ -298,7 +297,7 @@ public class EssayController {
                     String type = FileUtil.getFileTypePostFix(file.getOriginalFilename());
                     String fileName = UUID.randomUUID().toString() + type;
 
-                    String day = new SimpleDateFormat("yyyyMMdd").format(new Date());
+                    String day = MyConstants.DATE_FORMAT.format(new Date());
 //                    String filePath = request.getSession().getServletContext().getRealPath("/");
                     String filePath = uploadConfig.getUploadPath() + contentType + "/" + day + "/";
 //                    System.out.println(filePath+fileName);

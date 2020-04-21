@@ -97,7 +97,7 @@ public class CheckController {
         JSONObject object = JSONObject.parseObject(body);
         String userId = (String) object.get("userId");
         int currentPage = (Integer) object.get("cPage");
-        Page<Check> page = new Page<>(currentPage, 10);
+        Page<Check> page = new Page<>(currentPage, MyConstants.PAGE_LENGTH);
         List<Check> checks = checkService.queryCheckByUserId(userId, page);
         List<CheckHistory> res = new ArrayList<CheckHistory>();
         for (Check check : checks) {
@@ -249,12 +249,12 @@ public class CheckController {
                     String essayId = request.getParameter("essayId");
                     String type = FileUtil.getFileTypePostFix(file.getOriginalFilename()); // 文件后缀
                     String fileName = UUID.randomUUID().toString() + type;
-                    String day = new SimpleDateFormat("yyyyMMdd").format(new Date());
+                    String day = MyConstants.DATE_FORMAT.format(new Date());
                     String filePath = uploadConfig.getUploadPath() + userId + "/" + day + "/" + contentType + "/";
                     FileUtil.uploadFile(file.getBytes(), filePath, fileName);
                     // 数据库相关
                     Record record = new Record();
-                    record.setFileAddr("resources/" + userId + "/" + day + "/" + contentType + "/" + fileName);
+                    record.setFileAddr(MyConstants.RESOURCES + "/" + userId + "/" + day + "/" + contentType + "/" + fileName);
                     record.setRecordType(file.getContentType());
                     String checkId = request.getParameter("checkId");
                     record.setCheckId(checkId);

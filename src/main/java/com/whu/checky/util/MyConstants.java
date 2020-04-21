@@ -1,5 +1,6 @@
 package com.whu.checky.util;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 
 public  class MyConstants {
@@ -13,6 +14,12 @@ public  class MyConstants {
     public static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat(MyConstants.FORMAT_TIME);
     public static final SimpleDateFormat DATETIME_FORMAT = new SimpleDateFormat(MyConstants.FORMAT_DATETIME);
 
+    public static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("00%");
+
+    // 主要用于管理端搜索，但不提供时间范围时
+    public static final String START_TIME = "1970-01-01";
+    public static final String END_TIME = "2099-01-01";
+
     //
     public static final int MENU_FLAG_ENABLE = 1;
     public static final int MENU_FLAG_DISABLE = 0;
@@ -23,6 +30,9 @@ public  class MyConstants {
     // 带有意义的特殊返回
     public static final String RESULT_NO_ENOUGH_MONEY = "noEnoughMoney";    // 资金不足
     public static final String RESULT_NO_ENOUGH_SUP = "noEnoughSupervisor"; // 监督者不够
+    public static final String RESULT_INSERT_FAIL = "insertFail";
+    public static final String RESULT_UPDATE_FAIL = "updateFail";
+    public static final String RESULT_DELETE_FAIL = "deleteFail";
 
     //任务状态
     public static final String TASK_STATE_SAVE = "save";          //草稿/未发布状态
@@ -68,9 +78,26 @@ public  class MyConstants {
     public static final String RECORD_TYPE_AUDIO = "audio";
     public static final String RECORD_TYPE_VIDEO = "video";
 
+    // 媒体地址
+    public static final String RESOURCES = "resources";
+
+    // 默认下拉加载数量
+    public static final int PAGE_LENGTH = 10;
+    public static final int PAGE_LENGTH_MINI = 5;
+
+    // 查询某一年的资金时，index为0的默认值
+    public static final int YEAR_INDEX_ZERO = 2019;
+
+//    // 好友状态
+//    public static final int FRIEND_APPLY = 0;
+//    public static final int FRIEND_PASS = 1;
+//    public static final int FRIEND_DENY = 2;
+
     //建议状态
     public static final String SUGGESTION_STATE_WAITING = "waiting";
     public static final String SUGGESTION_STATE_PROCESSED = "processed";
+    public static final String SUGGESTION_STATE_PASS = "pass";
+    public static final String SUGGESTION_STATE_DENY = "deny";
 
     //举报类型
     public static final String REPORT_TYPE_ESSAY = "0";

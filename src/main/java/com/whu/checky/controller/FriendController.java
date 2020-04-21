@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @RestController()
@@ -37,8 +36,6 @@ public class FriendController {
     @Autowired
     private ParameterService parameterService;
 
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
 
     @GetMapping("/hello")
     public String hello() {
@@ -55,12 +52,12 @@ public class FriendController {
         for(UserFriend userFriend: userFriends){
             if(userFriend.getToUserId().equals(targetUserId) || userFriend.getFromUserId().equals(targetUserId)){
                 ans.put("state", MyConstants.RESULT_OK);
-                ans.put("ifFriend", 1);
+                ans.put("ifFriend", 1); // 这里的1表示是好友
                 return ans;
             }
         }
         ans.put("state", MyConstants.RESULT_OK);
-        ans.put("ifFriend", 0);
+        ans.put("ifFriend", 0); // 这里的0表示还不是好友
         return ans;
     }
 
@@ -73,16 +70,16 @@ public class FriendController {
         List<FriendChat> friendChats = friendChatService.queryMsgsFromFriends(userId, targetUserId);
         HashMap<String, Object> ans = new HashMap<>();
         List<MsgList> msgLists = new ArrayList<>();
-        Date dateTmp = dateFormat.parse("1970-01-01 00:00:00");
+        Date dateTmp = MyConstants.DATETIME_FORMAT.parse("1970-01-01 00:00:00");
         int timeDiff = 1000 * 60 * 3; // 3分钟
         for (int i = 0; i < friendChats.size(); ) {
             MsgList msgList = new MsgList();
             // date.getTime() 返回时间的毫秒数值
-            if ((dateFormat.parse(friendChats.get(i).getChatTime())).getTime() - dateTmp.getTime() > timeDiff) {
+            if ((MyConstants.DATETIME_FORMAT.parse(friendChats.get(i).getChatTime())).getTime() - dateTmp.getTime() > timeDiff) {
                 msgList.setSpeaker("time");
                 msgList.setDate(friendChats.get(i).getChatTime());
                 msgList.setContent(friendChats.get(i).getChatTime());
-                dateTmp = dateFormat.parse(friendChats.get(i).getChatTime());
+                dateTmp = MyConstants.DATETIME_FORMAT.parse(friendChats.get(i).getChatTime());
             } else {
                 if (friendChats.get(i).getSendId().equals(userId))
                     msgList.setSpeaker("customer");
@@ -93,7 +90,7 @@ public class FriendController {
                         friendChatService.updateFriendChat(friendChats.get(i)); // 设为已读
                     }
                 }
-                dateTmp = dateFormat.parse(friendChats.get(i).getChatTime());
+                dateTmp = MyConstants.DATETIME_FORMAT.parse(friendChats.get(i).getChatTime());
                 msgList.setDate(friendChats.get(i).getChatTime());
                 msgList.setContent(friendChats.get(i).getChatContent());
                 i++;
@@ -116,7 +113,7 @@ public class FriendController {
         userFriend.setFromUserId(userId);
         userFriend.setToUserId(targetUserId);
         userFriend.setAddContent(addContent);
-        userFriend.setAddTime(dateFormat.format(new Date()));
+        userFriend.setAddTime(MyConstants.DATETIME_FORMAT.format(new Date()));
 
         int result = userFriendService.addUserFriend(userFriend);
         if (result == 0) {

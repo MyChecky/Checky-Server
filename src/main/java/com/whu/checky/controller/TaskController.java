@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @RestController
@@ -35,7 +33,6 @@ public class TaskController {
     @Autowired
     private TaskSupervisorService taskSupervisorService;
 
-    private SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
 
     @PostMapping("/initConfig")
     public HashMap<String, Object> initConfig(@RequestBody String body) {
@@ -99,7 +96,7 @@ public class TaskController {
             if (result == 0) {
                 //添加失败
                 HashMap<String, Object> ret = new HashMap<>();
-                ret.put("state", "addTaskFail");
+                ret.put("state", MyConstants.RESULT_INSERT_FAIL);
                 return ret;
             } else {
                 //添加成功
@@ -116,9 +113,9 @@ public class TaskController {
         HashMap<String, Object> ret = new HashMap<>(); // 返回值
         Double passCheckDouble = Double.parseDouble(parameterService.getValueByParam("check_lowest_pass").getParamValue());
         Double passTaskDouble = Double.parseDouble(parameterService.getValueByParam("task_lowest_pass").getParamValue());
-        DecimalFormat decimalFormat = new DecimalFormat("00%");
-        String passCheck = decimalFormat.format(passCheckDouble);
-        String passTask = decimalFormat.format(passTaskDouble);
+
+        String passCheck = MyConstants.DECIMAL_FORMAT.format(passCheckDouble);
+        String passTask = MyConstants.DECIMAL_FORMAT.format(passTaskDouble);
         ret.put("passCheck", passCheck);
         ret.put("passTask", passTask);
         ret.put("state", MyConstants.RESULT_OK);
@@ -156,7 +153,7 @@ public class TaskController {
         Task task = taskService.queryTask(taskId);
         JSONObject res = new JSONObject();
         String ymd = object.getString("ymd");
-        if(ymd != null && ! Util.judgeDate(ymd)){
+        if (ymd != null && !Util.judgeDate(ymd)) {
             res.put("state", MyConstants.RESULT_FAIL);
             return res;
         }
@@ -167,7 +164,7 @@ public class TaskController {
             task.setUserName(user.getUserName());
             res.put("task", task);
             res.put("userName", user.getUserName());
-            if (user.getUserAvatar().substring(0, 11).equals("/resources/")) {
+            if (user.getUserAvatar().substring(0, 11).equals("/" + MyConstants.RESOURCES + "/")) {
                 String baseIp = parameterService.getValueByParam("baseIp").getParamValue();
                 res.put("userAvatar", baseIp + user.getUserAvatar());
             } else {
@@ -218,9 +215,9 @@ public class TaskController {
             return ret;
         }
 
-        if(match.matchSupervisorForOneTask(task)){
+        if (match.matchSupervisorForOneTask(task)) {
             ret.put("state", MyConstants.RESULT_OK);
-        }else{
+        } else {
             ret.put("state", MyConstants.RESULT_NO_ENOUGH_SUP);
             ret.put("matchNum", task.getMatchNum());
             ret.put("taskId", task.getTaskId());

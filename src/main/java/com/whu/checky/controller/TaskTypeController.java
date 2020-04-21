@@ -5,6 +5,7 @@ import com.alibaba.fastjson.TypeReference;
 import com.whu.checky.domain.Suggestion;
 import com.whu.checky.domain.TaskType;
 import com.whu.checky.service.TaskTypeService;
+import com.whu.checky.util.MyConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,11 +28,11 @@ public class TaskTypeController {
         int result=taskTypeService.addTaskType(taskType);
         if(result==0){
             //添加失败
-            return "FailaddType";
+            return MyConstants.RESULT_INSERT_FAIL;
 
         }else {
             //添加成功
-            return "SuccessaddType";
+            return MyConstants.RESULT_OK;
         }
 
     }
@@ -42,10 +43,10 @@ public class TaskTypeController {
         int result=taskTypeService.DeleteTaskType(taskTypeid);
         if (result==0){
             //删除失败
-            return "FaildelType";
+            return MyConstants.RESULT_DELETE_FAIL;
         }else {
             //删除成功
-            return "SuccessdelType";
+            return MyConstants.RESULT_OK;
         }
     }
 
@@ -60,9 +61,9 @@ public class TaskTypeController {
         TaskType taskType= JSON.parseObject(jsonstr,new TypeReference<TaskType>(){});
         int res=taskTypeService.updataTaskType(taskType);
         if(res==0){
-            return "FailudpateType";
+            return MyConstants.RESULT_UPDATE_FAIL;
         }else {
-            return "SuccessudpateType";
+            return MyConstants.RESULT_OK;
         }
     }
 }

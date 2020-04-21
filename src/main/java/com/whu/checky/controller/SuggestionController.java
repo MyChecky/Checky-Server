@@ -25,8 +25,6 @@ public class SuggestionController {
     @Autowired
     private TaskTypeService taskTypeService;
 
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
     //管理端用于新添类型的
     @PostMapping("/addSuggestion")
     public String addSuggestion(@RequestBody String jsonstr){
@@ -81,7 +79,7 @@ public class SuggestionController {
         suggestion.setUserId(userId);
         suggestion.setSuggestionContent(suggestionContent);
         suggestion.setSuggestionState("waiting");
-        suggestion.setSuggestionTime(dateFormat.format(new Date()));
+        suggestion.setSuggestionTime(MyConstants.DATETIME_FORMAT.format(new Date()));
         int result = suggestionService.addSuggestion(suggestion);
 
         JSONObject ans = new JSONObject();

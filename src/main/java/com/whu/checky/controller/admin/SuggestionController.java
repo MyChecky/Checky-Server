@@ -72,7 +72,7 @@ public class SuggestionController {
         JSONObject object= (JSONObject) JSON.parse(jsonstr);
         String suggestionId=object.getString("suggestionId");
         Suggestion suggestion = suggestionService.QuerySuggestion(suggestionId);
-        suggestion.setSuggestionState("deny");
+        suggestion.setSuggestionState(MyConstants.SUGGESTION_STATE_DENY);
         if(suggestionService.updateSuggestionByKeyId(suggestion)==1) {
             res.put("state",MyConstants.RESULT_OK);
         }else {
@@ -88,7 +88,7 @@ public class SuggestionController {
         JSONObject object= (JSONObject) JSON.parse(jsonstr);
         String suggestionId=object.getString("suggestionId");
         Suggestion suggestion = suggestionService.QuerySuggestion(suggestionId);
-        suggestion.setSuggestionState("pass");
+        suggestion.setSuggestionState(MyConstants.SUGGESTION_STATE_PASS);
         if(suggestionService.updateSuggestionByKeyId(suggestion)==1) {
             res.put("state",MyConstants.RESULT_OK);
         }else {

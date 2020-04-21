@@ -177,10 +177,10 @@ public class UserAndHobbyController {
 //                    String baseIp = request.getParameter("baseIp");
                     String type = FileUtil.getFileTypePostFix(Objects.requireNonNull(file.getOriginalFilename())); // 后缀
                     String fileName = UUID.randomUUID().toString() + type;
-                    String day = new SimpleDateFormat("yyyyMMdd").format(new Date());
+                    String day = MyConstants.DATE_FORMAT.format(new Date());
                     String filePath = uploadConfig.getUploadPath() + userId + "/" + day + "/" + contentType + "/";
                     FileUtil.uploadFile(file.getBytes(), filePath, fileName);
-                    String avatarURL = "/resources/" + userId + "/" + day + "/" + contentType + "/" + fileName;
+                    String avatarURL = "/" + MyConstants.RESOURCES + "/" + userId + "/" + day + "/" + contentType + "/" + fileName;
                     response.put("avatarUrl", avatarURL);
                     response.put("state", MyConstants.RESULT_OK);
                 }
@@ -193,7 +193,7 @@ public class UserAndHobbyController {
     }
 
     @RequestMapping("/getServiceTerms")
-    public HashMap<String, Object> getServiceTerms(@RequestBody String body){
+    public HashMap<String, Object> getServiceTerms(@RequestBody String body) {
         HashMap<String, Object> ret = new HashMap<>(); // 返回值
 //        JSONObject object = JSONObject.parseObject(body);
 //        String userId = (String) object.get("userId");
