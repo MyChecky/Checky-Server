@@ -87,9 +87,11 @@ public class Match {
 
     /**
      * @param task
-     * @return number of supervisors matched.
+     * @return true if the task is fully matched
+     * 前端用户需要知道当前任务实际匹配到了多少人，故改变参数task的matchNum值（task是引用类型，相当于已经有matchNum的返回值了）--lu
+     * 而若是把资金等相关的注释了，定时匹配任务时，会出问题的。。。--lu
      */
-    public int matchSupervisorForOneTask(Task task) {
+    public boolean matchSupervisorForOneTask(Task task) {
         int gap = task.getSupervisorNum();
         List<User> selectedSupervisors;
         Set<String> selectedSupervisorIds = new HashSet<>();
@@ -134,48 +136,51 @@ public class Match {
             }
         }
 
-        return task.getSupervisorNum() - gap;
+//        return task.getSupervisorNum() - gap;
+        task.setMatchNum(task.getSupervisorNum() - gap);  // 更新一下当前能匹配到的监督者人数，相当于返回了--lu
 
-        // if(gap == 0) {
-        //     for (User supervisor : selectedSupervisors) {
-        //         TaskSupervisor newTaskSupervisor = new TaskSupervisor();
-        //         newTaskSupervisor.setAddTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-        //         newTaskSupervisor.setTaskId(task.getTaskId());
-        //         newTaskSupervisor.setSupervisorId(supervisor.getUserId());
-        //         taskSupervisorService.addTaskSupervisor(newTaskSupervisor);
+         if(gap == 0) {
+             for (User supervisor : selectedSupervisors) {
+                 TaskSupervisor newTaskSupervisor = new TaskSupervisor();
+                 newTaskSupervisor.setAddTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+                 newTaskSupervisor.setTaskId(task.getTaskId());
+                 newTaskSupervisor.setSupervisorId(supervisor.getUserId());
+                 taskSupervisorService.addTaskSupervisor(newTaskSupervisor);
     
-        //         supervisor.setSuperviseNum(supervisor.getSuperviseNum() + 1);
-        //         userService.updateUser(supervisor);
-        //     }
-    
-        //     task.setMatchNum(task.getSupervisorNum());
-        //     task.setTaskState("during");
-        //     taskService.updateTask(task);
+                 supervisor.setSuperviseNum(supervisor.getSuperviseNum() + 1);
+                 userService.updateUser(supervisor);
+             }
 
-        //     taskOwner.setTaskNum(taskOwner.getTaskNum() + 1);
-        //     if (task.getIfTest() == 1) {
-        //         taskOwner.setTestMoney(taskOwner.getTestMoney() - task.getTaskMoney());
-        //         userService.updateUser(taskOwner);
-        //     } else if (task.getIfTest() == 0) {
-        //         taskOwner.setUserMoney(taskOwner.getUserMoney() - task.getTaskMoney());
-        //         userService.updateUser(taskOwner);
-        //     }
+//             task.setMatchNum(task.getSupervisorNum());
+             task.setTaskState("during");
+             taskService.updateTask(task);
 
-        //     MoneyFlow moneyFlow = new MoneyFlow();
-        //     moneyFlow.setUserID(task.getUserId());
-        //     moneyFlow.setIfTest(task.getIfTest());
-        //     moneyFlow.setFlowIo("O");
-        //     moneyFlow.setFlowType("pay");
-        //     moneyFlow.setFlowMoney(task.getTaskMoney());
-        //     moneyFlow.setTaskId(task.getTaskId());
-        //     moneyFlow.setFlowTime(DATE_FORMAT.format(new Date()));
-        //     moneyFlow.setFlowId(UUID.randomUUID().toString());
-        //     moneyService.addTestMoneyRecord(moneyFlow);
+             taskOwner.setTaskNum(taskOwner.getTaskNum() + 1);
+             if (task.getIfTest() == 1) {
+                 taskOwner.setTestMoney(taskOwner.getTestMoney() - task.getTaskMoney());
+                 userService.updateUser(taskOwner);
+             } else if (task.getIfTest() == 0) {
+                 taskOwner.setUserMoney(taskOwner.getUserMoney() - task.getTaskMoney());
+                 userService.updateUser(taskOwner);
+             }
 
-        //     return true;
-        // }
+             MoneyFlow moneyFlow = new MoneyFlow();
+             moneyFlow.setUserID(task.getUserId());
+             moneyFlow.setIfTest(task.getIfTest());
+             moneyFlow.setFlowIo("O");
+             moneyFlow.setFlowType("pay");
+             moneyFlow.setFlowMoney(task.getTaskMoney());
+             moneyFlow.setTaskId(task.getTaskId());
+             moneyFlow.setFlowTime(DATE_FORMAT.format(new Date()));
+             moneyFlow.setFlowId(UUID.randomUUID().toString());
+             moneyService.addTestMoneyRecord(moneyFlow);
 
-        // return false;
+             return true;
+         }else{
+             taskService.updateTask(task); // task仍是noMatch状态，但是要更新一下数据库，当前能匹配到的监督者人数--lu
+         }
+
+         return false;
     }
 
     /**
