@@ -16,7 +16,7 @@ public class Util {
             Calendar serverCalendar = Calendar.getInstance();
             serverCalendar.setTime(new Date());
 
-            Date userDate = new SimpleDateFormat("yyyy-MM-dd").parse(ymd);
+            Date userDate = MyConstants.DATE_FORMAT.parse(ymd);
             Calendar userCalendar = Calendar.getInstance();
             userCalendar.setTime(userDate);
 

@@ -34,7 +34,7 @@ public class Report {
     private String reportContent;
     /**
      * 举报类型
-     * 0：动态    1：打卡    2：任务    3：监督人
+     * 0：动态    3：打卡    1：任务    2：监督人
      */
     private String reportType;
     /**
