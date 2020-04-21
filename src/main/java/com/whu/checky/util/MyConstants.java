@@ -17,6 +17,9 @@ public  class MyConstants {
     public static final int MENU_FLAG_ENABLE = 1;
     public static final int MENU_FLAG_DISABLE = 0;
 
+    public static final String RESULT_OK = "ok";
+    public static final String RESULT_FAIL = "fail";
+
     //任务状态
     public static final String TASK_STATE_SAVE = "save";          //草稿/未发布状态
     public static final String TASK_STATE_NOMATCH = "nomatch";    //没有找到监督者

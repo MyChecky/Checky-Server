@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.whu.checky.domain.Appeal;
 import com.whu.checky.service.AppealService;
+import com.whu.checky.util.MyConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,9 +36,9 @@ public class AppealController {
 
         HashMap<String,String> ans = new HashMap<>();
         if(appealService.addAppeal(appeal)){
-            ans.put("state","ok");
+            ans.put("state", MyConstants.RESULT_OK);
         }else{
-            ans.put("state","fail");
+            ans.put("state",MyConstants.RESULT_FAIL);
         }
 
         return ans;
@@ -50,9 +51,9 @@ public class AppealController {
         String userId= (String) JSON.parse(body);
         List<Appeal> ans = appealService.queryAppealFromUser(userId);
         JSONObject json = new JSONObject();
-        if(ans==null) json.put("state","fail");
+        if(ans==null) json.put("state",MyConstants.RESULT_FAIL);
         else{
-            json.put("state","ok");
+            json.put("state",MyConstants.RESULT_OK);
             json.put("size",ans.size());
             json.put("appeals",ans);
         }
@@ -65,12 +66,12 @@ public class AppealController {
         try{
             String appealId = (String)JSONObject.parse(body);
             if(appealService.deleteAppeal(appealId))
-                ans.put("state","ok");
+                ans.put("state",MyConstants.RESULT_OK);
             else
-                ans.put("state","fail");
+                ans.put("state",MyConstants.RESULT_FAIL);
         }catch (Exception e){
             e.printStackTrace();
-            ans.put("state","fail");
+            ans.put("state",MyConstants.RESULT_FAIL);
         }
         return ans;
 
