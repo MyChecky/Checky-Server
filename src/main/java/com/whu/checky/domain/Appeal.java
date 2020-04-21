@@ -1,6 +1,7 @@
 package com.whu.checky.domain;
 
 import com.baomidou.mybatisplus.annotations.TableId;
+import com.whu.checky.util.MyConstants;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -21,7 +22,7 @@ public class Appeal {
     /**
      * 申诉时间
      */
-    private String appealTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+    private String appealTime = MyConstants.DATETIME_FORMAT.format(new Date());
 
     private String appealContent;
     /**

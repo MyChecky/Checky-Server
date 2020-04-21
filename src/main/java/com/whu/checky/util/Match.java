@@ -156,10 +156,10 @@ public class Match {
              taskService.updateTask(task);
 
              taskOwner.setTaskNum(taskOwner.getTaskNum() + 1);
-             if (task.getIfTest() == 1) {
+             if (task.getIfTest() == MyConstants.IF_TEST_TRUE) {
                  taskOwner.setTestMoney(taskOwner.getTestMoney() - task.getTaskMoney());
                  userService.updateUser(taskOwner);
-             } else if (task.getIfTest() == 0) {
+             } else if (task.getIfTest() == MyConstants.IF_TEST_FALSE) {
                  taskOwner.setUserMoney(taskOwner.getUserMoney() - task.getTaskMoney());
                  userService.updateUser(taskOwner);
              }

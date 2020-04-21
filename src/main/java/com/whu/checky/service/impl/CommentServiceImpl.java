@@ -29,19 +29,19 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public List<Comment> queryCommentByEssayId(String essayId) {
-        List<Comment> comments= commentMapper.selectList(new EntityWrapper<Comment>()
-                .eq("essay_id",essayId)
+        List<Comment> comments = commentMapper.selectList(new EntityWrapper<Comment>()
+                .eq("essay_id", essayId)
                 .and()
                 .eq("if_delete", MyConstants.IF_DELETE_FALSE)
-                .orderBy("comment_time",true)
+                .orderBy("comment_time", true)
         );
-        for (Comment comment:comments){
-            User user=userMapper.selectById(comment.getUserId());
+        for (Comment comment : comments) {
+            User user = userMapper.selectById(comment.getUserId());
             comment.setUserName(user.getUserName());
-            if(user.getUserAvatar().substring(0, 11).equals("/resources/")) {
+            if (user.getUserAvatar().substring(0, 11).equals("/" + MyConstants.RESOURCES + "/")) {
                 String baseIp = parameterService.getValueByParam("baseIp").getParamValue();
                 comment.setUserAvatar(baseIp + user.getUserAvatar());
-            }else{
+            } else {
                 comment.setUserAvatar(user.getUserAvatar());
             }
         }

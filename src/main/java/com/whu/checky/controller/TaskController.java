@@ -56,7 +56,7 @@ public class TaskController {
         Task task = taskService.queryTask(taskId);
         ret.put("taskTitle", task.getTaskTitle());
         ret.put("taskState", task.getTaskState());
-        if (task.getIfTest() == 1) {
+        if (task.getIfTest() == MyConstants.IF_TEST_TRUE) {
             ret.put("taskMoneyType", "测试金额");
         } else {
             ret.put("taskMoneyType", "真实金额");
@@ -207,10 +207,10 @@ public class TaskController {
         HashMap<String, Object> ret = new HashMap<>();
         // 判断余额是否充足
         User user = userService.queryUser(task.getUserId());
-        if (task.getIfTest() == 1 && task.getTaskMoney() > user.getTestMoney()) {
+        if (task.getIfTest() == MyConstants.IF_TEST_TRUE && task.getTaskMoney() > user.getTestMoney()) {
             ret.put("state", MyConstants.RESULT_NO_ENOUGH_MONEY);
             return ret;
-        } else if (task.getIfTest() == 0 && task.getTaskMoney() > user.getUserMoney()) {
+        } else if (task.getIfTest() == MyConstants.IF_TEST_FALSE && task.getTaskMoney() > user.getUserMoney()) {
             ret.put("state", MyConstants.RESULT_NO_ENOUGH_MONEY);
             return ret;
         }

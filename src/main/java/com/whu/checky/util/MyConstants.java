@@ -88,10 +88,10 @@ public  class MyConstants {
     // 查询某一年的资金时，index为0的默认值
     public static final int YEAR_INDEX_ZERO = 2019;
 
-//    // 好友状态
-//    public static final int FRIEND_APPLY = 0;
-//    public static final int FRIEND_PASS = 1;
-//    public static final int FRIEND_DENY = 2;
+    // 好友状态
+    public static final int FRIEND_APPLY = 0;
+    public static final int FRIEND_PASS = 1;
+    public static final int FRIEND_DENY = 2;
 
     //建议状态
     public static final String SUGGESTION_STATE_WAITING = "waiting";

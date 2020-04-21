@@ -149,7 +149,7 @@ public class Judge {
                 moneyFlowMapper.insert(record);
                 // 根据是否试玩，更新账户余额
                 User user = userMapper.selectById(t.getUserId());
-                if(t.getIfTest() == 1){
+                if(t.getIfTest() == MyConstants.IF_TEST_TRUE){
                     user.setTestMoney(user.getTestMoney()+t.getTaskMoney());
                 }else{
                     user.setUserMoney(user.getUserMoney()+t.getTaskMoney());
@@ -175,7 +175,7 @@ public class Judge {
                     moneyFlowMapper.insert(record);
 
                     User user = userMapper.selectById(pair.getKey());
-                    if(t.getIfTest() == 1){
+                    if(t.getIfTest() == MyConstants.IF_TEST_TRUE){
                         user.setTestMoney(user.getTestMoney()+t.getTaskMoney());
                     }else{
                         user.setUserMoney(user.getUserMoney()+t.getTaskMoney());

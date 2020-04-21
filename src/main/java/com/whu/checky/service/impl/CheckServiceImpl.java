@@ -18,8 +18,8 @@ public class CheckServiceImpl implements CheckService {
 
     @Override
     public void addCheck(Check check) {
-        mapper.insertNewCheck(check);
-        //mapper.insert(check);
+//        mapper.insertNewCheck(check);
+        mapper.insert(check);
     }
 
     @Override
@@ -82,12 +82,17 @@ public class CheckServiceImpl implements CheckService {
 
     @Override
     public void updatePassSuperviseCheck(String checkId) {
-        mapper.updatePassSuperviseCheck(checkId);
+        Check check = mapper.selectById(checkId);
+        check.setSuperviseNum(check.getSuperviseNum() + 1);
+        check.setPassNum(check.getPassNum() + 1);
+        mapper.updateById(check);
     }
 
     @Override
     public void updateDenySuperviseCheck(String checkId) {
-        mapper.updateDenySuperviseCheck(checkId);
+        Check check = mapper.selectById(checkId);
+        check.setSuperviseNum(check.getSuperviseNum() + 1);
+        mapper.updateById(check);
     }
 
 

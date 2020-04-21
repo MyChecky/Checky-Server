@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.whu.checky.domain.Task;
 import com.whu.checky.mapper.TaskMapper;
+import com.whu.checky.util.MyConstants;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -129,7 +130,7 @@ public class TaskControllerTest {
         ObjectMapper mapper=new ObjectMapper();
         JSONObject request=new JSONObject();
         request.put("taskid","00");
-        request.put("state",MyConstants.RESULT_FAIL);
+        request.put("state", MyConstants.RESULT_FAIL);
         String json=mapper.writeValueAsString(request);
         System.out.println("before--------------------post");
         System.out.println(json.toString());

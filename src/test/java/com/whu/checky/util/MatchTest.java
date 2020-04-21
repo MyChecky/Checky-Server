@@ -149,7 +149,7 @@ public class MatchTest {
         task.setTaskStartTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(1)));
         task.setTaskEndTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
         task.setCheckNum(3);
-        task.setIfTest(1);
+        task.setIfTest(MyConstants.IF_TEST_TRUE);
         task.setMinCheck(0.5);
         task.setMinCheckType("");
         task.setCheckFrec("1100111");

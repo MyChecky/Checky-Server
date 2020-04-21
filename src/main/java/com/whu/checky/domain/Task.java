@@ -2,6 +2,7 @@ package com.whu.checky.domain;
 
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
+import com.whu.checky.util.MyConstants;
 
 public class Task {
     @TableId
@@ -31,7 +32,7 @@ public class Task {
     /**
      * 任务状态
      */
-    private String taskState=MyConstants.TASK_STATE_SAVE;
+    private String taskState= MyConstants.TASK_STATE_SAVE;
     /**
      * 任务押金
      */

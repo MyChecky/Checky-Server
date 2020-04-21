@@ -33,7 +33,6 @@ public class MoneyServiceImpl implements MoneyService {
     @Autowired
     private TaskMapper taskMapper;
 
-    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
     @Override
     public int addTestMoneyRecord(MoneyFlow moneyFlow) {
@@ -163,18 +162,17 @@ public class MoneyServiceImpl implements MoneyService {
     @Override
     public double[] getUserTotalMoneys(String userId) {
         double[] userTotalMoneys = {0.0, 0.0, 0.0, 0.0}; // totalTrueOut, totalTrueIn, totalTestOut, totalTestIn
-        String startDay = "1970-01-01";
-        String endDay = sdf.format(new Date());
-        List<MoneyFlow> moneyFlows = moneyFlowMapper.queryUserScopeMoneyFlow(startDay, endDay, userId);
+        String endDay = MyConstants.DATE_FORMAT.format(new Date());
+        List<MoneyFlow> moneyFlows = moneyFlowMapper.queryUserScopeMoneyFlow(MyConstants.START_TIME, endDay, userId);
         for(MoneyFlow moneyFlow: moneyFlows){
-            if(moneyFlow.getIfTest() == 0){ // 真实余额 数字0
-                if(moneyFlow.getFlowIo().equals("O")){ // 字母 O
+            if(moneyFlow.getIfTest() == MyConstants.IF_TEST_FALSE){ // 真实余额 数字0
+                if(moneyFlow.getFlowIo().equals(MyConstants.MONEY_FLOW_OUT)){ // 字母 O
                     userTotalMoneys[0] += moneyFlow.getFlowMoney();
                 }else{
                     userTotalMoneys[1] += moneyFlow.getFlowMoney();
                 }
             }else{ // 测试余额
-                if(moneyFlow.getFlowIo().equals("O")){ // 字母 O
+                if(moneyFlow.getFlowIo().equals(MyConstants.MONEY_FLOW_OUT)){ // 字母 O
                     userTotalMoneys[2] += moneyFlow.getFlowMoney();
                 }else{
                     userTotalMoneys[3] += moneyFlow.getFlowMoney();
@@ -391,8 +389,8 @@ public class MoneyServiceImpl implements MoneyService {
             try {
                 int month = Integer.parseInt(m.getFlowTime().substring(5, 7)) - 1;
 //                int month = sdf.parse(m.getFlowTime()).getMonth();
-                if (m.getFlowIo().equals("O")) {// flowIO为O,仅支出,尚未结算，需等结算
-                    if (m.getIfTest() == 0) {// t num 0 here
+                if (m.getFlowIo().equals(MyConstants.MONEY_FLOW_OUT)) {// flowIO为O,仅支出,尚未结算，需等结算
+                    if (m.getIfTest() == MyConstants.IF_TEST_FALSE) {// t num 0 here
                         if(taskMapper.selectById(m.getTaskId()).getTaskState().equals(MyConstants.TASK_STATE_COMPLETE)){
                             trueIncomeList.set(month, m.getFlowMoney() + trueIncomeList.get(month));
                         }
@@ -402,7 +400,7 @@ public class MoneyServiceImpl implements MoneyService {
                             testIncomeList.set(month, m.getFlowMoney() + testIncomeList.get(month));
                     }
                 } else { // 入账，说明已结算，无需判别任务状态
-                    if (m.getIfTest() == 0)// t num 0 here
+                    if (m.getIfTest() == MyConstants.IF_TEST_FALSE)// t num 0 here
                         trueRefundList.set(month, m.getFlowMoney() + trueRefundList.get(month));
                     else
                         testRefundList.set(month, m.getFlowMoney() + testRefundList.get(month));

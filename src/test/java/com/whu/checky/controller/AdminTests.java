@@ -6,6 +6,7 @@ import com.whu.checky.domain.User;
 import com.whu.checky.service.TaskService;
 import com.whu.checky.service.TaskTypeService;
 import com.whu.checky.service.UserService;
+import com.whu.checky.util.MyConstants;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,7 @@ public class AdminTests {
         Page<User> p = new Page<User>(page, pageSize);
         List<User> userList = userService.getAllUsers(p, isAsc);
         HashMap<String,Object> resp = new HashMap<>();
-        resp.put("state",MyConstants.RESULT_OK);
+        resp.put("state", MyConstants.RESULT_OK);
         resp.put("size",(int)Math.floor(userService.getAllUsersNum()/ (double)pageSize) );
         resp.put("users",userList);
         System.out.println(resp.toString());

@@ -1,6 +1,7 @@
 package com.whu.checky.domain;
 
 import com.baomidou.mybatisplus.annotations.TableId;
+import com.whu.checky.util.MyConstants;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -27,7 +28,7 @@ public class Record {
     /**
      * 记录时间
      */
-    private String recordTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+    private String recordTime = MyConstants.DATETIME_FORMAT.format(new Date());
     /**
      * 记录内容
      */
