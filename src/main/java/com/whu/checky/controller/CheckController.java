@@ -60,6 +60,10 @@ public class CheckController {
         try {
             // check表
             checkService.addCheck(check);
+            // task表
+            Task task = taskService.queryTask(check.getTaskId());
+            task.setCheckNum(task.getCheckNum() + 1);
+            taskService.updateTask(task);
             // record表
             Record record = new Record();
             String recordId = UUID.randomUUID().toString().substring(0, 12);
