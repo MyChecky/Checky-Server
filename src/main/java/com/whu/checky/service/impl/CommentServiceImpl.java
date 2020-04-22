@@ -1,6 +1,7 @@
 package com.whu.checky.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.whu.checky.config.UploadConfig;
 import com.whu.checky.domain.Appeal;
 import com.whu.checky.domain.Comment;
 import com.whu.checky.domain.User;
@@ -26,6 +27,8 @@ public class CommentServiceImpl implements CommentService {
     private UserMapper userMapper;
     @Autowired
     private ParameterService parameterService;
+    @Autowired
+    private UploadConfig uploadConfig;
 
     @Override
     public List<Comment> queryCommentByEssayId(String essayId) {
@@ -38,7 +41,7 @@ public class CommentServiceImpl implements CommentService {
         for (Comment comment : comments) {
             User user = userMapper.selectById(comment.getUserId());
             comment.setUserName(user.getUserName());
-            if (user.getUserAvatar().substring(0, 11).equals("/" + MyConstants.RESOURCES + "/")) {
+            if (user.getUserAvatar().substring(0, 11).equals("/" + uploadConfig.getStaticPath() + "/")) {
                 String baseIp = parameterService.getValueByParam("baseIp").getParamValue();
                 comment.setUserAvatar(baseIp + user.getUserAvatar());
             } else {
