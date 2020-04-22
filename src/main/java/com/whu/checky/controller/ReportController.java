@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.whu.checky.domain.Essay;
 import com.whu.checky.domain.Report;
+import com.whu.checky.domain.TaskSupervisor;
 import com.whu.checky.domain.User;
 import com.whu.checky.service.*;
 import com.whu.checky.util.MyConstants;
@@ -33,6 +34,8 @@ public class ReportController {
     private CheckService checkService;
     @Autowired
     private TaskService taskService;
+    @Autowired
+    private TaskSupervisorService taskSupervisorService;
 
     @RequestMapping("/addReport")
     public JSONObject addReport(@RequestBody String jsonstr) {
@@ -40,6 +43,8 @@ public class ReportController {
         });
         report.setReportId(UUID.randomUUID().toString());
         report.setReportTime(MyConstants.DATETIME_FORMAT.format(new Date()));
+        int stateFlag = 0;
+        int rightFlag = 3;
 
         // 确认被举报者userId
         String reportedUserId = "";
@@ -54,7 +59,17 @@ public class ReportController {
                 reportedUserId = taskService.queryTask(report.getTaskId()).getUserId();
                 break;
             case MyConstants.REPORT_TYPE_SUPERVISOR:    // supervisor
+                // 此时必须同时存入taskId，否则仅靠举报者id与被举报监督id无法定位到哪个任务
                 reportedUserId = report.getSupervisorId();
+                rightFlag += 1;
+                // task_supervisor表 REPORT_NUM+=1
+                List<TaskSupervisor> taskSupervisors = taskSupervisorService.getTasksSupByTaskId(report.getTaskId());
+                for (TaskSupervisor taskSupervisor : taskSupervisors) {
+                    if (taskSupervisor.getSupervisorId().equals(report.getSupervisorId())) {
+                        taskSupervisor.setReportNum(taskSupervisor.getReportNum() + 1);
+                        stateFlag += taskSupervisorService.updateTaskSup(taskSupervisor) == 1 ? 1 : 0;
+                    }
+                }
                 break;
         }
 
@@ -62,7 +77,6 @@ public class ReportController {
 
         JSONObject ret = new JSONObject();
 
-        int stateFlag = 0;
         stateFlag += reportService.addReport(report) == 1 ? 1 : 0;
 
         // user 被举报者 reportedTotal += 1
@@ -75,7 +89,7 @@ public class ReportController {
         user.setReportTotal(user.getReportTotal() + 1);
         stateFlag += userService.updateUser(user) == 1 ? 1 : 0;
 
-        ret.put("state", stateFlag == 3 ? MyConstants.RESULT_OK : MyConstants.RESULT_FAIL);
+        ret.put("state", stateFlag == rightFlag ? MyConstants.RESULT_OK : MyConstants.RESULT_FAIL);
         return ret;
 
     }
