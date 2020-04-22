@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.whu.checky.config.UploadConfig;
 import com.whu.checky.domain.User;
 import com.whu.checky.service.ParameterService;
 import com.whu.checky.service.RedisService;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -23,8 +25,9 @@ import java.util.UUID;
 @RequestMapping("/wechat")
 public class WechatController {
 
-    private String wxspAppid="wx5f1aa0197013dad6";
-    private String wxspSecret="0b82e68c443bcc8ba76b3c9eeb327cf5";
+    private String wxspAppid = "wx5f1aa0197013dad6";
+    private String wxspSecret = "0b82e68c443bcc8ba76b3c9eeb327cf5";
+    private String wxspAPI = "https://api.weixin.qq.com/sns/jscode2session";
 
     @Autowired
     private ObjectMapper mapper;
@@ -37,101 +40,120 @@ public class WechatController {
 
     @Autowired
     private ParameterService parameterService;
+    @Autowired
+    private UploadConfig uploadConfig;
 
     private static final Logger log = LoggerFactory.getLogger(WechatController.class);
 
     @PostMapping("/logout")
-    public HashMap<String,Object> logout(@RequestBody String body){
-        HashMap<String,Object> ans = new HashMap<>();
+    public HashMap<String, Object> logout(@RequestBody String body) {
+        HashMap<String, Object> ans = new HashMap<>();
         try {
             JSONObject data = JSON.parseObject(body);
             String sessionKey = data.getString("sessionKey");
             redisService.delSessionId(sessionKey);
-        }catch (Exception e){
+        } catch (Exception e) {
             ans.put("state", MyConstants.RESULT_FAIL);
         }
         return ans;
     }
 
+    /**
+     *
+     * @param body
+     * @return state: "fail" fail code->openId
+     *          state: "insertFail" fail register new user
+     *          state: "updateFail" fail update exiting userInfo
+     */
     @PostMapping("/login")
-    public HashMap<String,Object> login(@RequestBody String body) throws IOException {
-        HashMap<String,Object> ret = new HashMap<>(); // 返回值
-        JSONObject object= JSONObject.parseObject(body);
-        String code=(String)object.get("code");
-        JSONObject userinfo= (JSONObject) object.get("userInfo");
-        RestTemplate restTemplate = new RestTemplate();// 发送request请求
-        String params = "appid=" + wxspAppid + "&secret=" + wxspSecret + "&js_code=" +code+"&grant_type=authorization_code";//参数
-        String url = "https://api.weixin.qq.com/sns/jscode2session?"+params;// 微信接口 用于查询oponid
-        String response = restTemplate.getForObject(url,String.class);
+    public HashMap<String, Object> login(@RequestBody String body){
+        HashMap<String, Object> ret = new HashMap<>(); // 返回值
+        JSONObject object = JSONObject.parseObject(body);
 
-        JsonNode node = this.mapper.readTree(response);
-        String openid = node.get("openid").asText();
-//        String sessionKey = node.get("session_key").asText(); // 微信返回的没用到
-
-        double latitude = 0.0;
-        double longitude = 0.0;
-        try{
-            latitude = Double.parseDouble(((JSONObject) object.get("location")).get("latitude").toString());
-            longitude = Double.parseDouble(((JSONObject) object.get("location")).get("longitude").toString());
-        }catch (Exception ex){
-            log.warn("发现新用户登录，而此时小程序尚未获得经纬度返回值");
+        String openId = this.getOpenIdByCode(object.getString("code"));
+        if (openId == null) {
+            ret.put("state", MyConstants.RESULT_FAIL);
+            return ret;
         }
+        User user = userService.queryUser(openId);
 
-        User user = new User();
-        user.setUserId(openid);
-        paserJson2User(userinfo,user);
-        String skey = UUID.randomUUID().toString();
-        user.setSessionId(skey);
-        User check = userService.queryUser(openid);
-        if(check==null){ // 新用户
-            user.setLatitude(latitude);
-            user.setLongtitude(longitude);
-            userService.register(user);
-            check = user;
-        }else{ // 老用户
-            redisService.delSessionId(check.getSessionId());
-            updateFromWeixin(check,user);
-            check.setLatitude(latitude);
-            check.setLongtitude(longitude);
-            userService.updateUser(check);
+        if (user == null) { // 新用户注册
+            user = this.buildNewUser(object, openId);
+            if (userService.register(user) != 1) {
+                ret.put("state", MyConstants.RESULT_INSERT_FAIL);
+                return ret;
+            }
+        } else {  // 老用户登录
+            redisService.delSessionId(user.getSessionId());
+            this.updateOldUser(user, object);
+            if (userService.updateUser(user) != 1) {
+                ret.put("state", MyConstants.RESULT_UPDATE_FAIL);
+                return ret;
+            }
         }
-        redisService.saveUserOrAdminBySessionId(skey,check);
+        redisService.saveUserOrAdminBySessionId(user.getSessionId(), user);
+
         Boolean ifTrueMoneyAccess = Integer.
                 parseInt(parameterService.getValueByParam("if_true_money_access").getParamValue()) != 0;
         Boolean ifNewTaskHighSettingAccess = Integer.
                 parseInt(parameterService.getValueByParam("if_new_task_high_set").getParamValue()) != 0;
         ret.put("ifTrueMoneyAccess", ifTrueMoneyAccess);
         ret.put("ifNewTaskHighSettingAccess", ifNewTaskHighSettingAccess);
-        ret.put("states",openid);
-        ret.put("sessionKey",skey);
-        ret.put("userGender", check.getUserGender());
-        ret.put("userNickname", check.getUserName());
-        if(check.getUserAvatar().substring(0, 11).equals("/resources/")){
-            String baseIp = object.getString("baseIp");
-            ret.put("userAvatar", baseIp + check.getUserAvatar());
-        }else{
-            ret.put("userAvatar", check.getUserAvatar());
-        }
+
+        ret.put("state", MyConstants.RESULT_OK);
+        ret.put("openId", user.getUserId());
+        ret.put("sessionKey", user.getSessionId());
+        ret.put("userGender", user.getUserGender());
+        ret.put("userNickname", user.getUserName());
+        String userAvatar = user.getUserAvatar().substring(0, 11).equals("/" + uploadConfig.getStaticPath() + "/") ?
+                object.getString("baseIp") + user.getUserAvatar() : user.getUserAvatar();
+        ret.put("userAvatar", userAvatar);
+
         return ret;
     }
 
+    private String getOpenIdByCode(String code) {
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            String params = "?appid=" + wxspAppid + "&secret=" + wxspSecret + "&js_code=" + code + "&grant_type=authorization_code";
+            String url = wxspAPI + params;
+            String response = restTemplate.getForObject(url, String.class);
 
-
-    private void paserJson2User(JSONObject userinfo,User user){
-        user.setUserName((String) userinfo.get("nickName"));
-        user.setUserGender((Integer) userinfo.get("gender"));
-        user.setUserAvatar((String) userinfo.get("avatarUrl"));
+            JsonNode node = this.mapper.readTree(response);
+            return node.get("openid").asText();
+        } catch (Exception ex) {
+            log.error("Something Wrong When Get OpenId:code" + code + "\n" + ex.getMessage());
+            return null;
+        }
     }
 
+    private User buildNewUser(JSONObject object, String openid) {
+        User user = new User();
+        user.setUserId(openid);
+        user.setUserTime(MyConstants.DATETIME_FORMAT.format(new Date()));
 
-    private void updateFromWeixin (User check, User user){
-//        check.setUserName(user.getUserName());
-//        check.setUserGender(user.getUserGender());
-//        check.setUserAvatar(user.getUserAvatar());
-        check.setLongtitude(user.getLongtitude());
-        check.setLatitude(user.getLatitude());
-        check.setSessionId(user.getSessionId());
+        this.updateOldUser(user, object);
+        return user;
     }
 
-
+    private void updateOldUser(User user, JSONObject object) {
+        JSONObject userInfo = (JSONObject) object.get("userInfo");
+        // 基本的userInfo
+        if (userInfo != null) {
+            user.setUserName(userInfo.getString("nickName"));
+            user.setUserGender(userInfo.getInteger("gender"));
+            user.setUserAvatar(userInfo.getString("avatarUrl"));
+        }
+        // 经纬度
+        try{
+            JSONObject location = (JSONObject) object.get("location");
+            user.setLatitude(location.getBigDecimal("latitude").doubleValue());
+            user.setLongtitude(location.getBigDecimal("longitude").doubleValue());
+        } catch (Exception ex){
+            log.warn("user is logging in without location info\n" + ex.getMessage());
+        }
+        // sessionId
+        String userSessionId = UUID.randomUUID().toString();
+        user.setSessionId(userSessionId);
+    }
 }
