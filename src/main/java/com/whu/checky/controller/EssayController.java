@@ -176,7 +176,7 @@ public class EssayController {
         User publisher = userService.queryUser(essay.getUserId());
         EssayAndRecord essayAndRecord = new EssayAndRecord();
         essayAndRecord.setUserId(publisher.getUserId());
-        if (publisher.getUserAvatar().substring(0, 11).equals("/" + MyConstants.RESOURCES + "/")) { // 说明用户修改过头像
+        if (publisher.getUserAvatar().substring(0, 11).equals("/" + uploadConfig.getStaticPath() + "/")) { // 说明用户修改过头像
             String baseIp = parameterService.getValueByParam("baseIp").getParamValue();
             essayAndRecord.setUserAvatar(baseIp + publisher.getUserAvatar());
         } else {

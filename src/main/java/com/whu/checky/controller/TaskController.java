@@ -3,6 +3,7 @@ package com.whu.checky.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
+import com.whu.checky.config.UploadConfig;
 import com.whu.checky.domain.*;
 import com.whu.checky.service.*;
 import com.whu.checky.util.Match;
@@ -32,6 +33,8 @@ public class TaskController {
     private TaskTypeService taskTypeService;
     @Autowired
     private TaskSupervisorService taskSupervisorService;
+    @Autowired
+    private UploadConfig uploadConfig;
 
 
     @PostMapping("/initConfig")
@@ -164,7 +167,7 @@ public class TaskController {
             task.setUserName(user.getUserName());
             res.put("task", task);
             res.put("userName", user.getUserName());
-            if (user.getUserAvatar().substring(0, 11).equals("/" + MyConstants.RESOURCES + "/")) {
+            if (user.getUserAvatar().substring(0, 11).equals("/" + uploadConfig.getStaticPath()+ "/")) {
                 String baseIp = parameterService.getValueByParam("baseIp").getParamValue();
                 res.put("userAvatar", baseIp + user.getUserAvatar());
             } else {

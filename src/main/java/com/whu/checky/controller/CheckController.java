@@ -254,7 +254,7 @@ public class CheckController {
                     FileUtil.uploadFile(file.getBytes(), filePath, fileName);
                     // 数据库相关
                     Record record = new Record();
-                    record.setFileAddr(MyConstants.RESOURCES + "/" + userId + "/" + day + "/" + contentType + "/" + fileName);
+                    record.setFileAddr(uploadConfig.getStaticPath() + "/" + userId + "/" + day + "/" + contentType + "/" + fileName);
                     record.setRecordType(file.getContentType());
                     String checkId = request.getParameter("checkId");
                     record.setCheckId(checkId);

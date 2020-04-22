@@ -78,9 +78,6 @@ public  class MyConstants {
     public static final String RECORD_TYPE_AUDIO = "audio";
     public static final String RECORD_TYPE_VIDEO = "video";
 
-    // 媒体地址
-    public static final String RESOURCES = "resources";
-
     // 默认下拉加载数量
     public static final int PAGE_LENGTH = 10;
     public static final int PAGE_LENGTH_MINI = 5;

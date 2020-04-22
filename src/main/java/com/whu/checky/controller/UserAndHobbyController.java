@@ -14,6 +14,7 @@ import com.whu.checky.util.MyConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -180,7 +181,7 @@ public class UserAndHobbyController {
                     String day = MyConstants.DATE_FORMAT.format(new Date());
                     String filePath = uploadConfig.getUploadPath() + userId + "/" + day + "/" + contentType + "/";
                     FileUtil.uploadFile(file.getBytes(), filePath, fileName);
-                    String avatarURL = "/" + MyConstants.RESOURCES + "/" + userId + "/" + day + "/" + contentType + "/" + fileName;
+                    String avatarURL = "/" + uploadConfig.getStaticPath()+ "/" + userId + "/" + day + "/" + contentType + "/" + fileName;
                     response.put("avatarUrl", avatarURL);
                     response.put("state", MyConstants.RESULT_OK);
                 }
