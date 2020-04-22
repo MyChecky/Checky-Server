@@ -14,10 +14,7 @@ import com.whu.checky.util.MyConstants;
 import com.whu.checky.util.WXPayUtil;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -38,6 +35,28 @@ public class MoneyController {
     private TaskService taskService;
     @Autowired
     private UserService userService;
+
+    @RequestMapping("/yearList")
+    public HashMap<String, Object> yearList(@RequestBody String body) throws ParseException {
+        HashMap<String, Object> ret = new HashMap<>();
+        String userId = ((JSONObject) JSON.parse(body)).getString("userId");
+        User user = userService.queryUser(userId);
+        Calendar userCalendar = Calendar.getInstance();
+        userCalendar.setTime(MyConstants.DATETIME_FORMAT.parse(user.getUserTime()));
+        Integer yearBegin = userCalendar.get(Calendar.YEAR);
+
+        Calendar nowCalendar = Calendar.getInstance();
+        nowCalendar.setTime(new Date());
+        Integer yearEnd = nowCalendar.get(Calendar.YEAR);
+
+        List<Integer> years = new ArrayList<>();
+        for(int i = yearBegin; i<= yearEnd; i++){
+            years.add(i);
+        }
+        ret.put("state", MyConstants.RESULT_OK);
+        ret.put("years", years);
+        return ret;
+    }
 
     @RequestMapping("/pay")
     public void pay(@RequestBody String jsonstr) {
@@ -86,8 +105,7 @@ public class MoneyController {
             String endTime = (String) object.get("endTime");
             getRecordList(userId, startTime, endTime, moneyTypeIndex, ans);
         } else if (displayTypeIndex == 1) {    // 图表，查询某一年
-            // 根据前端返回index确定所查年份，index为0时查询2019年
-            Integer year = object.getInteger("yearIndex") + MyConstants.YEAR_INDEX_ZERO;
+            Integer year = object.getInteger("year");
             ans.put("year", year);
             getRecordGraph(userId, year, moneyTypeIndex, ans);
         }
