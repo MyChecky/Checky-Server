@@ -3,6 +3,7 @@ package com.whu.checky.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
+import com.whu.checky.domain.Essay;
 import com.whu.checky.domain.Report;
 import com.whu.checky.domain.User;
 import com.whu.checky.service.*;
@@ -26,6 +27,12 @@ public class ReportController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private EssayService essayService;
+    @Autowired
+    private CheckService checkService;
+    @Autowired
+    private TaskService taskService;
 
     @RequestMapping("/addReport")
     public JSONObject addReport(@RequestBody String jsonstr) {
@@ -34,14 +41,41 @@ public class ReportController {
         report.setReportId(UUID.randomUUID().toString());
         report.setReportTime(MyConstants.DATETIME_FORMAT.format(new Date()));
 
-        JSONObject ret = new JSONObject();
-        String state = reportService.addReport(report)==1?MyConstants.RESULT_OK:MyConstants.RESULT_FAIL;
-        if(report.getReportType().equals(MyConstants.REPORT_TYPE_SUPERVISOR) && state.equals(MyConstants.RESULT_OK)){
-            User user = userService.queryUser(report.getSupervisorId());
-            user.setReportedTotal(user.getReportTotal()+1);
-            userService.updateUser(user);
+        // 确认被举报者userId
+        String reportedUserId = "";
+        switch (report.getReportType()) {
+            case MyConstants.REPORT_TYPE_ESSAY: // essay
+                reportedUserId = essayService.queryEssayById(report.getEssayId()).getUserId();
+                break;
+            case MyConstants.REPORT_TYPE_CHECK: // check
+                reportedUserId = checkService.queryCheckById(report.getCheckId()).getUserId();
+                break;
+            case MyConstants.REPORT_TYPE_TASK:  // task
+                reportedUserId = taskService.queryTask(report.getTaskId()).getUserId();
+                break;
+            case MyConstants.REPORT_TYPE_SUPERVISOR:    // supervisor
+                reportedUserId = report.getSupervisorId();
+                break;
         }
-        ret.put("state", state);
+
+        report.setUserReportedId(reportedUserId);
+
+        JSONObject ret = new JSONObject();
+
+        int stateFlag = 0;
+        stateFlag += reportService.addReport(report) == 1 ? 1 : 0;
+
+        // user 被举报者 reportedTotal += 1
+        User reportedUser = userService.queryUser(reportedUserId);
+        reportedUser.setReportedTotal(reportedUser.getReportedTotal() + 1);
+        stateFlag += userService.updateUser(reportedUser) == 1 ? 1 : 0;
+
+        // user 举报者 reportTotal += 1
+        User user = userService.queryUser(report.getUserId());
+        user.setReportTotal(user.getReportTotal() + 1);
+        stateFlag += userService.updateUser(user) == 1 ? 1 : 0;
+
+        ret.put("state", stateFlag == 3 ? MyConstants.RESULT_OK : MyConstants.RESULT_FAIL);
         return ret;
 
     }
