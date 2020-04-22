@@ -51,7 +51,7 @@ public class WebSecurityConfig {
 //                    暂时关闭权限认证
                     .antMatchers("/wechat/login","/admin/login","/resources/**","/socket/**",
                             "/userAndHobby/getServiceTerms", "/essay/queryEssayById", "/essay/displayEssay",
-                            "/essay/queryComments").permitAll()
+                            "/essay/queryComments", "/task/taskDetail").permitAll()
                     .antMatchers("/admin","/**/admin/**").hasRole("ADMIN")
                     .antMatchers("/**").hasRole("USER")
                     .and()
