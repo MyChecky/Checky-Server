@@ -4,9 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.baomidou.mybatisplus.plugins.Page;
-import com.whu.checky.domain.Check;
-import com.whu.checky.domain.Supervise;
-import com.whu.checky.domain.SupervisorState;
+import com.whu.checky.domain.*;
 import com.whu.checky.service.*;
 import com.whu.checky.util.MyConstants;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +30,8 @@ public class SuperviseController {
     private UserService userService;
     @Autowired
     private TaskService taskService;
+    @Autowired
+    private TaskSupervisorService taskSupervisorService;
 
     @PostMapping("/history")
     public HashMap<String, Object> history(@RequestBody String body) {
@@ -59,22 +59,37 @@ public class SuperviseController {
 
     //监督者对一个Check进行验证
     @RequestMapping("/addSupervise")
-    public void addSupervise(@RequestBody String jsonstr) {
+    public HashMap<String, Object> addSupervise(@RequestBody String jsonstr) {
+        HashMap<String, Object> ret = new HashMap<>();
         Supervise supervise = JSON.parseObject(jsonstr, new TypeReference<Supervise>() {
         });
+        int stateFlag = 0;
         supervise.setSuperviseId(UUID.randomUUID().toString());
-        superviseService.addSupervise(supervise);
-        // 更新
-
+        stateFlag += superviseService.addSupervise(supervise) == 1 ? 1 : 0;
+        // check表 SUPERVISE_NUM+=1; pass_num+= 0/1
         String checkId = supervise.getCheckId();
+        Check check = checkService.queryCheckById(checkId);
+        check.setSuperviseNum(check.getSuperviseNum() + 1);
         if (supervise.getSuperviseState().equals(MyConstants.SUPERVISE_STATE_PASS)) {
-            //如果通过,对应check的supervise_num+1
-            //同时pass_num也+1
-            checkService.updatePassSuperviseCheck(checkId);
-        } else {
-            //如果没有通过，那么只有check的supervise_num+1
-            checkService.updateDenySuperviseCheck(checkId);
+            check.setPassNum(check.getPassNum() + 1);
         }
+        stateFlag += checkService.updateCheck(check) == 1 ? 1 : 0;
+        // task_sup表 SUPERVISE_NUM+=1
+        List<TaskSupervisor> taskSupervisors = taskSupervisorService.getTasksSupByTaskId(check.getTaskId());
+        for (TaskSupervisor taskSupervisor : taskSupervisors) {
+            if (taskSupervisor.getSupervisorId().equals(supervise.getSupervisorId())) {
+                taskSupervisor.setSuperviseNum(taskSupervisor.getSuperviseNum() + 1);
+                stateFlag += taskSupervisorService.updateTaskSup(taskSupervisor) == 1 ? 1 : 0;
+            }
+        }
+        // user表 SUPERVISE_NUM+=1
+        User user = userService.queryUser(supervise.getSupervisorId());
+        user.setSuperviseNum(user.getSuperviseNum() + 1);
+        stateFlag += userService.updateUser(user) == 1 ? 1 : 0;
+
+        String state = stateFlag == 4 ? MyConstants.RESULT_OK : MyConstants.RESULT_FAIL;
+        ret.put("state", state);
+        return ret;
     }
 
 

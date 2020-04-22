@@ -18,8 +18,8 @@ public class TaskSupervisorServiceImpl implements TaskSupervisorService {
     private TaskSupervisorMapper taskSupervisorMapper;
 
     @Override
-    public void addTaskSupervisor(TaskSupervisor taskSupervisor) {
-        taskSupervisorMapper.insert(taskSupervisor);
+    public Integer addTaskSupervisor(TaskSupervisor taskSupervisor) {
+        return taskSupervisorMapper.insert(taskSupervisor);
     }
 
     @Override
@@ -43,5 +43,10 @@ public class TaskSupervisorServiceImpl implements TaskSupervisorService {
         return taskSupervisorMapper.selectList(new EntityWrapper<TaskSupervisor>()
                 .eq("task_id", taskId)
                 .isNull("remove_time"));
+    }
+
+    @Override
+    public Integer updateTaskSup(TaskSupervisor taskSupervisor) {
+        return taskSupervisorMapper.updateById(taskSupervisor);
     }
 }

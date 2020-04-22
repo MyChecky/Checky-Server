@@ -27,9 +27,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateUser(User user) {
+    public Integer updateUser(User user) {
 //        user.setSessionId(id);
-        mapper.updateById(user);
+        return mapper.updateById(user);
 //        return true;
     }
 

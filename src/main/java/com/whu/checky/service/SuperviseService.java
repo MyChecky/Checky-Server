@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface SuperviseService {
     //每日监督(这个接口是提供给用户的)
-    void addSupervise(Supervise supervise);
+    Integer addSupervise(Supervise supervise);
 
     //这个接口是提供给管理员的
     void updateSupervise(String superviseId,String newState);

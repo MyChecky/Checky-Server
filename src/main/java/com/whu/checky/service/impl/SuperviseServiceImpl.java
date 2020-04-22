@@ -28,8 +28,8 @@ public class SuperviseServiceImpl implements SuperviseService {
 
 
     @Override
-    public void addSupervise(Supervise supervise) {
-        superviseMapper.insert(supervise);
+    public Integer addSupervise(Supervise supervise) {
+        return superviseMapper.insert(supervise);
     }
 
     @Override

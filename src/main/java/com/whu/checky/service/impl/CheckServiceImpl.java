@@ -53,8 +53,8 @@ public class CheckServiceImpl implements CheckService {
     }
 
     @Override
-    public void updateCheck(Check check) {
-        mapper.updateById(check);
+    public Integer updateCheck(Check check) {
+        return mapper.updateById(check);
     }
 
     @Override
@@ -80,20 +80,20 @@ public class CheckServiceImpl implements CheckService {
         return list;
     }
 
-    @Override
-    public void updatePassSuperviseCheck(String checkId) {
-        Check check = mapper.selectById(checkId);
-        check.setSuperviseNum(check.getSuperviseNum() + 1);
-        check.setPassNum(check.getPassNum() + 1);
-        mapper.updateById(check);
-    }
+//    @Override
+//    public void updatePassSuperviseCheck(String checkId) {
+//        Check check = mapper.selectById(checkId);
+//        check.setSuperviseNum(check.getSuperviseNum() + 1);
+//        check.setPassNum(check.getPassNum() + 1);
+//        mapper.updateById(check);
+//    }
 
-    @Override
-    public void updateDenySuperviseCheck(String checkId) {
-        Check check = mapper.selectById(checkId);
-        check.setSuperviseNum(check.getSuperviseNum() + 1);
-        mapper.updateById(check);
-    }
+//    @Override
+//    public void updateDenySuperviseCheck(String checkId) {
+//        Check check = mapper.selectById(checkId);
+//        check.setSuperviseNum(check.getSuperviseNum() + 1);
+//        mapper.updateById(check);
+//    }
 
 
 }

@@ -12,7 +12,7 @@ public interface UserService {
      //再次登录
 //    boolean updateSessionID(User user,String id);
 
-    void updateUser(User user);
+    Integer updateUser(User user);
 
     // 查询用户
     User queryUser(String userId);

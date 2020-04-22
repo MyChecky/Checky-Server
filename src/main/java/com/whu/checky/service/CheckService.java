@@ -20,7 +20,7 @@ public interface CheckService {
 
     void getCheckHistory();
 
-    void updateCheck(Check check);
+    Integer updateCheck(Check check);
 
     void deleteCheck(String checkId);
 
@@ -28,8 +28,8 @@ public interface CheckService {
 
     List<Check> getTaskChecks(String taskId);
 
-    void updatePassSuperviseCheck(String checkId);
-
-    void updateDenySuperviseCheck(String checkId);
+//    void updatePassSuperviseCheck(String checkId);
+//
+//    void updateDenySuperviseCheck(String checkId);
 
 }
