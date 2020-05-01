@@ -95,6 +95,7 @@ public class TaskController {
         });
         if (task.getTaskId() == null || task.getTaskId().equals("")) { // add new task
             task.setTaskId(UUID.randomUUID().toString());
+            task.setAddTime(MyConstants.DATETIME_FORMAT.format(new Date()));
             int result = taskService.addTask(task);
             if (result == 0) {
                 //添加失败

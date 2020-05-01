@@ -9,7 +9,7 @@
         check_frec AS checkFrec, match_num AS matchNum, if_test AS ifTest,
         system_benifit AS systemBenifit, check_pass as checkPass, min_pass AS minPass,
         real_pass as realPass, min_check as minCheck, min_check_type as minCheckType,
-        supervisor_type as supervisorType, if_area AS ifArea, if_hobby as ifHobby
+        supervisor_type as supervisorType, if_area AS ifArea, if_hobby as ifHobby, add_time as addTime
           FROM task WHERE (user_id = #{userId} AND date(#{date})
           between task_start_time and task_end_time)
     </select>
@@ -28,7 +28,7 @@
         check_frec AS checkFrec, match_num AS matchNum, if_test AS ifTest,
         system_benifit AS systemBenifit, check_pass as checkPass, min_pass AS minPass,
         real_pass as realPass, min_check as minCheck, min_check_type as minCheckType,
-        supervisor_type as supervisorType, if_area AS ifArea, if_hobby as ifHobby
+        supervisor_type as supervisorType, if_area AS ifArea, if_hobby as ifHobby, add_time as addTime
         WHERE user_id IN
         (select user_id
         from user

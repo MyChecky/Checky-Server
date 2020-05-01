@@ -104,6 +104,19 @@ public class Task {
      */
     private int ifHobby=0;
 
+    /**
+     *  任务创建时间
+     */
+    private String addTime;
+
+    public String getAddTime() {
+        return addTime;
+    }
+
+    public void setAddTime(String addTime) {
+        this.addTime = addTime;
+    }
+
     public String getUserName() {
         return userName;
     }

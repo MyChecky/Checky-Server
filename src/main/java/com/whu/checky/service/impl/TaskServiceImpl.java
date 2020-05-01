@@ -95,7 +95,9 @@ public class TaskServiceImpl implements TaskService {
     public List<Task> queryUserTasks(String userId, String date) {
         List<Task> res;
         if (date == null)
-            res = taskMapper.selectList(new EntityWrapper<Task>().eq("user_id", userId));
+            res = taskMapper.selectList(new EntityWrapper<Task>()
+                    .eq("user_id", userId)
+                    .orderBy("add_time", false));
         else {
             res = taskMapper.queryUserTasks(userId, date);
             try {
@@ -201,7 +203,7 @@ public class TaskServiceImpl implements TaskService {
                 .ge("task_start_time", startTime)
                 .or()
                 .le("task_end_time", endTime)
-                .orderBy("task_start_time", false));
+                .orderBy("add_time", false));
         for (Task task : tasks) {
             task.setUserName(userMapper.getUsernameById(task.getUserId()));
         }
@@ -216,7 +218,7 @@ public class TaskServiceImpl implements TaskService {
                 .ge("task_start_time", startTime)
                 .or()
                 .le("task_end_time", endTime)
-                .orderBy("task_start_time", false));
+                .orderBy("add_time", false));
         for (Task task : tasks) {
             task.setUserName(userMapper.getUsernameById(task.getUserId()));
         }
@@ -231,7 +233,7 @@ public class TaskServiceImpl implements TaskService {
                 .ge("task_start_time", startTime)
                 .or()
                 .le("task_end_time", endTime)
-                .orderBy("task_start_time", false));
+                .orderBy("add_time", false));
         for (Task task : tasks) {
             task.setUserName(userMapper.getUsernameById(task.getUserId()));
         }
@@ -244,7 +246,7 @@ public class TaskServiceImpl implements TaskService {
                 .ge("task_start_time", startTime)
                 .or()
                 .le("task_end_time", endTime)
-                .orderBy("task_start_time", false));
+                .orderBy("add_time", false));
         for (Task task : tasks) {
             task.setUserName(userMapper.getUsernameById(task.getUserId()));
         }
