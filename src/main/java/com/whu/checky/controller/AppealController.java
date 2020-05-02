@@ -3,7 +3,11 @@ package com.whu.checky.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.whu.checky.domain.Appeal;
+import com.whu.checky.domain.Task;
+import com.whu.checky.domain.TaskSupervisor;
 import com.whu.checky.service.AppealService;
+import com.whu.checky.service.TaskService;
+import com.whu.checky.service.TaskSupervisorService;
 import com.whu.checky.util.MyConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,14 +27,21 @@ public class AppealController {
     @Autowired
     private AppealService appealService;
 
+    @Autowired
+    private TaskService taskService;
+
+    @Autowired
+    private TaskSupervisorService taskSupervisorService;
 
     @PostMapping("/add")
     HashMap<String,String> addAppeal(@RequestBody String body){
         JSONObject data = JSONObject.parseObject(body);
+
+        String taskId = data.getString("taskId");
         Appeal appeal = new Appeal();
         appeal.setAppealId(UUID.randomUUID().toString());
         appeal.setUserId(data.getString("userId"));
-        appeal.setTaskId(data.getString("taskId"));
+        appeal.setTaskId(taskId);
         appeal.setCheckId(data.getString("checkId"));
         appeal.setAppealContent(data.getString("appealContent"));
 
@@ -39,6 +50,23 @@ public class AppealController {
             ans.put("state", MyConstants.RESULT_OK);
         }else{
             ans.put("state",MyConstants.RESULT_FAIL);
+        }
+
+        // 判断任务是否为公示状态
+        Task task = taskService.queryTask(taskId);
+        if (task.getTaskState().equals(MyConstants.TASK_STATE_SUCCESS) ||
+                task.getTaskState().equals(MyConstants.TASK_STATE_FAIL)) {
+
+            task.setTaskState(MyConstants.TASK_STATE_DURING);
+            task.setRefundMoney(0.0);
+            task.setSystemBenifit(0.0);
+            taskService.updateTask(task);
+
+            List<TaskSupervisor> taskSupsToInit = taskSupervisorService.getTasksSupByTaskId(taskId);
+            for (TaskSupervisor taskSupervisor: taskSupsToInit){
+                taskSupervisor.setBenefit(0.0);
+                taskSupervisorService.updateTaskSup(taskSupervisor);
+            }
         }
 
         return ans;

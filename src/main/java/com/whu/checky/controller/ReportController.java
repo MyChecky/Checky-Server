@@ -3,10 +3,7 @@ package com.whu.checky.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
-import com.whu.checky.domain.Essay;
-import com.whu.checky.domain.Report;
-import com.whu.checky.domain.TaskSupervisor;
-import com.whu.checky.domain.User;
+import com.whu.checky.domain.*;
 import com.whu.checky.service.*;
 import com.whu.checky.util.MyConstants;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,6 +65,22 @@ public class ReportController {
                     if (taskSupervisor.getSupervisorId().equals(report.getSupervisorId())) {
                         taskSupervisor.setReportNum(taskSupervisor.getReportNum() + 1);
                         stateFlag += taskSupervisorService.updateTaskSup(taskSupervisor) == 1 ? 1 : 0;
+                    }
+                }
+                // 判断任务是否为公示状态
+                Task task = taskService.queryTask(report.getTaskId());
+                if (task.getTaskState().equals(MyConstants.TASK_STATE_SUCCESS) ||
+                        task.getTaskState().equals(MyConstants.TASK_STATE_FAIL)) {
+
+                    task.setTaskState(MyConstants.TASK_STATE_DURING);
+                    task.setRefundMoney(0.0);
+                    task.setSystemBenifit(0.0);
+                    taskService.updateTask(task);
+
+                    List<TaskSupervisor> taskSupsToInit = taskSupervisorService.getTasksSupByTaskId(report.getTaskId());
+                    for (TaskSupervisor taskSupervisor: taskSupsToInit){
+                        taskSupervisor.setBenefit(0.0);
+                        taskSupervisorService.updateTaskSup(taskSupervisor);
                     }
                 }
                 break;
