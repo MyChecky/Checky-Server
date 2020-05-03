@@ -25,7 +25,7 @@ public class AppealServiceImpl implements AppealService {
 
     @Override
     public List<Appeal> getAllAppeals() {
-        return mapper.selectList(new EntityWrapper<>())
+        return mapper.selectList(new EntityWrapper<>());
     }
 
     @Override
