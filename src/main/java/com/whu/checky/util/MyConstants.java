@@ -41,6 +41,7 @@ public  class MyConstants {
     public static final String TASK_STATE_SUCCESS = "success";    //任务执行成功
     public static final String TASK_STATE_FAIL = "fail";           //任务执行失败
     public static final String TASK_STATE_COMPLETE = "complete"; //分账完成
+    public static final String TASK_STATE_APPEAL = "appeal";    //申诉中
 
     //任务操作状态
     //任务添加成功/失败

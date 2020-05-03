@@ -72,7 +72,7 @@ public class ReportController {
                 if (task.getTaskState().equals(MyConstants.TASK_STATE_SUCCESS) ||
                         task.getTaskState().equals(MyConstants.TASK_STATE_FAIL)) {
 
-                    task.setTaskState(MyConstants.TASK_STATE_DURING);
+                    task.setTaskState(MyConstants.TASK_STATE_APPEAL);
                     task.setRefundMoney(0.0);
                     task.setSystemBenifit(0.0);
                     taskService.updateTask(task);
