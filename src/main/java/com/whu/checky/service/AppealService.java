@@ -13,7 +13,8 @@ public interface AppealService {
     //撤销申诉
     boolean deleteAppeal(String appealId);
     //对申诉处理
-    int updateAppeal(String appealId,String result);
+    Appeal getAppealById(String appealId);
+    Integer updateAppeal(Appeal appeal);
     //查询申诉
     List<Appeal> queryAppealFromUser(String userId);
     //管理员查看所有申诉

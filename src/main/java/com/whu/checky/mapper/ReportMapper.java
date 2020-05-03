@@ -11,8 +11,6 @@ import java.util.List;
 @Mapper
 @Component(value = "reportMapper")
 public interface ReportMapper extends BaseMapper<Report> {
-    List<Report> getReportList();
-    int updateState(@Param("reportId") String reportId, @Param("result") String result);
     List<Report> queryReportByUserName(@Param("username")String username);
 
 }

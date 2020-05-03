@@ -1,12 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.whu.checky.mapper.AppealMapper">
-<update id="updateState">
-    update appeal
-    set process_result=#{result}
-    where appeal_id=#{appealId}
-</update>
-
     <select id="queryAppealByUserName" resultType="com.whu.checky.domain.Appeal">
         SELECT appeal_id AS appealId,user_id AS userId,task_id AS taskId,check_id AS checkId,appeal_time
 AS appealTime,appeal_content AS appealContent,process_result AS processResult,process_time

@@ -11,6 +11,5 @@ import java.util.List;
 @Mapper
 @Component("AppealMapper")
 public interface AppealMapper extends BaseMapper<Appeal> {
-int updateState(@Param("appealId") String appealId,@Param("result") String result);
     List<Appeal> queryAppealByUserName(@Param("username")String username);
 }

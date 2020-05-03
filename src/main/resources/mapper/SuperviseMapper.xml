@@ -23,7 +23,7 @@
         WHERE check_time between #{startDate} AND #{endDate}
           AND task_id IN (
             SELECT task_id FROM task_supervisor
-            WHERE supervisor_id =#{userId})
+            WHERE supervisor_id =#{userId} and remove_time is NULL)
     </select>
 
 <!--    <select id="needToSupervise" resultType="String">-->
