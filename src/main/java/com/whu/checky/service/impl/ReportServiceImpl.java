@@ -123,4 +123,9 @@ public class ReportServiceImpl implements ReportService {
                 .le("report_time", endTime)
                 .orderBy("report_time", false));
     }
+
+    @Override
+    public List<Report> getAllReports() {
+        return reportMapper.selectList(new EntityWrapper<>());
+    }
 }

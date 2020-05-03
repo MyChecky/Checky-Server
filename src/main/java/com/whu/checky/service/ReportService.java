@@ -7,6 +7,7 @@ import com.whu.checky.domain.Report;
 import java.util.List;
 
 public interface ReportService {
+    List<Report> getAllReports();
     //添加举报
     int addReport(Report report);
     //删除举报

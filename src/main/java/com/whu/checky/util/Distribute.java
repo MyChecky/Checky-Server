@@ -1,11 +1,17 @@
 package com.whu.checky.util;
 
+import java.time.Duration;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.whu.checky.domain.*;
-import com.whu.checky.mapper.*;
+import com.whu.checky.domain.Task;
+import com.whu.checky.domain.TaskSupervisor;
+import com.whu.checky.domain.User;
+import com.whu.checky.mapper.TaskMapper;
+import com.whu.checky.mapper.TaskSupervisorMapper;
+import com.whu.checky.mapper.UserMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -35,10 +41,18 @@ public class Distribute {
     }
 
     void assignMoney(Task task) {
-        assignMoney(task, task.getSystemBenifit());
+        assignMoney(task, task.getSystemBenifit(), 1);
     }
 
-    void assignMoney(Task task, double systemRate) {
+    void assignMoney(Task task, double systemRate, int numAppealDays) {
+        Duration duration = Duration.between(LocalDate.parse(task.getTaskAnnounceTime()), LocalDate.now());
+        if (duration.toDays() < numAppealDays) {
+            /**
+             * Still waiting for possible appeals.
+             */
+            return;
+        }
+
         double deposit = task.getTaskMoney();
 
         double remained = deposit;
@@ -73,7 +87,10 @@ public class Distribute {
         for (TaskSupervisor supervisor : supervisors) {
             int numBads = supervisor.getBadNum();
             int numActualSupervise = numActualChecks - numBads;
-            if (numActualSupervise < 0) {
+            if (numActualSupervise < 0 || supervisor.getRemoveTime() != null) {
+                /**
+                 * If supervisor does not supervise, or has been removed:
+                 */
                 numActualSupervise = 0;
             }
 

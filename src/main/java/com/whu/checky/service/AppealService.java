@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 public interface AppealService {
+    List<Appeal> getAllAppeals();
     //添加申诉
     boolean addAppeal(Appeal appeal);
     //撤销申诉

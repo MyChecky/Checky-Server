@@ -24,6 +24,11 @@ public class AppealServiceImpl implements AppealService {
     private UserMapper userMapper;
 
     @Override
+    public List<Appeal> getAllAppeals() {
+        return mapper.selectList(new EntityWrapper<>())
+    }
+
+    @Override
     public boolean addAppeal(Appeal appeal) {
         try {
             mapper.insert(appeal);
