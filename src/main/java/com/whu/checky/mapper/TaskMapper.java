@@ -20,8 +20,8 @@ public interface TaskMapper extends BaseMapper<Task> {
             " taskState,task_money AS taskMoney,supervisor_num AS supervisorNum,refund_money AS refundMoney,check_times\n" +
             "AS checkTimes,check_frec AS checkFrec, user_name as userName, if_test as ifTest, system_benifit as systemBenifit,\n" +
             "check_pass as checkPass, min_pass as minPass, real_pass as realPass, min_check as minCheck, min_check_type as \n" +
-            "minCheckType, supervisor_type as supervisorType, if_area as  ifArea, if_hobby as ifHobby, add_time as addTime\n" +
-            "FROM task NATURAL JOIN user WHERE 1=1";
+            "minCheckType, supervisor_type as supervisorType, if_area as  ifArea, if_hobby as ifHobby, add_time as addTime, \n" +
+            "task_announce_time as taskAnnounceTime FROM task NATURAL JOIN user WHERE 1=1";
 
     List<Task> queryUserTasks(@Param("userId") String userId, @Param("date") String date);
     String getTitleById(@Param("taskId")String taskId);

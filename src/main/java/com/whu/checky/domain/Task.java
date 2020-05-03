@@ -109,6 +109,19 @@ public class Task {
      */
     private String addTime;
 
+    /**
+     * 开始公示的时间
+     */
+    private String taskAnnounceTime;
+
+    public String getTaskAnnounceTime() {
+        return taskAnnounceTime;
+    }
+
+    public void setTaskAnnounceTime(String taskAnnounceTime) {
+        this.taskAnnounceTime = taskAnnounceTime;
+    }
+
     public String getAddTime() {
         return addTime;
     }
