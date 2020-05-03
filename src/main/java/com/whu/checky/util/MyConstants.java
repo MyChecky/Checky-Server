@@ -20,6 +20,10 @@ public  class MyConstants {
     public static final String START_TIME = "1970-01-01";
     public static final String END_TIME = "2099-01-01";
 
+    // 举报申诉状态
+    public static final String PROCESS_STATE_PASS = "pass";
+    public static final String PROCESS_STATE_DENY = "deny";
+    public static final String PROCESS_STATE_TO_PROCESS = "toProcess";
     //
     public static final int MENU_FLAG_ENABLE = 1;
     public static final int MENU_FLAG_DISABLE = 0;
