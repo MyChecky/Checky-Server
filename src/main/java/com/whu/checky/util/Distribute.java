@@ -14,23 +14,22 @@ import org.springframework.stereotype.Component;
 //分成模块
 @Component
 public class Distribute {
-    
+
     @Autowired
     UserMapper userMapper;
-        
+
     @Autowired
     TaskMapper taskMapper;
 
     @Autowired
     TaskSupervisorMapper taskSupervisorMapper;
-    
+
     @Scheduled(cron = "${jobs.distribute.cron}")
     public void assignMoney() {
         List<Task> tasks = taskMapper.selectList(new EntityWrapper<Task>()
-            .eq("task_state", MyConstants.TASK_STATE_SUCCESS).or().eq("task_state", MyConstants.TASK_STATE_FAIL)
-        );
+                .eq("task_state", MyConstants.TASK_STATE_SUCCESS).or().eq("task_state", MyConstants.TASK_STATE_FAIL));
 
-        for(Task task : tasks) {
+        for (Task task : tasks) {
             assignMoney(task);
         }
     }
@@ -44,7 +43,7 @@ public class Distribute {
 
         double remained = deposit;
 
-        double moneySystem = (double)(int)(remained * systemRate * 100) / 100;
+        double moneySystem = (double) (int) (remained * systemRate * 100) / 100;
         task.setSystemBenifit(moneySystem);
 
         remained -= moneySystem;
@@ -53,7 +52,7 @@ public class Distribute {
         User supervisee = userMapper.selectById(superviseeId);
 
         double rate = task.getRealPass();
-        double moneySupervisee = (double)(int)(remained * rate * 100) / 100;
+        double moneySupervisee = (double) (int) (remained * rate * 100) / 100;
         task.setRefundMoney(moneySupervisee);
 
         double superviseeCurMoney = supervisee.getUserMoney();
@@ -64,34 +63,33 @@ public class Distribute {
         remained -= moneySupervisee;
 
         String taskId = task.getTaskId();
-        List<TaskSupervisor> supervisors = taskSupervisorMapper.selectList(new EntityWrapper<TaskSupervisor>()
-            .eq("task_id", taskId)
-        );
+        List<TaskSupervisor> supervisors = taskSupervisorMapper
+                .selectList(new EntityWrapper<TaskSupervisor>().eq("task_id", taskId));
 
         int numActualChecks = task.getCheckNum();
 
         List<Double> supervisorRates = new ArrayList<Double>();
         double sumRates = 0.0;
-        for(TaskSupervisor supervisor : supervisors) {
+        for (TaskSupervisor supervisor : supervisors) {
             int numBads = supervisor.getBadNum();
             int numActualSupervise = numActualChecks - numBads;
-            if(numActualSupervise < 0) {
+            if (numActualSupervise < 0) {
                 numActualSupervise = 0;
             }
 
-            double supervisorRate = (double)numActualSupervise / numActualChecks;
+            double supervisorRate = (double) numActualSupervise / numActualChecks;
             supervisorRates.add(supervisorRate);
 
             sumRates += supervisorRate;
         }
 
-        for(int i = 0; i < supervisors.size(); i++) {
+        for (int i = 0; i < supervisors.size(); i++) {
             TaskSupervisor supervisor = supervisors.get(i);
             double supervisorRate = supervisorRates.get(i);
 
             double moneyRate = supervisorRate / sumRates;
 
-            double moneySupervisor = (double)(int)(remained * moneyRate * 100) / 100;
+            double moneySupervisor = (double) (int) (remained * moneyRate * 100) / 100;
             supervisor.setBenefit(moneySupervisor);
             taskSupervisorMapper.updateById(supervisor);
 
@@ -103,7 +101,7 @@ public class Distribute {
             supervisorUser.setUserMoney(moneyCur);
             userMapper.updateById(supervisorUser);
         }
-        
+
         task.setTaskState(MyConstants.TASK_STATE_COMPLETE);
 
         taskMapper.updateById(task);
