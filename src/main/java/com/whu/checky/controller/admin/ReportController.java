@@ -150,9 +150,9 @@ public class ReportController {
         JSONObject res = new JSONObject();
         JSONObject object = (JSONObject) JSON.parse(jsonstr);
         String startTime = object.getString("startTime");
-        startTime = startTime != null ? startTime : MyConstants.START_TIME;
+        startTime = startTime != null && !startTime.equals("") ? startTime : MyConstants.START_TIME;
         String endTime = object.getString("endTime");
-        endTime = endTime != null ? endTime : MyConstants.END_TIME;
+        endTime = endTime != null && !endTime.equals("") ? endTime : MyConstants.END_TIME;
 
         String keyword = object.getString("keyword");
         String searchType = object.getString("searchType");
