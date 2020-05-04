@@ -24,7 +24,7 @@ public class DistributeTest {
 
     @Test   
     public void assignMoneyTest() throws Exception{
-        Task task = cls.taskMapper.selectById(testTaskId);
+        Task task = cls.taskService.queryTask(testTaskId);
 
         cls.assignMoney(task);
     }

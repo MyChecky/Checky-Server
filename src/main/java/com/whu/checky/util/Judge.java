@@ -24,13 +24,13 @@ public class Judge {
     int timeoutDay;
 
     @Autowired
-    TaskMapper taskMapper;
-
-    @Autowired
     CheckMapper checkMapper;
 
     @Autowired
     SuperviseMapper superviseMapper;
+
+    @Autowired
+    TaskMapper taskMapper;
 
     @Autowired
     TaskService taskService;
@@ -62,7 +62,7 @@ public class Judge {
 
         for (Check c : checkList) {
             try {
-                Task task = taskMapper.selectById(c.getTaskId());
+                Task task = taskService.queryTask(c.getTaskId());
                 int supervisorNum = task.getSupervisorNum();
                 double timeDiff = (new Date().getTime() - sdf.parse(c.getCheckTime()).getTime())
                         / (1000 * 60 * 60 * 24);// 超过一定天数后监督人数不足自动判定
@@ -70,7 +70,7 @@ public class Judge {
                     if (c.getPassNum() * 2 >= c.getSuperviseNum()) {
                         c.setCheckState(MyConstants.CHECK_STATE_PASS);
                         task.setCheckNum(task.getCheckNum() + 1);
-                        taskMapper.updateById(task);
+                        taskService.updateTaskWithUpdateCheckTimes(task);
                     } else
                         c.setCheckState(MyConstants.CHECK_STATE_DENY);
 
@@ -182,7 +182,7 @@ public class Judge {
             } else
                 continue;
 
-            taskMapper.updateById(t);
+            taskService.updateTaskWithUpdateCheckTimes(t);
         }
     }
 
@@ -273,7 +273,7 @@ public class Judge {
             check.setPassNum(numPasses);
             check.setSuperviseNum(numSupers);
 
-            Task task = taskMapper.selectById(taskId);
+            Task task = taskService.queryTask(taskId);
 
             String checkType = task.getMinCheckType();
             if (checkType == MyConstants.CHECK_TYPE_PROPORTION) {
@@ -334,7 +334,7 @@ public class Judge {
 
                 task.setRealPass(rate);
 
-                taskMapper.updateById(task);
+                taskService.updateTaskWithUpdateCheckTimes(task);
             }
         }
     }

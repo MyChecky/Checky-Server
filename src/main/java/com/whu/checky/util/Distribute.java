@@ -12,6 +12,7 @@ import com.whu.checky.domain.User;
 import com.whu.checky.mapper.TaskMapper;
 import com.whu.checky.mapper.TaskSupervisorMapper;
 import com.whu.checky.mapper.UserMapper;
+import com.whu.checky.service.TaskService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -24,6 +25,9 @@ public class Distribute {
     @Autowired
     UserMapper userMapper;
 
+    @Autowired
+    TaskService taskService;
+    
     @Autowired
     TaskMapper taskMapper;
 
@@ -121,6 +125,6 @@ public class Distribute {
 
         task.setTaskState(MyConstants.TASK_STATE_COMPLETE);
 
-        taskMapper.updateById(task);
+        taskService.updateTaskWithUpdateCheckTimes(task);
     }
 }

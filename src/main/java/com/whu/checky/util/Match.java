@@ -153,7 +153,7 @@ public class Match {
 
 //             task.setMatchNum(task.getSupervisorNum());
              task.setTaskState(MyConstants.TASK_STATE_DURING);
-             taskService.updateTask(task);
+             taskService.updateTaskWithUpdateCheckTimes(task);
 
              taskOwner.setTaskNum(taskOwner.getTaskNum() + 1);
              if (task.getIfTest() == MyConstants.IF_TEST_TRUE) {
@@ -177,7 +177,7 @@ public class Match {
 
              return true;
          }else{
-             taskService.updateTask(task); // task仍是noMatch状态，但是要更新一下数据库，当前能匹配到的监督者人数--lu
+             taskService.updateTaskWithUpdateCheckTimes(task); // task仍是noMatch状态，但是要更新一下数据库，当前能匹配到的监督者人数--lu
          }
 
          return false;
