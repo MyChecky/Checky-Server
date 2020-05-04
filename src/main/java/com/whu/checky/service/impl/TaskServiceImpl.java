@@ -34,8 +34,7 @@ public class TaskServiceImpl implements TaskService {
     private Calendar cal = Calendar.getInstance();
     private int[] weekDays = {7, 1, 2, 3, 4, 5, 6};
 
-    @Override
-    public Integer addTask(Task task) {
+    private void updateCheckTimes(Task task){
         int weekNum = 0;
         int res = 0;
         // try {
@@ -76,7 +75,11 @@ public class TaskServiceImpl implements TaskService {
         int checkTimes = weekNum * Frec;
         res += checkTimes;
         task.setCheckTimes(res);
+    }
 
+    @Override
+    public Integer addTask(Task task) {
+        updateCheckTimes(task);
         task.setTaskState(MyConstants.TASK_STATE_SAVE);
         return taskMapper.insert(task);
     }
@@ -88,6 +91,12 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Integer updateTask(Task task) {
+        return taskMapper.updateById(task);
+    }
+
+    @Override
+    public Integer updateTaskWithUpdateCheckTimes(Task task) {
+        updateCheckTimes(task);
         return taskMapper.updateById(task);
     }
 

@@ -15,6 +15,8 @@ public interface TaskService {
 
     Integer updateTask(Task task);
 
+    Integer updateTaskWithUpdateCheckTimes(Task task);
+
     String getTitleById(String taskId);
 
     List<Task> queryUserTasks(String userId, String date);

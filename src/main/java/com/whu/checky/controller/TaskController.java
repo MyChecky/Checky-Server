@@ -107,7 +107,7 @@ public class TaskController {
                 return matchTask(task);
             }
         } else {  // update exiting task
-            taskService.updateTask(task);
+            taskService.updateTaskWithUpdateCheckTimes(task);
             return matchTask(task);
         }
     }
