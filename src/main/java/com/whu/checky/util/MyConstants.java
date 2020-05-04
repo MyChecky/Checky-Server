@@ -34,6 +34,7 @@ public  class MyConstants {
     // 带有意义的特殊返回
     public static final String RESULT_NO_ENOUGH_MONEY = "noEnoughMoney";    // 资金不足
     public static final String RESULT_NO_ENOUGH_SUP = "noEnoughSupervisor"; // 监督者不够
+    public static final String RESULT_ZERO_CHECK_TIMES = "zeroCheckTimes";  // 监督次数为0
     public static final String RESULT_INSERT_FAIL = "insertFail";
     public static final String RESULT_UPDATE_FAIL = "updateFail";
     public static final String RESULT_DELETE_FAIL = "deleteFail";

@@ -168,7 +168,7 @@ public class TaskController {
             task.setUserName(user.getUserName());
             res.put("task", task);
             res.put("userName", user.getUserName());
-            if (user.getUserAvatar().substring(0, 11).equals("/" + uploadConfig.getStaticPath()+ "/")) {
+            if (user.getUserAvatar().substring(0, 11).equals("/" + uploadConfig.getStaticPath() + "/")) {
                 String baseIp = parameterService.getValueByParam("baseIp").getParamValue();
                 res.put("userAvatar", baseIp + user.getUserAvatar());
             } else {
@@ -219,7 +219,9 @@ public class TaskController {
             return ret;
         }
 
-        if (match.matchSupervisorForOneTask(task)) {
+        if (task.getCheckTimes().equals(0)) { // 在匹配监督者前检测总打卡次数
+            ret.put("state", MyConstants.RESULT_ZERO_CHECK_TIMES);
+        } else if (match.matchSupervisorForOneTask(task)) {
             ret.put("state", MyConstants.RESULT_OK);
         } else {
             ret.put("state", MyConstants.RESULT_NO_ENOUGH_SUP);
