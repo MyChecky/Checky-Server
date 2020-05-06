@@ -334,7 +334,7 @@ public class Judge {
 
                 task.setRealPass(rate);
 
-                taskService.updateTaskWithUpdateCheckTimes(task);
+                taskService.updateTask(task);
             }
         }
     }
