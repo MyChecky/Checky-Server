@@ -15,7 +15,7 @@ import com.whu.checky.domain.*;
 import com.whu.checky.mapper.*;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class JudgeTest {
     @Autowired
     Judge cls;

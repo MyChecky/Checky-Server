@@ -322,6 +322,15 @@ public class Judge {
                 int numShould = task.getCheckTimes();
 
                 double rate = (double) numPasses / numShould;
+
+                /**
+                 * If {@code numShould} = 0, which means no requirement is imposed on this task,
+                 * so it is implicitly a success.
+                 */
+                if (Double.isNaN(rate)) {
+                    rate = 1;
+                }
+
                 double minRate = task.getMinPass();
 
                 String finalStates = MyConstants.TASK_STATE_SUCCESS;
