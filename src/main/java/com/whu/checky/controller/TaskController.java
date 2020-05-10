@@ -175,7 +175,12 @@ public class TaskController {
                 res.put("userAvatar", user.getUserAvatar());
             }
             TaskType taskType = taskTypeService.QueryTaskType(task.getTypeId());
-            res.put("typeContent", taskType.getTypeContent());
+            task.setTypeContent(taskType.getTypeContent());
+            if (taskType.getTotalNum() != 0)
+                res.put("taskTypePassRate", MyConstants.DECIMAL_FORMAT
+                        .format(taskType.getPassNum() / (double) taskType.getTotalNum()));
+            else
+                res.put("taskTypePassRate", "0%");
         } else {
             res.put("state", MyConstants.RESULT_FAIL);
         }

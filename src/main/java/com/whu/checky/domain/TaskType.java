@@ -8,6 +8,26 @@ public class TaskType {
 
     private String typeContent;
 
+    private Long totalNum;
+
+    private Long passNum;
+
+    public Long getTotalNum() {
+        return totalNum;
+    }
+
+    public void setTotalNum(Long totalNum) {
+        this.totalNum = totalNum;
+    }
+
+    public Long getPassNum() {
+        return passNum;
+    }
+
+    public void setPassNum(Long passNum) {
+        this.passNum = passNum;
+    }
+
     public String getTypeId() {
         return typeId;
     }

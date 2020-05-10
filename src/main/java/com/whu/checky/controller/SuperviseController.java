@@ -50,7 +50,7 @@ public class SuperviseController {
             String state = supervise.getSuperviseState().equals(MyConstants.SUPERVISE_STATE_PASS) ? "通过" : "拒绝";
             String avatar = userService.queryUser(check.getUserId()).getUserAvatar();
             supHistories.add(new SupHistory(supervise.getSuperviseId(), supervise.getCheckId(),
-                    check.getTaskId(), title, state, avatar));
+                    check.getTaskId(), title, state, avatar, supervise.getSuperviseTime()));
         }
         ret.put("supList", supHistories);
         ret.put("state", MyConstants.RESULT_OK);
@@ -160,14 +160,25 @@ class SupHistory {
     private String state;
     private String avatar;
     private String taskId;
+    private String date;
 
-    public SupHistory(String supId, String checkId, String taskId, String title, String state, String avatar) {
+    public SupHistory(String supId, String checkId, String taskId, String title,
+                      String state, String avatar, String date) {
         this.supId = supId;
         this.checkId = checkId;
         this.title = title;
         this.state = state;
         this.avatar = avatar;
         this.taskId = taskId;
+        this.date = date;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 
     public String getTaskId() {
