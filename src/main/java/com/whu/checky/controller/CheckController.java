@@ -41,6 +41,51 @@ public class CheckController {
     @Autowired
     private ParameterService parameterService;
 
+    @Autowired
+    private UserService userService;
+
+    /**
+     * 打卡统计
+     */
+    @PostMapping("/checkChart")
+    public HashMap<String, Object> checkChart(@RequestBody String body) {
+        HashMap<String, Object> ret = new HashMap<>(); // return
+        String userId = JSONObject.parseObject(body).getString("userId");
+
+        int[] numTimely = checkService.queryUserCheckNumTimely(userId);
+        List<MySeries> seriesTime = new ArrayList<>();
+        seriesTime.add(new MySeries("第一季度", numTimely[0]));
+        seriesTime.add(new MySeries("第二季度", numTimely[1]));
+        seriesTime.add(new MySeries("第三季度", numTimely[2]));
+        seriesTime.add(new MySeries("第四季度", numTimely[3]));
+        ret.put("seriesTime", seriesTime);
+
+        User user = userService.queryUser(userId);
+        ret.put("taskTotalNum", user.getTaskNum());
+        ret.put("taskPassNum", user.getTaskNumSuc());
+
+        List<Task> tasks = taskService.queryUserTasks(userId, null);
+        List<MySeries> seriesType = new ArrayList<>();
+        int checkShouldNum = 0; // 应打卡数目
+        int checkTotalNum = 0; // 实际打卡数目
+        int checkPassNum = 0; // 实际通过数目
+        for (Task task : tasks) {
+            if (task.getTaskState().equals(MyConstants.TASK_STATE_NOMATCH) ||
+                    task.getTaskState().equals(MyConstants.TASK_STATE_SAVE)) {
+                continue;
+            }
+            checkShouldNum += task.getCheckTimes();
+            checkTotalNum += task.getCheckNum();
+            checkPassNum += task.getCheckPass();
+        }
+        ret.put("checkShouldNum", checkShouldNum);
+        ret.put("checkTotalNum", checkTotalNum);
+        ret.put("checkPassNum", checkPassNum);
+
+        ret.put("state", MyConstants.RESULT_OK);
+        return ret;
+    }
+
     @PostMapping("/checkDate")
     public HashMap<String, String> checkDate(@RequestBody String body) {
         String ymd = JSONObject.parseObject(body).getString("ymd");
@@ -298,6 +343,31 @@ public class CheckController {
     }
 }
 
+class MySeries {
+    private String name;
+    private Integer data;
+
+    public MySeries(String name, Integer data) {
+        this.name = name;
+        this.data = data;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Integer getData() {
+        return data;
+    }
+
+    public void setData(Integer data) {
+        this.data = data;
+    }
+}
 
 class DayCheckAndTask {
     private String taskId;

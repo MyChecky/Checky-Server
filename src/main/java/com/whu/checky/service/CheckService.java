@@ -28,6 +28,8 @@ public interface CheckService {
 
     List<Check> getTaskChecks(String taskId);
 
+    public int[] queryUserCheckNumTimely(String userId);
+
 //    void updatePassSuperviseCheck(String checkId);
 //
 //    void updateDenySuperviseCheck(String checkId);
