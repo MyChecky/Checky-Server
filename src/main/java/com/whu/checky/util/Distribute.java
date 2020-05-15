@@ -49,13 +49,17 @@ public class Distribute {
     }
 
     void assignMoney(Task task, double systemRate, int numAppealDays) {
-        Duration duration = Duration.between(LocalDate.parse(task.getTaskAnnounceTime()), LocalDate.now());
-        if (duration.toDays() < numAppealDays) {
-            /**
-             * Still waiting for possible appeals.
-             */
-            return;
+        String taskAnnounceTime = task.getTaskAnnounceTime();
+        if(taskAnnounceTime != null) {
+            Duration duration = Duration.between(LocalDate.parse(taskAnnounceTime), LocalDate.now());
+            if (duration.toDays() < numAppealDays) {
+                /**
+                 * Still waiting for possible appeals.
+                 */
+                return;
+            }
         }
+        
 
         double deposit = task.getTaskMoney();
 
