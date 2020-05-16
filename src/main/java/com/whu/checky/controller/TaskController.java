@@ -56,34 +56,59 @@ public class TaskController {
         JSONObject object = (JSONObject) JSON.parse(body);
         HashMap<String, Object> ret = new HashMap<>();
         String taskId = object.getString("taskId");
+        // 基本信息
         Task task = taskService.queryTask(taskId);
         ret.put("taskTitle", task.getTaskTitle());
         ret.put("taskState", task.getTaskState());
+        ret.put("startTime", task.getTaskStartTime());
+        ret.put("endTime", task.getTaskEndTime());
+        ret.put("expectTimes", task.getCheckTimes());
+        ret.put("actualTimes", task.getCheckNum());
+        ret.put("passTimes", task.getCheckPass());
+        ret.put("checkFrec", task.getCheckFrec());
         if (task.getIfTest() == MyConstants.IF_TEST_TRUE) {
             ret.put("taskMoneyType", "测试金额");
         } else {
             ret.put("taskMoneyType", "真实金额");
         }
-        ret.put("checkTimes", task.getCheckNum() + "/" + task.getCheckTimes());
-        ret.put("passTimes", task.getCheckPass() + "/" + task.getCheckNum());
+//        ret.put("checkTimes", task.getCheckNum() + "/" + task.getCheckTimes());
+//        ret.put("passTimes", task.getCheckPass() + "/" + task.getCheckNum());
         ret.put("taskDescribe", task.getTaskContent());
-        // 金额与退还数
-        if (task.getTaskState().equals(MyConstants.TASK_STATE_COMPLETE))
-            ret.put("taskMoneyState", "总:" + task.getTaskMoney() + "￥/返回:" + task.getRefundMoney() + "￥");
-        else if (task.getTaskState().equals(MyConstants.TASK_STATE_DURING)) {
-            ret.put("taskMoneyState", "总:" + task.getTaskMoney() + "￥");
-        } else {
-            ret.put("taskMoneyState", "总:" + task.getTaskMoney() + "￥/即将返回:" + task.getRefundMoney() + "￥");
-        }
         // 任务类型
-        ret.put("taskType", taskTypeService.QueryTaskType(task.getTypeId()).getTypeContent());
-        // 监督者昵称
+        TaskType taskType = taskTypeService.QueryTaskType(task.getTypeId());
+        ret.put("taskType", taskType.getTypeContent());
+        ret.put("taskTypePassRate", MyConstants.DECIMAL_FORMAT
+                .format(taskType.getPassNum() / (double) taskType.getTotalNum()));
+        // 监督者
         List<TaskSupervisor> taskSupervisors = taskSupervisorService.getTasksSupByTaskId(taskId);
-        List<String> sups = new ArrayList<>();
-        for (TaskSupervisor taskSupervisor : taskSupervisors) {
-            sups.add(userService.queryUser(taskSupervisor.getSupervisorId()).getUserName());
+        List<SupListWithState> sups = new ArrayList<>();
+        // 金额与退还数
+        if (task.getTaskState().equals(MyConstants.TASK_STATE_COMPLETE)) {
+            ret.put("taskMoneyState", "总:￥" + task.getTaskMoney() + "/已返回:￥" + task.getRefundMoney());
+            for (TaskSupervisor taskSupervisor : taskSupervisors) {
+                sups.add(new SupListWithState(userService.queryUser(taskSupervisor.getSupervisorId()).getUserName(),
+                        taskSupervisor.getSupervisorId(), taskSupervisor.getSuperviseNum(),
+                        "已奖励:￥" + taskSupervisor.getBenefit()));
+            }
+        } else if (task.getTaskState().equals(MyConstants.TASK_STATE_DURING)) {
+            ret.put("taskMoneyState", "总:￥" + task.getTaskMoney() + "");
+            for (TaskSupervisor taskSupervisor : taskSupervisors) {
+                if (taskSupervisor.getRemoveTime().equals("") || taskSupervisor.getRemoveTime() == null)
+                    sups.add(new SupListWithState(userService.queryUser(taskSupervisor.getSupervisorId()).getUserName(),
+                            taskSupervisor.getSupervisorId(), taskSupervisor.getSuperviseNum(), "监督中"));
+                else
+                    sups.add(new SupListWithState(userService.queryUser(taskSupervisor.getSupervisorId()).getUserName(),
+                            taskSupervisor.getSupervisorId(), taskSupervisor.getSuperviseNum(), "已移除"));
+            }
+        } else {
+            ret.put("taskMoneyState", "总:￥" + task.getTaskMoney() + "/即将返回:￥" + task.getRefundMoney());
+            for (TaskSupervisor taskSupervisor : taskSupervisors) {
+                sups.add(new SupListWithState(userService.queryUser(taskSupervisor.getSupervisorId()).getUserName(),
+                        taskSupervisor.getSupervisorId(), taskSupervisor.getSuperviseNum(),
+                        "即将返还:￥" + taskSupervisor.getBenefit()));
+            }
         }
-        ret.put("taskSups", sups);
+        ret.put("supList", sups);
         ret.put("state", MyConstants.RESULT_OK);
         return ret;
     }
@@ -237,3 +262,48 @@ public class TaskController {
     }
 }
 
+class SupListWithState {
+    private String userId;
+    private String name;
+    private Integer times;
+    private String state;
+
+    public SupListWithState(String name, String userId, Integer times, String state) {
+        this.userId = userId;
+        this.name = name;
+        this.times = times;
+        this.state = state;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Integer getTimes() {
+        return times;
+    }
+
+    public void setTimes(Integer times) {
+        this.times = times;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+}
