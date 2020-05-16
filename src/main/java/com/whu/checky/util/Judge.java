@@ -203,13 +203,13 @@ public class Judge {
             status = supervise.getSuperviseState();
 
             // 如果已完成监督
-            if (status == MyConstants.SUPERVISE_STATE_PASS) {
+            if (status.equals(MyConstants.SUPERVISE_STATE_PASS)) {
                 isPass = true;
-            } else if (status == MyConstants.SUPERVISE_STATE_DENY) {
+            } else if (status.equals(MyConstants.SUPERVISE_STATE_DENY)) {
                 isPass = false;
             }
             // 没有完成监督，则累计其记录其不作为记录?
-            else if (status == MyConstants.SUPERVISE_STATE_UNKNOWN) {
+            else if (status.equals(MyConstants.SUPERVISE_STATE_UNKNOWN)) {
                 isPass = true;
 
                 Check check = checkMapper.selectById(checkId);
@@ -276,7 +276,7 @@ public class Judge {
             Task task = taskService.queryTask(taskId);
 
             String checkType = task.getMinCheckType();
-            if (checkType == MyConstants.CHECK_TYPE_PROPORTION) {
+            if (checkType.equals(MyConstants.CHECK_TYPE_PROPORTION)) {
                 double proportion = task.getMinCheck();
                 double proportionCur = (double) numPasses / numSupers;
 
@@ -288,7 +288,7 @@ public class Judge {
                 }
 
                 check.setCheckState(resultState);
-            } else if (checkType == MyConstants.CHECK_TYPE_NUMBER) {
+            } else if (checkType.equals(MyConstants.CHECK_TYPE_NUMBER)) {
                 double minPasses = task.getMinCheck();
 
                 String resultState = MyConstants.CHECK_STATE_PASS;
