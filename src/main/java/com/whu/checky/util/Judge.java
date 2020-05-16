@@ -276,30 +276,38 @@ public class Judge {
             Task task = taskService.queryTask(taskId);
 
             String checkType = task.getMinCheckType();
+            String resultState = null;
             if (checkType.equals(MyConstants.CHECK_TYPE_PROPORTION)) {
                 double proportion = task.getMinCheck();
                 double proportionCur = (double) numPasses / numSupers;
 
-                String resultState = MyConstants.CHECK_STATE_PASS;
+                resultState = MyConstants.CHECK_STATE_PASS;
                 if (proportionCur >= proportion) {
                     resultState = MyConstants.CHECK_STATE_PASS;
                 } else {
                     resultState = MyConstants.CHECK_STATE_DENY;
                 }
-
-                check.setCheckState(resultState);
             } else if (checkType.equals(MyConstants.CHECK_TYPE_NUMBER)) {
                 double minPasses = task.getMinCheck();
 
-                String resultState = MyConstants.CHECK_STATE_PASS;
+                resultState = null;
                 if (numPasses >= minPasses) {
                     resultState = MyConstants.CHECK_STATE_PASS;
                 } else {
                     resultState = MyConstants.CHECK_STATE_DENY;
                 }
-
-                check.setCheckState(resultState);
             }
+            check.setCheckState(resultState);
+
+            int checkPass = task.getCheckPass();
+    
+            if (resultState.equals(MyConstants.CHECK_STATE_PASS)) {
+                checkPass++;
+            }
+    
+            task.setCheckPass(checkPass);
+            
+            taskMapper.updateById(task);
 
             checkMapper.updateById(check);
         }
@@ -315,7 +323,7 @@ public class Judge {
             String taskId = task.getTaskId();
 
             List<Appeal> appeals = appealMapper
-                    .selectList(new EntityWrapper<Appeal>().eq("task_id", taskId).isNull("process_time"));
+                    .selectList(new EntityWrapper<Appeal>().eq("task_id", taskId).and().isNull("process_time"));
 
             if (appeals == null || appeals.size() == 0) {
                 int numPasses = task.getCheckPass();

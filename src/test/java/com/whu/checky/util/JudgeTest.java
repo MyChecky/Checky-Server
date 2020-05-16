@@ -23,6 +23,7 @@ import com.whu.checky.mapper.*;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class JudgeTest {
     final Logger LOGGER = Logger.getLogger(JudgeTest.class.getName());
+    final double EPS = 1e-6;
 
     @Autowired
     Judge cls;
@@ -41,6 +42,9 @@ public class JudgeTest {
 
     @Autowired
     SuperviseMapper superviseMapper;
+
+    @Autowired
+    AppealMapper appealMapper;
 
     SimpleDateFormat sdf = new SimpleDateFormat(MyConstants.FORMAT_DATE);
 
@@ -75,6 +79,7 @@ public class JudgeTest {
         LOGGER.info(String.format("numSupers: %d", numSupers));
 
         Map<TaskSupervisor, Integer> supervisorBadNumsToCheck = new HashMap<>();
+        Map<Task, Integer> taskCheckPassCheck = new HashMap<>();
 
         for (TaskSupervisor supervisor : supervisors) {
 
@@ -138,7 +143,7 @@ public class JudgeTest {
         LOGGER.info(String.format("checkType: %s", checkType));
 
         String resultState = null;
-        
+
         if (checkType.equals(MyConstants.CHECK_TYPE_PROPORTION)) {
             double proportion = task.getMinCheck();
             LOGGER.info(String.format("proportion (expected): %f", proportion));
@@ -165,6 +170,15 @@ public class JudgeTest {
         }
         LOGGER.info(String.format("resultState: %s", resultState));
 
+        int checkPass = task.getCheckPass();
+        LOGGER.info(String.format("checkPass (before): %d", checkPass));
+
+        if (resultState.equals(MyConstants.CHECK_STATE_PASS)) {
+            checkPass++;
+        }
+
+        LOGGER.info(String.format("checkPass (after): %d", checkPass));
+
         cls.checkin();
 
         for (Map.Entry<TaskSupervisor, Integer> entry : supervisorBadNumsToCheck.entrySet()) {
@@ -176,6 +190,9 @@ public class JudgeTest {
             Assert.assertEquals(entry.getValue().intValue(), supervisor.getBadNum());
         }
 
+        task = taskMapper.selectById(task.getTaskId());
+        Assert.assertEquals(checkPass, task.getCheckPass());
+
         check = checkMapper.selectById(check.getCheckId());
 
         Assert.assertEquals(numPasses, check.getPassNum().intValue());
@@ -185,6 +202,58 @@ public class JudgeTest {
 
     @Test
     public void checkTaskSuccessTest() throws Exception {
+        List<Task> tasks = taskMapper.selectList(new EntityWrapper<>());
+        Task task = tasks.get(0);
+
+        task.setTaskState(MyConstants.TASK_STATE_DURING);
+        taskMapper.updateById(task);
+
+        LOGGER.info(String.format("Task: %s", task.getTaskTitle()));
+
+        String taskId = task.getTaskId();
+
+        List<Appeal> appeals = appealMapper
+                .selectList(new EntityWrapper<Appeal>().eq("task_id", taskId).and().isNull("process_time"));
+
+        String finalStates = null;
+        Double rate = null;
+        if (appeals == null || appeals.size() == 0) {
+            int numPasses = task.getCheckPass();
+            int numShould = task.getCheckTimes();
+
+            LOGGER.info(String.format("numPasses: %d, numShould: %d", numPasses, numShould));
+
+            rate = (double) numPasses / numShould;
+
+            LOGGER.info(String.format("rate: %f", rate));
+
+            /**
+             * If {@code numShould} = 0, which means no requirement is imposed on this task,
+             * so it is implicitly a success.
+             */
+            if (Double.isNaN(rate)) {
+                rate = 1.0;
+            }
+            LOGGER.info(String.format("rate (normalized): %f", rate));
+
+            double minRate = task.getMinPass();
+            LOGGER.info(String.format("minRate: %f", minRate));
+
+            if (rate >= minRate) {
+                finalStates = MyConstants.TASK_STATE_SUCCESS;
+            } else {
+                finalStates = MyConstants.TASK_STATE_FAIL;
+            }
+            LOGGER.info(String.format("finalStates: %s", finalStates));
+        } else {
+            LOGGER.info(String.format("appeals.size(): %d", appeals.size()));
+        }
+
         cls.checkTaskSuccess();
+
+        task = taskMapper.selectById(task.getTaskId());
+        Assert.assertEquals(finalStates, task.getTaskState());
+        Assert.assertEquals(rate.doubleValue(), task.getRealPass(), EPS);
     }
+
 }
