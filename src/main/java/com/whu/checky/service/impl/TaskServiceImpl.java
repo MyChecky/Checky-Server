@@ -29,12 +29,10 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     private TaskSupervisorMapper taskSupervisorMapper;
 
-    private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-
     private Calendar cal = Calendar.getInstance();
     private int[] weekDays = {7, 1, 2, 3, 4, 5, 6};
 
-    private void updateCheckTimes(Task task){
+    private void updateCheckTimes(Task task) {
         int weekNum = 0;
         int res = 0;
         // try {
@@ -47,13 +45,13 @@ public class TaskServiceImpl implements TaskService {
         // }
         String temp = task.getCheckFrec();
         try {
-            Date dateStart = format.parse(task.getTaskStartTime());
-            Date dateEnd = format.parse(task.getTaskEndTime());
+            Date dateStart = MyConstants.DATE_FORMAT.parse(task.getTaskStartTime());
+            Date dateEnd = MyConstants.DATE_FORMAT.parse(task.getTaskEndTime());
             weekNum = (int) ((dateEnd.getTime() - dateStart.getTime()) / 86400000 / 7);
-            Date startDate = format.parse(task.getTaskStartTime());
+            Date startDate = MyConstants.DATE_FORMAT.parse(task.getTaskStartTime());
             cal.setTime(startDate);
             int w1 = cal.get(Calendar.DAY_OF_WEEK) - 1; // 开始日期是周几
-            Date endDate = format.parse(task.getTaskEndTime());
+            Date endDate = MyConstants.DATE_FORMAT.parse(task.getTaskEndTime());
             cal.setTime(endDate);
             int w2 = cal.get(Calendar.DAY_OF_WEEK) - 1; // 结束日期是周几
             if (w1 != w2) {
@@ -63,6 +61,8 @@ public class TaskServiceImpl implements TaskService {
                     w1 = (w1 + 1) % 7;
                 }
             }
+            if (temp.charAt(w2) == '1')
+                res++;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -110,7 +110,7 @@ public class TaskServiceImpl implements TaskService {
         else {
             res = taskMapper.queryUserTasks(userId, date);
             try {
-                Date tmpDate = format.parse(date);
+                Date tmpDate = MyConstants.DATE_FORMAT.parse(date);
                 Calendar cal = Calendar.getInstance();
                 // int[] weekDays = {7,1,2,3,4,5,6};
                 cal.setTime(tmpDate);
