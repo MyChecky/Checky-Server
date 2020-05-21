@@ -103,6 +103,6 @@ public class SuperviseServiceImpl implements SuperviseService {
     public List<Supervise> getCheckSupsBySupId(Page<Supervise> supervisePage, String userId) {
         return superviseMapper.selectPage(supervisePage, new EntityWrapper<Supervise>()
                 .eq("supervisor_id", userId)
-                .orderBy("supervise_time"));
+                .orderBy("supervise_time", false));
     }
 }

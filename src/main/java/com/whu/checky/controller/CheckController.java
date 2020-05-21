@@ -44,6 +44,9 @@ public class CheckController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private TaskTypeService taskTypeService;
+
     /**
      * 打卡统计
      */
@@ -161,10 +164,12 @@ public class CheckController {
             }
             records.remove(textRecord);
             CheckHistory checkHistory = new CheckHistory();
-            check.setTaskTitle(taskService.getTitleById(check.getTaskId()));
+            Task task = taskService.queryTask(check.getTaskId());
+            check.setTaskTitle(task.getTaskTitle());
             checkHistory.setCheck(check);
             checkHistory.setFileRecord(records);
             checkHistory.setText(textRecord);
+            checkHistory.setTaskType(taskTypeService.QueryTaskType(task.getTypeId()).getTypeContent());
             res.add(checkHistory);
         }
         return res;
@@ -427,6 +432,15 @@ class CheckHistory {
     private Check check;
     private List<Record> fileRecord;
     private Record text;
+    private String taskType;
+
+    public String getTaskType() {
+        return taskType;
+    }
+
+    public void setTaskType(String taskType) {
+        this.taskType = taskType;
+    }
 
     public List<Record> getFileRecord() {
         return fileRecord;
