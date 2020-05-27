@@ -132,18 +132,19 @@ public class WechatController {
         user.setUserId(openid);
         user.setUserTime(MyConstants.DATETIME_FORMAT.format(new Date()));
 
-        this.updateOldUser(user, object);
-        return user;
-    }
-
-    private void updateOldUser(User user, JSONObject object) {
         JSONObject userInfo = (JSONObject) object.get("userInfo");
-        // 基本的userInfo
+        // 基本的userInfo，考虑到用户在本小程序内更换昵称、性别与头像等，应该一次保存后不再同步微信的
         if (userInfo != null) {
             user.setUserName(userInfo.getString("nickName"));
             user.setUserGender(userInfo.getInteger("gender"));
             user.setUserAvatar(userInfo.getString("avatarUrl"));
         }
+
+        this.updateOldUser(user, object);
+        return user;
+    }
+
+    private void updateOldUser(User user, JSONObject object) {
         // 经纬度
         try{
             JSONObject location = (JSONObject) object.get("location");
