@@ -73,6 +73,7 @@ public class WechatController {
         String openId = this.getOpenIdByCode(object.getString("code"));
         if (openId == null) {
             ret.put("state", MyConstants.RESULT_FAIL);
+            log.info("openId is null");
             return ret;
         }
         User user = userService.queryUser(openId);
@@ -85,6 +86,7 @@ public class WechatController {
             }
         } else {  // 老用户登录
             redisService.delSessionId(user.getSessionId());
+            log.info("user " + user.getUserId() + "/" + user.getUserName() + " logined at " + new Date());
             this.updateOldUser(user, object);
             if (userService.updateUser(user) != 1) {
                 ret.put("state", MyConstants.RESULT_UPDATE_FAIL);
