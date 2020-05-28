@@ -12,6 +12,7 @@ import com.whu.checky.domain.TaskSupervisor;
 import com.whu.checky.domain.User;
 import com.whu.checky.mapper.TaskMapper;
 import com.whu.checky.mapper.TaskSupervisorMapper;
+import com.whu.checky.mapper.TaskTypeMapper;
 import com.whu.checky.mapper.UserMapper;
 import com.whu.checky.service.TaskService;
 
@@ -28,6 +29,8 @@ public class TaskServiceImpl implements TaskService {
 
     @Autowired
     private TaskSupervisorMapper taskSupervisorMapper;
+    @Autowired
+    private TaskTypeMapper taskTypeMapper;
 
     private Calendar cal = Calendar.getInstance();
     private int[] weekDays = {7, 1, 2, 3, 4, 5, 6};
@@ -103,11 +106,14 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public List<Task> queryUserTasks(String userId, String date) {
         List<Task> res;
-        if (date == null)
+        if (date == null) {
             res = taskMapper.selectList(new EntityWrapper<Task>()
                     .eq("user_id", userId)
                     .orderBy("add_time", false));
-        else {
+            for (Task task : res) {
+                task.setTypeContent(taskTypeMapper.selectById(task.getTypeId()).getTypeContent());
+            }
+        } else {
             res = taskMapper.queryUserTasks(userId, date);
             try {
                 Date tmpDate = MyConstants.DATE_FORMAT.parse(date);

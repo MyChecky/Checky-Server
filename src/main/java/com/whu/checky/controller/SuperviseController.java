@@ -32,6 +32,8 @@ public class SuperviseController {
     private TaskService taskService;
     @Autowired
     private TaskSupervisorService taskSupervisorService;
+    @Autowired
+    private TaskTypeService taskTypeService;
 
     @PostMapping("/history")
     public HashMap<String, Object> history(@RequestBody String body) {
@@ -46,11 +48,14 @@ public class SuperviseController {
         List<SupHistory> supHistories = new ArrayList<>();
         for (Supervise supervise : supervises) {
             Check check = checkService.queryCheckById(supervise.getCheckId());
-            String title = taskService.getTitleById(check.getTaskId());
             String state = supervise.getSuperviseState().equals(MyConstants.SUPERVISE_STATE_PASS) ? "通过" : "拒绝";
-            String avatar = userService.queryUser(check.getUserId()).getUserAvatar();
+            String userName = userService.queryUser(check.getUserId()).getUserName();
+            Task task = taskService.queryTask(check.getTaskId());
+            String taskType = taskTypeService.QueryTaskType(task.getTypeId()).getTypeContent();
+//            String avatar = userService.queryUser(check.getUserId()).getUserAvatar();
             supHistories.add(new SupHistory(supervise.getSuperviseId(), supervise.getCheckId(),
-                    check.getTaskId(), title, state, avatar, supervise.getSuperviseTime()));
+                    check.getTaskId(), task.getTaskTitle(), state, /*avatar,*/ check.getCheckTime(),
+                    supervise.getSuperviseTime(), userName, taskType));
         }
         ret.put("supList", supHistories);
         ret.put("state", MyConstants.RESULT_OK);
@@ -158,27 +163,58 @@ class SupHistory {
     private String checkId;
     private String title;
     private String state;
-    private String avatar;
+//    private String avatar;
     private String taskId;
-    private String date;
+    private String checkName;
+    private String checkTime;
+    private String supTime;
+    private String taskType;
+
+    public String getCheckName() {
+        return checkName;
+    }
+
+    public void setCheckName(String checkName) {
+        this.checkName = checkName;
+    }
+
+    public String getCheckTime() {
+        return checkTime;
+    }
+
+    public void setCheckTime(String checkTime) {
+        this.checkTime = checkTime;
+    }
+
+    public String getSupTime() {
+        return supTime;
+    }
 
     public SupHistory(String supId, String checkId, String taskId, String title,
-                      String state, String avatar, String date) {
+                      String state, /*String avatar,*/ String checkTime, String supTime,
+                      String checkName, String taskType) {
         this.supId = supId;
         this.checkId = checkId;
         this.title = title;
         this.state = state;
-        this.avatar = avatar;
+//        this.avatar = avatar;
         this.taskId = taskId;
-        this.date = date;
+        this.checkTime = checkTime;
+        this.supTime = supTime;
+        this.checkName = checkName;
+        this.taskType = taskType;
     }
 
-    public String getDate() {
-        return date;
+    public void setSupTime(String supTime) {
+        this.supTime = supTime;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public String getTaskType() {
+        return taskType;
+    }
+
+    public void setTaskType(String taskType) {
+        this.taskType = taskType;
     }
 
     public String getTaskId() {
@@ -189,13 +225,13 @@ class SupHistory {
         this.taskId = taskId;
     }
 
-    public String getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
-    }
+//    public String getAvatar() {
+//        return avatar;
+//    }
+//
+//    public void setAvatar(String avatar) {
+//        this.avatar = avatar;
+//    }
 
     public String getSupId() {
         return supId;

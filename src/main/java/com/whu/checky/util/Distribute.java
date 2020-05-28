@@ -2,6 +2,8 @@ package com.whu.checky.util;
 
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +29,7 @@ public class Distribute {
 
     @Autowired
     TaskService taskService;
-    
+
     @Autowired
     TaskMapper taskMapper;
 
@@ -50,8 +52,10 @@ public class Distribute {
 
     void assignMoney(Task task, double systemRate, int numAppealDays) {
         String taskAnnounceTime = task.getTaskAnnounceTime();
-        if(taskAnnounceTime != null) {
-            Duration duration = Duration.between(LocalDate.parse(taskAnnounceTime), LocalDate.now());
+        if (taskAnnounceTime != null) {
+            Duration duration = Duration.between(
+                    LocalDateTime.parse(taskAnnounceTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
+                    LocalDateTime.now());
             if (duration.toDays() < numAppealDays) {
                 /**
                  * Still waiting for possible appeals.
@@ -59,14 +63,13 @@ public class Distribute {
                 return;
             }
         }
-        
 
         double deposit = task.getTaskMoney();
 
         double remained = deposit;
 
         double moneySystem = (double) (int) (remained * systemRate * 100) / 100;
-        task.setSystemBenifit(moneySystem);
+        // task.setSystemBenifit(moneySystem);
 
         remained -= moneySystem;
 
