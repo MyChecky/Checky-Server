@@ -13,7 +13,7 @@
     <groupId>com.whu</groupId>
     <artifactId>checky</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>checky</name>
+    <name>Checky</name>
     <description>Demo project for Spring Boot</description>
 
     <properties>
@@ -144,7 +144,7 @@
     </dependencies>
 
     <build>
-        <finalName>Checky</finalName>
+        <finalName>Checky20200528</finalName>
 
         <plugins>
             <plugin>

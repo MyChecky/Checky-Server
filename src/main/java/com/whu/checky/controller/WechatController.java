@@ -10,6 +10,7 @@ import com.whu.checky.service.ParameterService;
 import com.whu.checky.service.RedisService;
 import com.whu.checky.service.UserService;
 import com.whu.checky.util.MyConstants;
+import com.whu.checky.util.MyStringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -107,24 +108,29 @@ public class WechatController {
         ret.put("sessionKey", user.getSessionId());
         ret.put("userGender", user.getUserGender());
         ret.put("userNickname", user.getUserName());
-        String userAvatar = user.getUserAvatar().substring(0, 11).equals("/" + uploadConfig.getStaticPath() + "/") ?
-                object.getString("baseIp") + user.getUserAvatar() : user.getUserAvatar();
+        String userAvatar = "";
+        if (!MyStringUtil.isEmpty(user.getUserAvatar()) && user.getUserAvatar().length()>11) {
+            userAvatar  =   user.getUserAvatar().substring(0, 11).equals("/" + uploadConfig.getStaticPath() + "/") ?
+                    object.getString("baseIp") + user.getUserAvatar() : user.getUserAvatar();
+        }
         ret.put("userAvatar", userAvatar);
 
         return ret;
     }
 
     private String getOpenIdByCode(String code) {
+        String response = "";
         try {
             RestTemplate restTemplate = new RestTemplate();
             String params = "?appid=" + wxspAppid + "&secret=" + wxspSecret + "&js_code=" + code + "&grant_type=authorization_code";
             String url = wxspAPI + params;
-            String response = restTemplate.getForObject(url, String.class);
+            response = restTemplate.getForObject(url, String.class);
 
             JsonNode node = this.mapper.readTree(response);
             return node.get("openid").asText();
         } catch (Exception ex) {
-            log.error("Something Wrong When Get OpenId:code" + code + "\n" + ex.getMessage());
+            log.error("Something Wrong When Get OpenId from code: " + code + "\n" + ex.getMessage() + "\n" +
+                    " the real response is: " + response);
             return null;
         }
     }

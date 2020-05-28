@@ -8,6 +8,7 @@ import com.whu.checky.domain.*;
 import com.whu.checky.service.*;
 import com.whu.checky.util.Match;
 import com.whu.checky.util.MyConstants;
+import com.whu.checky.util.MyStringUtil;
 import com.whu.checky.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -93,7 +94,7 @@ public class TaskController {
         } else if (task.getTaskState().equals(MyConstants.TASK_STATE_DURING)) {
             ret.put("taskMoneyState", "总:￥" + task.getTaskMoney() + "");
             for (TaskSupervisor taskSupervisor : taskSupervisors) {
-                if (taskSupervisor.getRemoveTime().equals("") || taskSupervisor.getRemoveTime() == null)
+                if (MyStringUtil.isEmpty(taskSupervisor.getRemoveTime()))
                     sups.add(new SupListWithState(userService.queryUser(taskSupervisor.getSupervisorId()).getUserName(),
                             taskSupervisor.getSupervisorId(), taskSupervisor.getSuperviseNum(), "监督中"));
                 else
