@@ -194,11 +194,17 @@ public class TaskController {
             task.setUserName(user.getUserName());
             res.put("task", task);
             res.put("userName", user.getUserName());
-            if (user.getUserAvatar().substring(0, 11).equals("/" + uploadConfig.getStaticPath() + "/")) {
-                String baseIp = parameterService.getValueByParam("baseIp").getParamValue();
-                res.put("userAvatar", baseIp + user.getUserAvatar());
-            } else {
-                res.put("userAvatar", user.getUserAvatar());
+            String userAvatar = "";
+            if (!MyStringUtil.isEmpty(user.getUserAvatar()) && user.getUserAvatar().length()>11) {
+                if (user.getUserAvatar().substring(0, 11).equals("/" + uploadConfig.getStaticPath() + "/")) {
+                    String baseIp = parameterService.getValueByParam("baseIp").getParamValue();
+                    res.put("userAvatar", baseIp + user.getUserAvatar());
+                } else {
+                    res.put("userAvatar", user.getUserAvatar());
+                }
+            }
+            else{
+                res.put("userAvatar", "");
             }
             TaskType taskType = taskTypeService.QueryTaskType(task.getTypeId());
             task.setTypeContent(taskType.getTypeContent());
