@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.whu.checky.domain.*;
 import com.whu.checky.service.*;
 import com.whu.checky.util.MyConstants;
+import com.whu.checky.util.MyStringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -157,11 +158,15 @@ public class FriendController {
         User publisher = userService.queryUser(essay.getUserId());
         EssayAndRecord essayAndRecord = new EssayAndRecord();
         essayAndRecord.setUserId(publisher.getUserId());
-        if(publisher.getUserAvatar().substring(0, 11).equals("/resources/")){
-            String baseIp = parameterService.getValueByParam("baseIp").getParamValue();
-            essayAndRecord.setUserAvatar(baseIp + publisher.getUserAvatar());
+        if(MyStringUtil.isEmpty(publisher.getUserAvatar()) && publisher.getUserAvatar().length() > 11){
+            if(publisher.getUserAvatar().substring(0, 11).equals("/resources/")){
+                String baseIp = parameterService.getValueByParam("baseIp").getParamValue();
+                essayAndRecord.setUserAvatar(baseIp + publisher.getUserAvatar());
+            }else{
+                essayAndRecord.setUserAvatar(publisher.getUserAvatar());
+            }
         }else{
-            essayAndRecord.setUserAvatar(publisher.getUserAvatar());
+            essayAndRecord.setUserAvatar("");
         }
         essayAndRecord.setUserName(publisher.getUserName());
         essayAndRecord.setFileRecord(records);
@@ -185,11 +190,15 @@ public class FriendController {
             friendListWithMessage.setUserId(user.getUserId());
             friendListWithMessage.setContent(user.getUserName());
             friendListWithMessage.setUserTime(user.getUserTime());
-            if(user.getUserAvatar().substring(0, 11).equals("/resources/")) {
-                String baseIp = parameterService.getValueByParam("baseIp").getParamValue();
-                friendListWithMessage.setAvatarUrl(baseIp + user.getUserAvatar());
+            if(MyStringUtil.isEmpty(user.getUserAvatar()) && user.getUserAvatar().length() > 11){
+                if(user.getUserAvatar().substring(0, 11).equals("/resources/")) {
+                    String baseIp = parameterService.getValueByParam("baseIp").getParamValue();
+                    friendListWithMessage.setAvatarUrl(baseIp + user.getUserAvatar());
+                }else{
+                    friendListWithMessage.setAvatarUrl(user.getUserAvatar());
+                }
             }else{
-                friendListWithMessage.setAvatarUrl(user.getUserAvatar());
+                friendListWithMessage.setAvatarUrl("");
             }
             friendListWithMessages.add(friendListWithMessage);
         }

@@ -28,9 +28,9 @@ public class User implements Serializable {
      */
     private Double userMoney;
     /**
-     * 试玩余额，默认100.0
+     * 试玩余额，默认值存储余parameter表test_money
      */
-    private Double testMoney = 100.0;
+    private Double testMoney;
     /**
      * 用户发布的任务数
      */

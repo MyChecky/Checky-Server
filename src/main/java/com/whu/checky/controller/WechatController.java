@@ -138,6 +138,8 @@ public class WechatController {
     private User buildNewUser(JSONObject object, String openid) {
         User user = new User();
         user.setUserId(openid);
+        String testMoneyPar = "test_money";
+        user.setTestMoney(Double.parseDouble(parameterService.getValueByParam(testMoneyPar).getParamValue()));
         user.setUserTime(MyConstants.DATETIME_FORMAT.format(new Date()));
 
         JSONObject userInfo = (JSONObject) object.get("userInfo");

@@ -13,6 +13,7 @@ import com.whu.checky.service.CommentService;
 import com.whu.checky.service.ParameterService;
 import com.whu.checky.service.UserService;
 import com.whu.checky.util.MyConstants;
+import com.whu.checky.util.MyStringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,12 +42,17 @@ public class CommentServiceImpl implements CommentService {
         for (Comment comment : comments) {
             User user = userMapper.selectById(comment.getUserId());
             comment.setUserName(user.getUserName());
-            if (user.getUserAvatar().substring(0, 11).equals("/" + uploadConfig.getStaticPath() + "/")) {
-                String baseIp = parameterService.getValueByParam("baseIp").getParamValue();
-                comment.setUserAvatar(baseIp + user.getUserAvatar());
-            } else {
-                comment.setUserAvatar(user.getUserAvatar());
+            if(MyStringUtil.isEmpty(user.getUserAvatar()) && user.getUserAvatar().length() > 11){
+                if (user.getUserAvatar().substring(0, 11).equals("/" + uploadConfig.getStaticPath() + "/")) {
+                    String baseIp = parameterService.getValueByParam("baseIp").getParamValue();
+                    comment.setUserAvatar(baseIp + user.getUserAvatar());
+                } else {
+                    comment.setUserAvatar(user.getUserAvatar());
+                }
+            }else{
+                comment.setUserAvatar("");
             }
+
         }
         return comments;
     }

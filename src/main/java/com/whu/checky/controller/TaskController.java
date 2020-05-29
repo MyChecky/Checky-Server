@@ -78,8 +78,11 @@ public class TaskController {
         // 任务类型
         TaskType taskType = taskTypeService.QueryTaskType(task.getTypeId());
         ret.put("taskType", taskType.getTypeContent());
-        ret.put("taskTypePassRate", MyConstants.DECIMAL_FORMAT
-                .format(taskType.getPassNum() / (double) taskType.getTotalNum()));
+        if (taskType.getTotalNum() == 0)
+            ret.put("taskTypePassRate", "暂无数据");
+        else
+            ret.put("taskTypePassRate", MyConstants.DECIMAL_FORMAT
+                    .format(taskType.getPassNum() / (double) taskType.getTotalNum()));
         // 监督者
         List<TaskSupervisor> taskSupervisors = taskSupervisorService.getTasksSupByTaskId(taskId);
         List<SupListWithState> sups = new ArrayList<>();
@@ -195,15 +198,14 @@ public class TaskController {
             res.put("task", task);
             res.put("userName", user.getUserName());
             String userAvatar = "";
-            if (!MyStringUtil.isEmpty(user.getUserAvatar()) && user.getUserAvatar().length()>11) {
+            if (!MyStringUtil.isEmpty(user.getUserAvatar()) && user.getUserAvatar().length() > 11) {
                 if (user.getUserAvatar().substring(0, 11).equals("/" + uploadConfig.getStaticPath() + "/")) {
                     String baseIp = parameterService.getValueByParam("baseIp").getParamValue();
                     res.put("userAvatar", baseIp + user.getUserAvatar());
                 } else {
                     res.put("userAvatar", user.getUserAvatar());
                 }
-            }
-            else{
+            } else {
                 res.put("userAvatar", "");
             }
             TaskType taskType = taskTypeService.QueryTaskType(task.getTypeId());
@@ -212,7 +214,7 @@ public class TaskController {
                 res.put("taskTypePassRate", MyConstants.DECIMAL_FORMAT
                         .format(taskType.getPassNum() / (double) taskType.getTotalNum()));
             else
-                res.put("taskTypePassRate", "0%");
+                res.put("taskTypePassRate", "暂无数据");
         } else {
             res.put("state", MyConstants.RESULT_FAIL);
         }

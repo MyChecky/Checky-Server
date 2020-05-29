@@ -9,6 +9,7 @@ import com.whu.checky.domain.*;
 import com.whu.checky.service.*;
 import com.whu.checky.util.FileUtil;
 import com.whu.checky.util.MyConstants;
+import com.whu.checky.util.MyStringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -176,12 +177,17 @@ public class EssayController {
         User publisher = userService.queryUser(essay.getUserId());
         EssayAndRecord essayAndRecord = new EssayAndRecord();
         essayAndRecord.setUserId(publisher.getUserId());
-        if (publisher.getUserAvatar().substring(0, 11).equals("/" + uploadConfig.getStaticPath() + "/")) { // 说明用户修改过头像
-            String baseIp = parameterService.getValueByParam("baseIp").getParamValue();
-            essayAndRecord.setUserAvatar(baseIp + publisher.getUserAvatar());
-        } else {
-            essayAndRecord.setUserAvatar(publisher.getUserAvatar());
+        if(!MyStringUtil.isEmpty(publisher.getUserAvatar()) && publisher.getUserAvatar().length()>11){
+            if (publisher.getUserAvatar().substring(0, 11).equals("/" + uploadConfig.getStaticPath() + "/")) { // 说明用户修改过头像
+                String baseIp = parameterService.getValueByParam("baseIp").getParamValue();
+                essayAndRecord.setUserAvatar(baseIp + publisher.getUserAvatar());
+            } else {
+                essayAndRecord.setUserAvatar(publisher.getUserAvatar());
+            }
+        }else {
+            essayAndRecord.setUserAvatar("");
         }
+
         essayAndRecord.setUserName(publisher.getUserName());
         essayAndRecord.setFileRecord(records);
         essayAndRecord.setEssay(essay);
