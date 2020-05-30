@@ -47,6 +47,9 @@ public class TaskSupervisorServiceImpl implements TaskSupervisorService {
 
     @Override
     public Integer updateTaskSup(TaskSupervisor taskSupervisor) {
-        return taskSupervisorMapper.updateById(taskSupervisor);
+//        return taskSupervisorMapper.updateById(taskSupervisor);
+        return taskSupervisorMapper.update(taskSupervisor, new EntityWrapper<TaskSupervisor>()
+        .eq("task_id", taskSupervisor.getTaskId())
+        .eq("supervisor_id", taskSupervisor.getSupervisorId()));
     }
 }
