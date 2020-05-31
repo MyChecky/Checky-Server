@@ -7,17 +7,23 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.junit.Assert;
 
+import static org.junit.Assert.assertTrue;
+
 import java.security.KeyStore.Entry;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.logging.Logger;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.whu.checky.domain.*;
 import com.whu.checky.mapper.*;
+import com.whu.checky.service.TaskService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
@@ -36,6 +42,9 @@ public class JudgeTest {
 
     @Autowired
     TaskMapper taskMapper;
+
+    @Autowired
+    TaskService taskService;
 
     @Autowired
     UserMapper userMapper;
@@ -206,6 +215,7 @@ public class JudgeTest {
         Task task = tasks.get(0);
 
         task.setTaskState(MyConstants.TASK_STATE_DURING);
+        task.setTaskEndTime(sdf.format(new Date().getTime() - 24 * 60 * 60 * 1000));
         taskMapper.updateById(task);
 
         LOGGER.info(String.format("Task: %s", task.getTaskTitle()));
@@ -254,6 +264,32 @@ public class JudgeTest {
         task = taskMapper.selectById(task.getTaskId());
         Assert.assertEquals(finalStates, task.getTaskState());
         Assert.assertEquals(rate.doubleValue(), task.getRealPass(), EPS);
+    }
+
+    @Test
+    public void checkTaskSuccessTest2() throws Exception {
+        List<Task> tasks = taskMapper.selectList(new EntityWrapper<>());
+        Task task = tasks.get(0);
+
+        task.setTaskState(MyConstants.TASK_STATE_DURING);
+        task.setTaskEndTime(sdf.format(new Date().getTime() + 24 * 60 * 60 * 1000));
+        taskMapper.updateById(task);
+
+        LOGGER.info(String.format("Task: %s", task.getTaskTitle()));
+
+        String taskId = task.getTaskId();
+
+        List<Appeal> appeals = appealMapper
+                .selectList(new EntityWrapper<Appeal>().eq("task_id", taskId).and().isNull("process_time"));
+
+        String finalStates = MyConstants.TASK_STATE_DURING;
+        double rate = task.getRealPass();
+
+        cls.checkTaskSuccess();
+
+        task = taskMapper.selectById(task.getTaskId());
+        Assert.assertEquals(finalStates, task.getTaskState());
+        Assert.assertEquals(rate, task.getRealPass(), EPS);
     }
 
 }

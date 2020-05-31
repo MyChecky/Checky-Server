@@ -300,13 +300,13 @@ public class Judge {
             check.setCheckState(resultState);
 
             int checkPass = task.getCheckPass();
-    
+
             if (resultState.equals(MyConstants.CHECK_STATE_PASS)) {
                 checkPass++;
             }
-    
+
             task.setCheckPass(checkPass);
-            
+
             taskMapper.updateById(task);
 
             checkMapper.updateById(check);
@@ -316,8 +316,8 @@ public class Judge {
     @Scheduled(cron = "${jobs.judge.task.cron}")
     public void checkTaskSuccess() {
 
-        List<Task> tasks = taskMapper
-                .selectList(new EntityWrapper<Task>().eq("task_state", MyConstants.TASK_STATE_DURING));
+        List<Task> tasks = taskMapper.selectList(new EntityWrapper<Task>()
+                .eq("task_state", MyConstants.TASK_STATE_DURING).le("task_end_time", sdf.format(new Date())));
 
         for (Task task : tasks) {
             String taskId = task.getTaskId();
