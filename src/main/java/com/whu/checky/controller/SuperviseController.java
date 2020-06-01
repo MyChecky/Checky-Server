@@ -55,7 +55,7 @@ public class SuperviseController {
 //            String avatar = userService.queryUser(check.getUserId()).getUserAvatar();
             supHistories.add(new SupHistory(supervise.getSuperviseId(), supervise.getCheckId(),
                     check.getTaskId(), task.getTaskTitle(), state, /*avatar,*/ check.getCheckTime(),
-                    supervise.getSuperviseTime(), userName, taskType));
+                    supervise.getSuperviseTime(), userName, taskType, check.getCheckState()));
         }
         ret.put("supList", supHistories);
         ret.put("state", MyConstants.RESULT_OK);
@@ -161,6 +161,7 @@ public class SuperviseController {
 class SupHistory {
     private String supId;
     private String checkId;
+    private String checkState;
     private String title;
     private String state;
 //    private String avatar;
@@ -169,6 +170,14 @@ class SupHistory {
     private String checkTime;
     private String supTime;
     private String taskType;
+
+    public String getCheckState() {
+        return checkState;
+    }
+
+    public void setCheckState(String checkState) {
+        this.checkState = checkState;
+    }
 
     public String getCheckName() {
         return checkName;
@@ -192,7 +201,7 @@ class SupHistory {
 
     public SupHistory(String supId, String checkId, String taskId, String title,
                       String state, /*String avatar,*/ String checkTime, String supTime,
-                      String checkName, String taskType) {
+                      String checkName, String taskType, String checkState) {
         this.supId = supId;
         this.checkId = checkId;
         this.title = title;
@@ -203,6 +212,7 @@ class SupHistory {
         this.supTime = supTime;
         this.checkName = checkName;
         this.taskType = taskType;
+        this.checkState = checkState;
     }
 
     public void setSupTime(String supTime) {
