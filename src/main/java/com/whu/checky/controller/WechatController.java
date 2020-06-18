@@ -5,7 +5,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.whu.checky.config.UploadConfig;
+import com.whu.checky.domain.MoneyFlow;
 import com.whu.checky.domain.User;
+import com.whu.checky.service.MoneyService;
 import com.whu.checky.service.ParameterService;
 import com.whu.checky.service.RedisService;
 import com.whu.checky.service.UserService;
@@ -44,6 +46,9 @@ public class WechatController {
     @Autowired
     private UploadConfig uploadConfig;
 
+    @Autowired
+    private MoneyService moneyService;
+
     private static final Logger log = LoggerFactory.getLogger(WechatController.class);
 
     @PostMapping("/logout")
@@ -60,14 +65,13 @@ public class WechatController {
     }
 
     /**
-     *
      * @param body
      * @return state: "fail" fail code->openId
-     *          state: "insertFail" fail register new user
-     *          state: "updateFail" fail update exiting userInfo
+     * state: "insertFail" fail register new user
+     * state: "updateFail" fail update exiting userInfo
      */
     @PostMapping("/login")
-    public HashMap<String, Object> login(@RequestBody String body){
+    public HashMap<String, Object> login(@RequestBody String body) {
         HashMap<String, Object> ret = new HashMap<>(); // 返回值
         JSONObject object = JSONObject.parseObject(body);
 
@@ -85,6 +89,16 @@ public class WechatController {
                 ret.put("state", MyConstants.RESULT_INSERT_FAIL);
                 return ret;
             }
+            MoneyFlow moneyFlow = new MoneyFlow();
+            moneyFlow.setIfTest(1);
+            moneyFlow.setUserID(user.getUserId());
+            moneyFlow.setFlowMoney(user.getTestMoney());
+            moneyFlow.setFlowTime(user.getUserTime());
+            moneyFlow.setFlowIo(MyConstants.MONEY_FLOW_IN);
+            moneyFlow.setFlowId(UUID.randomUUID().toString());
+            moneyFlow.setFlowType(MyConstants.MONEY_FLOW_TYPE_INIT);
+            moneyService.addTestMoneyRecord(moneyFlow);
+
         } else {  // 老用户登录
             redisService.delSessionId(user.getSessionId());
             log.info("user " + user.getUserId() + "/" + user.getUserName() + " logined at " + new Date());
@@ -109,8 +123,8 @@ public class WechatController {
         ret.put("userGender", user.getUserGender());
         ret.put("userNickname", user.getUserName());
         String userAvatar = "";
-        if (!MyStringUtil.isEmpty(user.getUserAvatar()) && user.getUserAvatar().length()>11) {
-            userAvatar  =   user.getUserAvatar().substring(0, 11).equals("/" + uploadConfig.getStaticPath() + "/") ?
+        if (!MyStringUtil.isEmpty(user.getUserAvatar()) && user.getUserAvatar().length() > 11) {
+            userAvatar = user.getUserAvatar().substring(0, 11).equals("/" + uploadConfig.getStaticPath() + "/") ?
                     object.getString("baseIp") + user.getUserAvatar() : user.getUserAvatar();
         }
         ret.put("userAvatar", userAvatar);
@@ -156,11 +170,11 @@ public class WechatController {
 
     private void updateOldUser(User user, JSONObject object) {
         // 经纬度
-        try{
+        try {
             JSONObject location = (JSONObject) object.get("location");
             user.setLatitude(location.getBigDecimal("latitude").doubleValue());
             user.setLongtitude(location.getBigDecimal("longitude").doubleValue());
-        } catch (Exception ex){
+        } catch (Exception ex) {
             log.warn("user is logging in without location info\n" + ex.getMessage());
         }
         // sessionId
