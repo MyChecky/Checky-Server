@@ -32,7 +32,7 @@
             </pattern>
         </layout>
     </appender>
-     -->
+-->
 
     <!--输出到控制台-->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
@@ -161,19 +161,18 @@
     </logger>
 
     <logger name="jdbc.sqltiming" additivity="false" level="INFO">
-        <!--
+        <!--     -->
+                      <appender-ref ref="CONSOLE" />
+               <appender-ref ref="fileInfoLog" />
+           </logger>
+
+           <root level="info">
+
                <appender-ref ref="CONSOLE" />
-        -->
-        <appender-ref ref="fileInfoLog" />
-    </logger>
+               <appender-ref ref="fileDebugLog"/>
+               <appender-ref ref="fileInfoLog"/>
+               <appender-ref ref="fileWarnLog"/>
+               <appender-ref ref="fileErrorLog"/>
+           </root>
 
-    <root level="info">
-
-        <appender-ref ref="CONSOLE" />
-        <appender-ref ref="fileDebugLog"/>
-        <appender-ref ref="fileInfoLog"/>
-        <appender-ref ref="fileWarnLog"/>
-        <appender-ref ref="fileErrorLog"/>
-    </root>
-
-</configuration>
+       </configuration>
