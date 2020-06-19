@@ -43,6 +43,9 @@ xcloud:
   uploadPath: E:/attach_file/wxChecky/
   staticPath: resources
 
+ports:
+  http: 8090
+  https: 443
 
 #logging:
 #  level:

@@ -1,11 +1,13 @@
 package com.whu.checky;
 
+import com.whu.checky.config.PortsConfig;
 import com.whu.checky.service.ParameterService;
 import org.apache.catalina.Context;
 import org.apache.catalina.connector.Connector;
 import org.apache.tomcat.util.descriptor.web.SecurityCollection;
 import org.apache.tomcat.util.descriptor.web.SecurityConstraint;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
@@ -20,7 +22,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 //public class CheckyApplication extends SpringBootServletInitializer {
 public class CheckyApplication{
     @Autowired
-    private ParameterService parameterService;
+    private PortsConfig portsConfig;
 
     public static void main(String[] args) {
         SpringApplication.run(CheckyApplication.class, args);
@@ -28,8 +30,7 @@ public class CheckyApplication{
 
     @Bean
     public ServletWebServerFactory servletContainer() {
-        int httpsPort = Integer.parseInt(parameterService.getValueByParam("https").getParamValue());
-        TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory(httpsPort) {
+        TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory(portsConfig.getHttps()) {
             @Override
             protected void postProcessContext(Context context) {
                 SecurityConstraint securityConstraint = new SecurityConstraint();
@@ -41,17 +42,16 @@ public class CheckyApplication{
                 context.addConstraint(securityConstraint);
             }
         };
-        tomcat.addAdditionalTomcatConnectors( redirectConnector(httpsPort));
+        tomcat.addAdditionalTomcatConnectors( redirectConnector());
         return tomcat;
     }
 
-    private Connector redirectConnector(int httpsPort) {
-        int httpPort = Integer.parseInt(parameterService.getValueByParam("http").getParamValue());
+    private Connector redirectConnector() {
         Connector connector = new Connector(TomcatServletWebServerFactory.DEFAULT_PROTOCOL);
         connector.setScheme("http");
-        connector.setPort(httpPort);
+        connector.setPort(portsConfig.getHttp());
         connector.setSecure(false);
-        connector.setRedirectPort(httpsPort);
+        connector.setRedirectPort(portsConfig.getHttps());
         return connector;
     }
 
