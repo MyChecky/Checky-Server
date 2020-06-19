@@ -19,8 +19,8 @@ Spring:
   datasource:
     #url: jdbc:mysql://127.0.0.1:3306/test?useUnicode=true&characterEncoding=utf-8
     #url: jdbc:log4jdbc:mysql://120.78.150.152:3306/checky?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC
-#    url: jdbc:log4jdbc:mysql://188.131.172.171:3306/checky_test?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC
-    url: jdbc:log4jdbc:mysql://127.0.0.1:3306/checky?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC
+    url: jdbc:log4jdbc:mysql://188.131.172.171:3306/checky_test?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC
+    #url: jdbc:log4jdbc:mysql://127.0.0.1:3306/checky_test?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC
     # 本地数据库
     username: checky
     password: checky2019
