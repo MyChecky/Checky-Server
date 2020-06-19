@@ -119,7 +119,9 @@ public class Distribute {
 
             double moneySupervisor = (double) (int) (remained * moneyRate * 100) / 100;
             supervisor.setBenefit(moneySupervisor);
-            taskSupervisorMapper.updateById(supervisor);
+            // taskSupervisorMapper.updateById(supervisor);
+            taskSupervisorMapper.update(supervisor, new EntityWrapper<TaskSupervisor>()
+                    .eq("task_id", supervisor.getTaskId()).eq("supervisor_id", supervisor.getSupervisorId()));
 
             String supervisorId = supervisor.getSupervisorId();
             User supervisorUser = userMapper.selectById(supervisorId);
