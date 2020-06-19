@@ -5,7 +5,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.whu.checky.config.UploadConfig;
+import com.whu.checky.domain.MoneyFlow;
 import com.whu.checky.domain.User;
+import com.whu.checky.service.MoneyService;
 import com.whu.checky.service.ParameterService;
 import com.whu.checky.service.RedisService;
 import com.whu.checky.service.UserService;
@@ -43,6 +45,9 @@ public class WechatController {
     private ParameterService parameterService;
     @Autowired
     private UploadConfig uploadConfig;
+
+    @Autowired
+    private MoneyService moneyService;
 
     private static final Logger log = LoggerFactory.getLogger(WechatController.class);
 
@@ -85,6 +90,15 @@ public class WechatController {
                 ret.put("state", MyConstants.RESULT_INSERT_FAIL);
                 return ret;
             }
+            MoneyFlow moneyFlow = new MoneyFlow();
+            moneyFlow.setIfTest(1);
+            moneyFlow.setUserID(user.getUserId());
+            moneyFlow.setFlowMoney(user.getTestMoney());
+            moneyFlow.setFlowTime(user.getUserTime());
+            moneyFlow.setFlowIo(MyConstants.MONEY_FLOW_IN);
+            moneyFlow.setFlowId(UUID.randomUUID().toString());
+            moneyFlow.setFlowType(MyConstants.MONEY_FLOW_TYPE_INIT);
+            moneyService.addTestMoneyRecord(moneyFlow);
         } else {  // 老用户登录
             redisService.delSessionId(user.getSessionId());
             log.info("user " + user.getUserId() + "/" + user.getUserName() + " logined at " + new Date());
