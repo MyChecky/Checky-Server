@@ -260,7 +260,7 @@ public class TaskController {
 
         if (task.getCheckTimes().equals(0)) { // 在匹配监督者前检测总打卡次数
             ret.put("state", MyConstants.RESULT_ZERO_CHECK_TIMES);
-        } else if (match.matchSupervisorForOneTask(task)) {
+        } else if (match.matchSupervisorForOneTask(task, null, -1)) {
             ret.put("state", MyConstants.RESULT_OK);
         } else {
             ret.put("state", MyConstants.RESULT_NO_ENOUGH_SUP);

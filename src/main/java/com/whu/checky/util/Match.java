@@ -86,7 +86,7 @@ public class Match {
     public void matchSupervisorForOneUser(User user) {
         List<Task> tasks = taskService.getTasksAtNoMatchStateOwnedByUser(user);
         for (Task t : tasks) {
-            matchSupervisorForOneTask(t);
+            matchSupervisorForOneTask(t, null, -1);
         }
     }
 
@@ -96,21 +96,43 @@ public class Match {
      *         前端用户需要知道当前任务实际匹配到了多少人，故改变参数task的matchNum值（task是引用类型，相当于已经有matchNum的返回值了）--lu
      *         而若是把资金等相关的注释了，定时匹配任务时，会出问题的。。。--lu
      */
-    public boolean matchSupervisorForOneTask(Task task) {
-        int gap = task.getSupervisorNum();
-        List<User> selectedSupervisors;
-        Set<String> selectedSupervisorIds = new HashSet<>();
+    public boolean matchSupervisorForOneTask(Task task, Set<String> selectedSupervisorIds, int gap) {
+        if(gap == -1) {
+            gap = task.getSupervisorNum();
+        }
+        List<User> selectedSupervisors = new ArrayList<>();
+        if(selectedSupervisorIds == null) {
+            selectedSupervisorIds = new HashSet<>();
+        }
 
         User taskOwner = userService.queryUser(task.getUserId());
 
         MatchType matchType = resolveMatchType(task);
 
         if (matchType.isRand) {
-            selectedSupervisors = userService.getUsersRandomly(gap, task.getUserId());
-            gap -= selectedSupervisors.size();
-        } else {
-            selectedSupervisors = new ArrayList<>();
+            int maxRetries = 100;
+            while(--maxRetries < 0) {
+                selectedSupervisors = userService.getUsersRandomly(gap, task.getUserId());
 
+                boolean alreadyExist = false;
+                for(User su: selectedSupervisors) {
+                    if(selectedSupervisorIds.contains(su.getUserId())) {
+                        alreadyExist = true;
+                        break;
+                    }
+                }
+
+                if(alreadyExist) {
+                    continue;
+                } else {
+                    gap -= selectedSupervisors.size();
+                    for(User su: selectedSupervisors) {
+                        selectedSupervisorIds.add(su.getUserId());
+                    }
+                    break;
+                }
+            } 
+        } else {
             final int pageSize = 5;
             int curPage = 1;
             endIterateUsers: while (true) {
