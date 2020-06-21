@@ -63,7 +63,7 @@ public class Distribute {
 
     void assignMoney(Task task, double systemRate, int numAppealDays) {
         String taskAnnounceTime = task.getTaskAnnounceTime();
-        if (taskAnnounceTime != null) {
+        if (taskAnnounceTime != null && taskAnnounceTime.trim().length() != 0) {
             Duration duration = Duration.between(
                     LocalDateTime.parse(taskAnnounceTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
                     LocalDateTime.now());
@@ -98,6 +98,7 @@ public class Distribute {
 
         MoneyFlow moneyFlow = new MoneyFlow();
         moneyFlow.setIfTest(task.getIfTest());
+        moneyFlow.setTaskId(task.getTaskId());
         moneyFlow.setUserID(superviseeId);
         moneyFlow.setFlowMoney(moneySupervisee);
         moneyFlow.setFlowTime(sdf.format(new Date()));
@@ -154,6 +155,7 @@ public class Distribute {
 
             moneyFlow = new MoneyFlow();
             moneyFlow.setIfTest(task.getIfTest());
+            moneyFlow.setTaskId(task.getTaskId());
             moneyFlow.setUserID(supervisorId);
             moneyFlow.setFlowMoney(moneySupervisor);
             moneyFlow.setFlowTime(sdf.format(new Date()));
