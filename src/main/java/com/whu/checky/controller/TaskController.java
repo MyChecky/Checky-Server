@@ -76,7 +76,7 @@ public class TaskController {
 //        ret.put("passTimes", task.getCheckPass() + "/" + task.getCheckNum());
         ret.put("taskDescribe", task.getTaskContent());
         // 任务类型
-        TaskType taskType = taskTypeService.QueryTaskType(task.getTypeId());
+        TaskType taskType = taskTypeService.queryTaskType(task.getTypeId());
         ret.put("taskType", taskType.getTypeContent());
         if (taskType.getTotalNum() == 0)
             ret.put("taskTypePassRate", "暂无数据");
@@ -208,7 +208,7 @@ public class TaskController {
             } else {
                 res.put("userAvatar", "");
             }
-            TaskType taskType = taskTypeService.QueryTaskType(task.getTypeId());
+            TaskType taskType = taskTypeService.queryTaskType(task.getTypeId());
             task.setTypeContent(taskType.getTypeContent());
             if (taskType.getTotalNum() != 0)
                 res.put("taskTypePassRate", MyConstants.DECIMAL_FORMAT

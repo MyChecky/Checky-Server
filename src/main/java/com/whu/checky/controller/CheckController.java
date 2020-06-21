@@ -169,7 +169,7 @@ public class CheckController {
             checkHistory.setCheck(check);
             checkHistory.setFileRecord(records);
             checkHistory.setText(textRecord);
-            checkHistory.setTaskType(taskTypeService.QueryTaskType(task.getTypeId()).getTypeContent());
+            checkHistory.setTaskType(taskTypeService.queryTaskType(task.getTypeId()).getTypeContent());
             res.add(checkHistory);
         }
         return res;

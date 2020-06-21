@@ -64,7 +64,7 @@ public class TaskController {
         }
         List<Task> taskList = taskService.query(params, p);
         for (Task task : taskList) {
-            task.setTypeContent(taskTypeService.QueryTaskType(task.getTypeId()).getTypeContent());
+            task.setTypeContent(taskTypeService.queryTaskType(task.getTypeId()).getTypeContent());
         }
         resp.put("tasks", taskList);
         if (p != null) {
@@ -82,7 +82,7 @@ public class TaskController {
         JSONObject object = (JSONObject) JSON.parse(body);
         String taskId = (String) object.get("taskId");
         Task task = taskService.queryTask(taskId);
-        task.setTypeContent(taskTypeService.QueryTaskType(task.getTypeId()).getTypeContent());
+        task.setTypeContent(taskTypeService.queryTaskType(task.getTypeId()).getTypeContent());
         res.put("state", MyConstants.RESULT_OK);
         res.put("task", task);
         return res;

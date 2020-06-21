@@ -14,7 +14,6 @@ public class TaskTypeServiceImpl implements TaskTypeService {
     @Autowired
     private TaskTypeMapper taskTypeMapper;
 
-
     @Override
     public Integer addTaskType(TaskType taskType) {
         return taskTypeMapper.insert(taskType);
@@ -33,12 +32,17 @@ public class TaskTypeServiceImpl implements TaskTypeService {
     }
 
     @Override
-    public TaskType QueryTaskType(String typeId) {
+    public TaskType queryTaskType(String typeId) {
         return taskTypeMapper.selectById(typeId);
     }
 
     @Override
     public Integer DeleteTaskType(String typeId) {
         return taskTypeMapper.deleteById(typeId);
+    }
+
+    @Override
+    public void incTotalNum(String typeId) {
+        taskTypeMapper.incTotalNum(typeId);
     }
 }
