@@ -1,19 +1,25 @@
 package com.whu.checky.util;
 
+import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.whu.checky.domain.MoneyFlow;
 import com.whu.checky.domain.Task;
 import com.whu.checky.domain.TaskSupervisor;
 import com.whu.checky.domain.User;
+import com.whu.checky.mapper.MoneyFlowMapper;
 import com.whu.checky.mapper.TaskMapper;
 import com.whu.checky.mapper.TaskSupervisorMapper;
 import com.whu.checky.mapper.UserMapper;
+import com.whu.checky.service.MoneyService;
 import com.whu.checky.service.TaskService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +40,12 @@ public class Distribute {
     TaskMapper taskMapper;
 
     @Autowired
+    MoneyFlowMapper moneyFlowMapper;
+
+    @Autowired
     TaskSupervisorMapper taskSupervisorMapper;
+
+    SimpleDateFormat sdf = new SimpleDateFormat(MyConstants.FORMAT_DATE);
 
     @Scheduled(cron = "${jobs.distribute.cron}")
     public void assignMoney() {
@@ -85,6 +96,16 @@ public class Distribute {
         supervisee.setUserMoney(superviseeCurMoney);
         userMapper.updateById(supervisee);
 
+        MoneyFlow moneyFlow = new MoneyFlow();
+        moneyFlow.setIfTest(task.getIfTest());
+        moneyFlow.setUserID(superviseeId);
+        moneyFlow.setFlowMoney(moneySupervisee);
+        moneyFlow.setFlowTime(sdf.format(new Date()));
+        moneyFlow.setFlowIo(MyConstants.MONEY_FLOW_IN);
+        moneyFlow.setFlowId(UUID.randomUUID().toString());
+        moneyFlow.setFlowType(MyConstants.MONEY_FLOW_TYPE_REFUND);
+        moneyFlowMapper.insert(moneyFlow);
+
         remained -= moneySupervisee;
 
         String taskId = task.getTaskId();
@@ -130,6 +151,16 @@ public class Distribute {
             moneyCur += moneySupervisor;
             supervisorUser.setUserMoney(moneyCur);
             userMapper.updateById(supervisorUser);
+
+            moneyFlow = new MoneyFlow();
+            moneyFlow.setIfTest(task.getIfTest());
+            moneyFlow.setUserID(supervisorId);
+            moneyFlow.setFlowMoney(moneySupervisor);
+            moneyFlow.setFlowTime(sdf.format(new Date()));
+            moneyFlow.setFlowIo(MyConstants.MONEY_FLOW_IN);
+            moneyFlow.setFlowId(UUID.randomUUID().toString());
+            moneyFlow.setFlowType(MyConstants.MONEY_FLOW_TYPE_REFUND);
+            moneyFlowMapper.insert(moneyFlow);    
         }
 
         task.setTaskState(MyConstants.TASK_STATE_COMPLETE);
