@@ -159,7 +159,7 @@ public class Distribute {
             moneyFlow.setFlowTime(sdf.format(new Date()));
             moneyFlow.setFlowIo(MyConstants.MONEY_FLOW_IN);
             moneyFlow.setFlowId(UUID.randomUUID().toString());
-            moneyFlow.setFlowType(MyConstants.MONEY_FLOW_TYPE_REFUND);
+            moneyFlow.setFlowType(MyConstants.MONEY_FLOW_TYPE_BENEFIT);
             moneyFlowMapper.insert(moneyFlow);    
         }
 
