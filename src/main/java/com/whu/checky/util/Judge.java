@@ -254,8 +254,8 @@ public class Judge {
             List<TaskSupervisor> supervisors = taskSupervisorMapper
                     .selectList(new EntityWrapper<TaskSupervisor>().eq("task_id", taskId));
 
-            int numPasses = check.getPassNum();
-            int numSupers = check.getSuperviseNum();
+            int numPasses = 0;
+            int numSupers = 0;
 
             // 对打卡监督者的监督记录进行判断，并综合计算当前打卡是否通过
             for (TaskSupervisor supervisor : supervisors) {
