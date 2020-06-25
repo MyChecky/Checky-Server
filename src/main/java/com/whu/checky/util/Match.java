@@ -98,7 +98,10 @@ public class Match {
      */
     public boolean matchSupervisorForOneTask(Task task, Set<String> selectedSupervisorIds, int gap) {
         if(gap == -1) {
-            gap = task.getSupervisorNum();
+            gap = task.getSupervisorNum() - task.getMatchNum();
+        }
+        if(gap == 0) {
+            return true;
         }
         List<User> selectedSupervisors = new ArrayList<>();
         if(selectedSupervisorIds == null) {

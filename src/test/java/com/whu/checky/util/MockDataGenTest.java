@@ -15,11 +15,17 @@ public class MockDataGenTest {
     private MockDataGen clz;
 
     @Test
-    public void addNewTask() throws IOException {
+    public void addTask() throws IOException {
         clz.addTask();
     }
 
-    public void test() {
-        
+    @Test
+    public void addReport() throws IOException {
+        clz.addReport();
+    }
+
+    @Test
+    public void porcessReport() throws IOException {
+        clz.processReport();
     }
 }

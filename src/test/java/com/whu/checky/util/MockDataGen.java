@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
+import com.whu.checky.controller.ReportController;
 import com.whu.checky.controller.TaskController;
 import com.whu.checky.controller.TaskTypeController;
 import com.whu.checky.controller.WechatController;
@@ -17,8 +18,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class MockDataGen {
     private static final Logger LOGGER = LoggerFactory.getLogger(MockDataGen.class);
+    
     @Autowired
     private TaskController taskController;
+
+    @Autowired
+    private ReportController reportController;
+
+    @Autowired 
+    com.whu.checky.controller.admin.ReportController adminReportController;
 
     private String readClzPathResource(String path) throws IOException {
         File resource = new ClassPathResource(path).getFile();
@@ -26,10 +34,14 @@ public class MockDataGen {
     }
 
     public void addTask() throws IOException {
-        LOGGER.info(taskController.addTask(readClzPathResource("addTaskRequest.json")).toString());
+        LOGGER.info(taskController.addTask(readClzPathResource("addTaskReq.json")).toString());
     }
 
-    public void addReport() {
+    public void addReport() throws IOException {
+        LOGGER.info(reportController.addReport(readClzPathResource("addReportReq.json")).toString());
+    }
 
+    public void processReport() throws IOException {
+        LOGGER.info(adminReportController.process(readClzPathResource("processReportReq.json")).toString());
     }
 }
