@@ -111,7 +111,7 @@ public class Match {
 
         if (matchType.isRand) {
             int maxRetries = 100;
-            while(--maxRetries < 0) {
+            while(--maxRetries > 0) {
                 selectedSupervisors = userService.getUsersRandomly(gap, task.getUserId());
 
                 boolean alreadyExist = false;

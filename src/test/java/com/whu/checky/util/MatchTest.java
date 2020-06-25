@@ -59,6 +59,10 @@ public class MatchTest {
     @Autowired
     TaskTypeService taskTypeService;
 
+    public void matchTest2() {
+        
+    }
+
     @Test
     public void matchTest() throws Exception {
         Hobby running = new Hobby();

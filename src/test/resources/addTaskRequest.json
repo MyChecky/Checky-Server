@@ -1,0 +1,18 @@
+{
+    "userId": "ow-ZO5VYaELkUFeD_IC0qN02NsCw",
+    "typeId": "c007e6b3-6c7d-487f-b7ff-20181927e140",
+    "taskTitle": "zck local test",
+    "taskContent": "abc",
+    "taskStartTime": "2020-06-12",
+    "taskEndTime": "2020-08-01",
+    "taskMoney": "100",
+    "supervisorNum": "3",
+    "checkFrec": "1111111",
+    "matchNum": "0",
+    "ifTest": "1",
+    "systemBenifit": "0",
+    "minPass": "0.5",
+    "realPass": "0",
+    "minCheck": "0.5",
+    "minCheckType": "proportion"
+}
