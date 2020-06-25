@@ -28,4 +28,29 @@ public class MockDataGenTest {
     public void porcessReport() throws IOException {
         clz.processReport();
     }
+
+    @Test
+    public void addCheck() throws IOException {
+        clz.addCheck();
+    }
+
+    @Test
+    public void addSupervise() throws IOException {
+        clz.addSupervise();
+    }
+
+    @Test
+    public void checkIn() {
+        clz.checkIn();
+    }
+
+    @Test
+    public void checkTaskSuccess() {
+        clz.checkTaskSuccess();
+    }
+
+    @Test
+    public void assignMoney() {
+        clz.assignMoney();
+    }
 }
