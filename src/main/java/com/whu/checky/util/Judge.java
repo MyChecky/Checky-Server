@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.whu.checky.domain.*;
 import com.whu.checky.mapper.*;
 import com.whu.checky.service.TaskService;
+import com.whu.checky.service.TaskTypeService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -46,6 +48,9 @@ public class Judge {
 
     @Autowired
     AppealMapper appealMapper;
+
+    @Autowired
+    TaskTypeService taskTypeService;
 
     SimpleDateFormat sdf = new SimpleDateFormat(MyConstants.FORMAT_DATE);
 
@@ -344,6 +349,7 @@ public class Judge {
                 String finalStates = MyConstants.TASK_STATE_SUCCESS;
                 if (rate >= minRate) {
                     finalStates = MyConstants.TASK_STATE_SUCCESS;
+                    taskTypeService.incPassNum(task.getTypeId());
                 } else {
                     finalStates = MyConstants.TASK_STATE_FAIL;
                 }

@@ -20,4 +20,6 @@ public interface TaskTypeService {
     Integer DeleteTaskType(String typeId);
     //自增totalNum
     void incTotalNum(String typeId);
+    //自增passNum
+    void incPassNum(String typeId);
 }

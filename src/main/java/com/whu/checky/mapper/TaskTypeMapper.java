@@ -9,4 +9,5 @@ import org.springframework.stereotype.Component;
 @Component(value = "taskTypeMapper")
 public interface TaskTypeMapper extends BaseMapper<TaskType> {
     void incTotalNum(String typeId);
+    void incPassNum(String typeId);
 }

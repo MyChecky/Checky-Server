@@ -4,4 +4,7 @@
     <update id="incTotalNum">
         UPDATE task_type set total_num = total_num + 1 where type_id = #{typeId}
     </update>
+    <update id="incPassNum">
+        UPDATE task_type set pass_num = pass_num + 1 where type_id = #{typeId}
+    </update>
 </mapper>
