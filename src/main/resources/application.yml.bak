@@ -1,75 +1,49 @@
 server:
-  port: 8090
+  port: 8080
   #测试阶段先不使用
   servlet:
      context-path: /Checky
-  tomcat:
-    uri-encoding: UTF-8
-    max-threads: 1000
-    min-spare-threads: 50
-  ssl:
-    key-store: classpath:www.ycloudtech.cn.jks
-    key-alias: www.ycloudtech.cn
-    key-store-type: JKS
-    key-store-password: 468zw3ia31l20
-    enabled: true
-    protocol: TLS
 
 Spring:
   datasource:
     #url: jdbc:mysql://127.0.0.1:3306/test?useUnicode=true&characterEncoding=utf-8
-    #url: jdbc:log4jdbc:mysql://120.78.150.152:3306/checky?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC
-    url: jdbc:log4jdbc:mysql://188.131.172.171:3306/checky_test?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC
-#    url: jdbc:log4jdbc:mysql://127.0.0.1:3306/checky?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC
-    # 本地数据库
+    url: jdbc:log4jdbc:mysql://120.78.150.152:3306/checky?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC
     username: checky
-    password: checky2019
+    password: asdfgh
     #driver-class-name: com.mysql.jdbc.Driver
     driver-class-name: net.sf.log4jdbc.DriverSpy
     hikari:
       max-lifetime: 60000
-      maximum-pool-size: 10
+      maximum-pool-size: 20
       idle-timeout: 60000
       connection-timeout: 60000
       validation-timeout: 3000
       LoginTimeout: 60000
 
 mybatis-plus:
-  mapper-locations: classpath:mapper/*Mapper.xml
+  mapper-locations: classpath*:mapper/*Mapper.xml
   type-aliases-package: com.whu.checky.domain
 
 
 xcloud:
-  uploadPath: E:/attach_file/wxChecky/
+  uploadPath: D:/wx/img/
   staticPath: resources
 
-ports:
-  http: 8090
-  https: 443
 
 #logging:
 #  level:
 #    com.whu.checky.mapper: debug
 
-
-logging:
-  level:
-    root: info
-
 jobs:
     match:
-        cron: 0 0 0 * * ?
-        maxNum: 3 # Deprecated
+        cron: 0 0 0 * * *
+        maxNum: 3
     judge:
         check:
-            timeoutDay: 2
-            cron: 0 0 0 * * ?
+            timeoutDay: 3
+            cron: 0 0 0 * * *
         task:
-            cron: 0 5 0 * * ?
-    distribute:
-        cron: 0 5 0 * * ?
-    appeal:
-        cron: 0 0 0 * * ?
+            cron: 0 0 0 * * *
 spring:
     servlet:
         multipart:
@@ -78,10 +52,9 @@ spring:
             max-request-size: 200MB
     redis:
         database: 0      # Redis数据库索引（默认为0）
-        host: 188.131.172.171  # Redis服务器地址
-        #host: 127.0.0.1  # Redis本地服务器地址
+        host: 120.78.150.152  # Redis服务器地址
         port: 6379       # Redis服务器连接端口
-        password: checky2019        # Redis服务器连接密码（默认为空）
+        password: asdfghjkl        # Redis服务器连接密码（默认为空）
         timeout: 0       # 连接超时时间（毫秒）
         lettuce:
             pool:

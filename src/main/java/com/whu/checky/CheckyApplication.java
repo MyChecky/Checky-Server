@@ -28,6 +28,8 @@ public class CheckyApplication{
         SpringApplication.run(CheckyApplication.class, args);
     }
 
+    /*  added by lu guang feng on 2020.6.19
+    将http端口请求，重定向到https请求端口
     @Bean
     public ServletWebServerFactory servletContainer() {
         TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory(portsConfig.getHttps()) {
@@ -54,8 +56,10 @@ public class CheckyApplication{
         connector.setRedirectPort(portsConfig.getHttps());
         return connector;
     }
+    **/
 
-    /*
+    /*added by lhw on 2020.6.18
+    同时支持http 和 https
     @Bean
     public ServletWebServerFactory servletContainer() {
         TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory();
@@ -71,8 +75,8 @@ public class CheckyApplication{
     */
 
 
-
     /*
+    支持war启动
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
         return builder.sources(CheckyApplication.class);
