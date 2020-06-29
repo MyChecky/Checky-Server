@@ -3,6 +3,8 @@ package com.whu.checky.util;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.whu.checky.domain.Appeal;
 import com.whu.checky.domain.Check;
@@ -22,6 +24,7 @@ import com.whu.checky.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 
+@Deprecated
 public class AppealAndReportUtil {
     @Autowired
     TaskService taskService;
@@ -41,7 +44,11 @@ public class AppealAndReportUtil {
     @Autowired
     TaskSupervisorService taskSupervisorService;
 
-    @Scheduled(cron = "${jobs.appeal.cron}")
+    @Autowired
+    Match match;
+
+    // @Scheduled(cron = "${jobs.appeal.cron}")
+    @Deprecated
     public void checkAppealAndReport() {
         /**
          * Handled elsewhere.
@@ -58,35 +65,44 @@ public class AppealAndReportUtil {
         // }
         // }
 
-        List<Report> reports = reportService.getAllReports();
-        for (Report report : reports) {
-            if (report.getReportType().equals(MyConstants.REPORT_TYPE_SUPERVISOR)
-                    && report.getProcessResult().equals(MyConstants.PROCESS_STATE_PASS)) {
-                List<TaskSupervisor> taskSupervisors = taskSupervisorService.getTasksSupByTaskId(report.getTaskId());
-                for (TaskSupervisor taskSupervisor : taskSupervisors) {
-                    if (taskSupervisor.getSupervisorId().equals(report.getSupervisorId())) {
-                        taskSupervisor.setRemoveTime(new SimpleDateFormat().format(new Date()));
-                        taskSupervisorService.updateTaskSup(taskSupervisor);
-                        break;
-                    }
-                }
-            } else if (report.getReportType().equals(MyConstants.REPORT_TYPE_TASK)
-                    && report.getProcessResult().equals(MyConstants.PROCESS_STATE_PASS)) {
-                Task task = taskService.queryTask(report.getTaskId());
-                task.setTaskState(MyConstants.TASK_STATE_FAIL);
-                taskService.updateTask(task);
-            } else if (report.getReportType().equals(MyConstants.REPORT_TYPE_ESSAY)
-                    && report.getProcessResult().equals(MyConstants.PROCESS_STATE_PASS)) {
-                Essay essay = essayService.queryEssayById(report.getEssayId());
-                essay.setIfDelete(1);
-                essayService.updateEssay(essay);
-            } else if (report.getReportType().equals(MyConstants.REPORT_TYPE_CHECK)
-                    && report.getProcessResult().equals(MyConstants.PROCESS_STATE_PASS)) {
-                Check check = checkService.queryCheckById(report.getCheckId());
-                check.setCheckState(MyConstants.CHECK_STATE_DENY);
-                checkService.updateCheck(check);
-            }
-        }
-    }
+        // List<Report> reports = reportService.getAllReports();
+        // for (Report report : reports) {
+        // if (report.getProcessResult().equals(MyConstants.PROCESS_STATE_PASS) &&
+        // report.getProcessTime() == null) {
+        // if (report.getReportType().equals(MyConstants.REPORT_TYPE_SUPERVISOR)) {
+        // List<TaskSupervisor> taskSupervisors = taskSupervisorService
+        // .getTasksSupByTaskId(report.getTaskId());
+        // for (TaskSupervisor taskSupervisor : taskSupervisors) {
+        // if (taskSupervisor.getSupervisorId().equals(report.getSupervisorId())) {
+        // taskSupervisor.setRemoveTime(new SimpleDateFormat().format(new Date()));
+        // taskSupervisorService.updateTaskSup(taskSupervisor);
 
+        // // add a new supervisor
+        // Set<String> supervisorIds =
+        // taskSupervisorService.getTasksSupByTaskId(report.getTaskId())
+        // .stream().map(su -> su.getSupervisorId()).collect(Collectors.toSet());
+        // match.matchSupervisorForOneTask(taskService.queryTask(report.getTaskId()),
+        // supervisorIds,
+        // 1);
+
+        // break;
+        // }
+        // }
+        // }
+        // else if (report.getReportType().equals(MyConstants.REPORT_TYPE_TASK)) {
+        // Task task = taskService.queryTask(report.getTaskId());
+        // task.setTaskState(MyConstants.TASK_STATE_FAIL);
+        // taskService.updateTask(task);
+        // } else if (report.getReportType().equals(MyConstants.REPORT_TYPE_ESSAY)) {
+        // Essay essay = essayService.queryEssayById(report.getEssayId());
+        // essay.setIfDelete(1);
+        // essayService.updateEssay(essay);
+        // } else if (report.getReportType().equals(MyConstants.REPORT_TYPE_CHECK)) {
+        // Check check = checkService.queryCheckById(report.getCheckId());
+        // check.setCheckState(MyConstants.CHECK_STATE_DENY);
+        // checkService.updateCheck(check);
+        // }
+        // }
+        // report.setProcessTime(MyConstants.DATETIME_FORMAT.format(new Date()));
+    }
 }

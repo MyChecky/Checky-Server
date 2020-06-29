@@ -15,8 +15,11 @@ public interface TaskTypeService {
     //查询所有的打卡类型
     List<TaskType> ListAllTaskType();
     //使用ID查询某条TaskType
-    TaskType QueryTaskType(String typeId);
+    TaskType queryTaskType(String typeId);
     //删除打卡类型
     Integer DeleteTaskType(String typeId);
-    //
+    //自增totalNum
+    void incTotalNum(String typeId);
+    //自增passNum
+    void incPassNum(String typeId);
 }

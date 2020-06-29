@@ -24,6 +24,7 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.whu.checky.domain.*;
 import com.whu.checky.mapper.*;
 import com.whu.checky.service.TaskService;
+import com.whu.checky.service.TaskTypeService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
@@ -207,6 +208,11 @@ public class JudgeTest {
         Assert.assertEquals(numPasses, check.getPassNum().intValue());
         Assert.assertEquals(numSupers, check.getSuperviseNum().intValue());
         Assert.assertEquals(resultState, check.getCheckState());
+    }
+
+    @Test
+    public void simpleCheckInTest() {
+        cls.checkin();
     }
 
     @Test

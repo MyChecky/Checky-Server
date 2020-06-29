@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.whu.checky.domain.*;
 import com.whu.checky.mapper.*;
 import com.whu.checky.service.TaskService;
+import com.whu.checky.service.TaskTypeService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -46,6 +48,9 @@ public class Judge {
 
     @Autowired
     AppealMapper appealMapper;
+
+    @Autowired
+    TaskTypeService taskTypeService;
 
     SimpleDateFormat sdf = new SimpleDateFormat(MyConstants.FORMAT_DATE);
 
@@ -254,8 +259,8 @@ public class Judge {
             List<TaskSupervisor> supervisors = taskSupervisorMapper
                     .selectList(new EntityWrapper<TaskSupervisor>().eq("task_id", taskId));
 
-            int numPasses = check.getPassNum();
-            int numSupers = check.getSuperviseNum();
+            int numPasses = 0;
+            int numSupers = 0;
 
             // 对打卡监督者的监督记录进行判断，并综合计算当前打卡是否通过
             for (TaskSupervisor supervisor : supervisors) {
@@ -344,6 +349,7 @@ public class Judge {
                 String finalStates = MyConstants.TASK_STATE_SUCCESS;
                 if (rate >= minRate) {
                     finalStates = MyConstants.TASK_STATE_SUCCESS;
+                    taskTypeService.incPassNum(task.getTypeId());
                 } else {
                     finalStates = MyConstants.TASK_STATE_FAIL;
                 }

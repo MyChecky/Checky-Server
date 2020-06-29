@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.whu.checky.domain.*;
 import com.whu.checky.service.*;
+import com.whu.checky.util.Match;
 import com.whu.checky.util.MyConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -13,10 +14,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/admin/report")
@@ -33,8 +36,12 @@ public class ReportController {
     private CheckService checkService;
     @Autowired
     private TaskService taskService;
+    @Autowired
+    private TaskSupervisorService taskSupervisorService;
+    @Autowired
+    private Match match;
 
-    //查看所有舉報
+    // 查看所有舉報
     @PostMapping("/all")
     public JSONObject all(@RequestBody String body) {
         JSONObject res = new JSONObject();
@@ -82,7 +89,7 @@ public class ReportController {
         return res;
     }
 
-    //处理申诉
+    // 处理申诉
     @PostMapping("/process")
     public JSONObject process(@RequestBody String body) {
         JSONObject res = new JSONObject();
@@ -95,14 +102,14 @@ public class ReportController {
             switch (report.getReportType()) {
                 case MyConstants.REPORT_TYPE_ESSAY:
                     // 对文章假删除
-                    expectFlag++;          // 多执行一次数据库更新
+                    expectFlag++; // 多执行一次数据库更新
                     Essay essayToDelete = essayService.queryEssayById(report.getEssayId());
                     essayToDelete.setIfDelete(1);
                     updateFlag += essayService.updateEssay(essayToDelete);
                     break;
                 case MyConstants.REPORT_TYPE_CHECK:
                     // check设为deny
-                    expectFlag++;          // 多执行一次数据库更新
+                    expectFlag++; // 多执行一次数据库更新
                     Check check = checkService.queryCheckById(report.getCheckId());
                     check.setCheckState(MyConstants.CHECK_STATE_DENY);
                     updateFlag += checkService.updateCheck(check);
@@ -116,18 +123,34 @@ public class ReportController {
                     updateFlag += taskService.updateTask(task);
                     break;
                 case MyConstants.REPORT_TYPE_SUPERVISOR:
-                    // 这里不用做什么，后续会定时执行
+                    // remove supervisor, add new.
+                    List<TaskSupervisor> taskSupervisors = taskSupervisorService
+                            .getTasksSupByTaskId(report.getTaskId());
+                    for (TaskSupervisor taskSupervisor : taskSupervisors) {
+                        if (taskSupervisor.getSupervisorId().equals(report.getSupervisorId())) {
+                            taskSupervisor.setRemoveTime(new SimpleDateFormat().format(new Date()));
+                            taskSupervisorService.updateTaskSup(taskSupervisor);
+
+                            // add a new supervisor
+                            Set<String> supervisorIds = taskSupervisorService.getTasksSupByTaskId(report.getTaskId())
+                                    .stream().map(su -> su.getSupervisorId()).collect(Collectors.toSet());
+                            match.matchSupervisorForOneTask(taskService.queryTask(report.getTaskId()), supervisorIds,
+                                    1);
+
+                            break;
+                        }
+                    }
                     break;
             }
             // 多执行两次数据库更新
             expectFlag += 2;
             // 被举报者被举报成功次数+1
             User userReported = userService.queryUser(report.getUserReportedId());
-            userReported.setReportedPassed(userReported.getReportedPassed()+1);
+            userReported.setReportedPassed(userReported.getReportedPassed() + 1);
             updateFlag += userService.updateUser(userReported);
             // 举报者举报成功次数+1
             User userReport = userService.queryUser(report.getUserId());
-            userReport.setReportPassed(userReport.getReportPassed()+1);
+            userReport.setReportPassed(userReport.getReportPassed() + 1);
             updateFlag += userService.updateUser(userReport);
         }
 
@@ -144,7 +167,7 @@ public class ReportController {
         return res;
     }
 
-    //根据username模糊搜索的举报
+    // 根据username模糊搜索的举报
     @RequestMapping("/query")
     public JSONObject query(@RequestBody String jsonstr) {
         JSONObject res = new JSONObject();
@@ -178,8 +201,8 @@ public class ReportController {
             User user = userService.queryUser(report.getUserId());
             String objectId = report.getCheckId() != null ? report.getCheckId()
                     : report.getEssayId() != null ? report.getEssayId()
-                    : report.getSupervisorId() != null ? report.getSupervisorId()
-                    : report.getTaskId() != null ? report.getTaskId() : null;
+                            : report.getSupervisorId() != null ? report.getSupervisorId()
+                                    : report.getTaskId() != null ? report.getTaskId() : null;
             adminReport.setObjectId(objectId);
             adminReport.setReportContent(report.getReportContent());
             adminReport.setReportId(report.getReportId());
@@ -197,7 +220,6 @@ public class ReportController {
         res.put("total", p.getTotal());
         return res;
     }
-
 
     class AdminReport {
 

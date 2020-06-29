@@ -51,7 +51,7 @@ public class SuperviseController {
             String state = supervise.getSuperviseState().equals(MyConstants.SUPERVISE_STATE_PASS) ? "通过" : "拒绝";
             String userName = userService.queryUser(check.getUserId()).getUserName();
             Task task = taskService.queryTask(check.getTaskId());
-            String taskType = taskTypeService.QueryTaskType(task.getTypeId()).getTypeContent();
+            String taskType = taskTypeService.queryTaskType(task.getTypeId()).getTypeContent();
 //            String avatar = userService.queryUser(check.getUserId()).getUserAvatar();
             supHistories.add(new SupHistory(supervise.getSuperviseId(), supervise.getCheckId(),
                     check.getTaskId(), task.getTaskTitle(), state, /*avatar,*/ check.getCheckTime(),
