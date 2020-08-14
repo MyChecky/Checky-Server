@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.whu.checky.mapper.FriendChatMapper">
+
+    <select id="deleteChatsById" resultType="com.whu.checky.domain.FriendChat">
+        DELETE FROM friend_chat WHERE (send_id = #{userId} OR receiver_id = #{userId})
+    </select>
+
+    <select id="queryUserSendChatById" resultType="com.whu.checky.domain.FriendChat">
+        SELECT send_id AS sendId, receiver_id AS receiverId, chat_time AS chatTime,
+        chat_content AS chatContent, if_read AS ifRead
+          FROM friend_chat WHERE (send_id = #{userId})
+    </select>
+
+    <select id="queryUserReceiverChatById" resultType="com.whu.checky.domain.FriendChat">
+        SELECT send_id AS sendId, receiver_id AS receiverId, chat_time AS chatTime,
+        chat_content AS chatContent, if_read AS ifRead
+          FROM friend_chat WHERE (receiver_id = #{userId})
+    </select>
+
+    <select id="queryUserScopeSendChatById" resultType="com.whu.checky.domain.FriendChat">
+        SELECT send_id AS sendId, receiver_id AS receiverId, chat_time AS chatTime,
+        chat_content AS chatContent, if_read AS ifRead
+          FROM friend_chat WHERE (chat_time between date (#{startDate}) and date (#{endDate}))
+          AND (send_id = #{userId})
+    </select>
+
+    <select id="queryUserScopeReceiverChatById" resultType="com.whu.checky.domain.FriendChat">
+        SELECT send_id AS sendId, receiver_id AS receiverId, chat_time AS chatTime,
+        chat_content AS chatContent, if_read AS ifRead
+          FROM friend_chat WHERE (chat_time between date (#{startDate}) and date (#{endDate}))
+          AND (receiver_id = #{userId})
+    </select>
+
+    <select id="queryLatestMessageByIds" resultType="com.whu.checky.domain.FriendChat">
+		SELECT send_id AS sendId, receiver_id AS receiverId, chat_time AS chatTime,
+		chat_content AS chatContent, if_read AS ifRead
+		FROM friend_chat WHERE chat_time =
+		(SELECT MAX(chat_time) FROM friend_chat
+		WHERE (receiver_id = #{userId2}  AND send_id =#{userId1} )
+		OR (receiver_id =  #{userId1} AND send_id = #{userId2} ))
+		AND ((receiver_id = #{userId2}  AND send_id = #{userId1})
+		OR (receiver_id = #{userId1} AND send_id =#{userId2} ));
+    </select>
+
+    <select id="queryMsgsFromFriends" resultType="com.whu.checky.domain.FriendChat">
+        SELECT send_id AS sendId, receiver_id AS receiverId, chat_time AS chatTime,
+        chat_content AS chatContent, if_read AS ifRead
+          FROM friend_chat WHERE (receiver_id = #{userId2} AND send_id = #{userId1})
+          OR (receiver_id = #{userId1} AND send_id = #{userId2}) order by chat_time
+    </select>
+
+    <select id="queryMsgsFromFriendsByPage" resultType="com.whu.checky.domain.FriendChat">
+        SELECT send_id AS sendId, receiver_id AS receiverId, chat_time AS chatTime,
+        chat_content AS chatContent, if_read AS ifRead
+          FROM friend_chat WHERE (receiver_id = #{userId2} AND send_id = #{userId1})
+          OR (receiver_id = #{userId1} AND send_id = #{userId2}) order by chat_time
+          limit #{page}, 50
+    </select>
+
+    <select id="updateFriendChatIfRead" resultType="Integer">
+        UPDATE friend_chat SET if_read = #{ifRead} WHERE send_id = #{sendId}
+        AND receiver_id = #{receiverId} AND chat_time = #{chatTime}
+    </select>
+</mapper>

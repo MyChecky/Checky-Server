@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.whu.checky.mapper.ReportMapper">
+    <select id="queryReportByUserName" resultType="com.whu.checky.domain.Report">
+        SELECT report_id AS reportId,user_id AS userId,task_id AS taskId,check_id AS checkId,supervisor_id
+AS supervisorId,essay_id AS essayId,report_time AS reportTime,report_content AS reportContent,report_type
+AS reportType,process_result AS processResult,process_time AS processTime,
+user_reported_id AS userReportedId FROM report
+        WHERE user_id IN
+        (select user_id
+        from user
+        where  user_name LIKE "%"#{username}"%")
+        ORDER BY report_time
+    </select>
+</mapper>

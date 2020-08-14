@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.whu.checky.mapper.PayMapper">
+    <select id="queryUserScopePay" resultType="com.whu.checky.domain.Pay">
+        SELECT PAY_ID AS payId, PAY_ORDERINFO AS payOrderinfo, PAY_USERID AS payUserid,
+        PAY_MONEY AS payMoney, PAY_TYPE AS payType, PAY_TIME AS  payTime,
+        PAY_STATE AS payState FROM pay
+        WHERE (pay_time between date (#{startDate}) and date (#{endDate}))
+        AND (pay_userid=#{userId})
+    </select>
+
+</mapper>

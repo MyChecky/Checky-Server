@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.whu.checky.mapper.TaskSupervisorMapper">
+    <select id="getTaskSupervisors" resultType="String">
+        SELECT supervisor_id FROM task_supervisor WHERE task_id=#{taskId}
+    </select>
+
+    <select id="getTaskSupervisor" resultType="TaskSupervisor">
+        SELECT
+        add_time AS addTime, remove_reason AS removeReason,
+        benefit AS benefit, report_num AS reportNum,
+        supervise_num AS superviseNum, bad_num AS badNum
+        FROM task_supervisor
+        WHERE task_id = #{taskId} AND
+        supervisor_id = #{supervisorId}
+    </select>
+</mapper>

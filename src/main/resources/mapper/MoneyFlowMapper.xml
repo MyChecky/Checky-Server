@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.whu.checky.mapper.MoneyFlowMapper">
+    <!--<select id="queryAllScopeMoneyFlow" resultType="com.whu.checky.domain.MoneyFlow">-->
+    <!---->
+    <!--</select>-->
+
+    <select id="queryUserScopeMoneyFlow" resultType="com.whu.checky.domain.MoneyFlow">
+        SELECT flow_id AS `flowId`, user_id AS `userId`, flow_money AS `flowMoney`,
+        flow_time AS `flowTime`,  task_id AS `taskId`, if_test AS ifTest, flow_io AS flowIO,
+        flow_type AS flowType  From moneyflow
+        WHERE (flow_time between date (#{startDate}) and date (#{endDate}))
+        AND (user_id=#{userId})
+    </select>
+
+    <select id="queryMoneyFlowByUserName" resultType="com.whu.checky.domain.MoneyFlow">
+        SELECT flow_id AS flowId,user_id AS userId, task_id AS taskId,flow_money
+        AS flowMoney,flow_time AS flowTime FROM moneyflow
+        WHERE user_id IN
+        (select user_id
+        from user
+        where  user_name LIKE "%"#{username}"%")
+    </select>
+
+</mapper>

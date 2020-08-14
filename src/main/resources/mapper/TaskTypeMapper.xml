@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.whu.checky.mapper.TaskTypeMapper">
+    <update id="incTotalNum">
+        UPDATE task_type set total_num = total_num + 1 where type_id = #{typeId}
+    </update>
+    <update id="incPassNum">
+        UPDATE task_type set pass_num = pass_num + 1 where type_id = #{typeId}
+    </update>
+</mapper>
