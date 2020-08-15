@@ -1,9 +1,5 @@
 package com.whu.checky.auth.filter;
 
-<<<<<<< HEAD
-=======
-
->>>>>>> e6b0da8bd1a7a087f07027969ed1183606b33320
 import javafx.util.Pair;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;

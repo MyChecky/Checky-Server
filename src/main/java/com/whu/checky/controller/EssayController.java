@@ -47,7 +47,6 @@ public class EssayController {
 
     private static final Logger log = LoggerFactory.getLogger(EssayController.class);
 
-<<<<<<< HEAD
     //根据评论数排序
 //    @RequestMapping("/sortByComment")
 //    public List<Essay> sortByComment(@RequestBody String jsonstr){
@@ -62,8 +61,6 @@ public class EssayController {
 //        return res;
 //    }
 
-=======
->>>>>>> e6b0da8bd1a7a087f07027969ed1183606b33320
     //发表动态
     @RequestMapping("/addEssay")
     public JSONObject addEssay(@RequestBody String jsonstr) {

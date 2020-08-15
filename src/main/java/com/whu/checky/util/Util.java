@@ -11,10 +11,7 @@ import java.util.Date;
 public class Util {
     private static final Logger log = LoggerFactory.getLogger(Util.class);
 
-<<<<<<< HEAD
     //比较客户端和用户端的时间
-=======
->>>>>>> e6b0da8bd1a7a087f07027969ed1183606b33320
     public static boolean judgeDate(String ymd){
         try {
             Calendar serverCalendar = Calendar.getInstance();
