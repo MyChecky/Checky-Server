@@ -8,7 +8,10 @@ import com.whu.checky.domain.User;
 import com.whu.checky.mapper.EssayMapper;
 import com.whu.checky.mapper.UserMapper;
 import com.whu.checky.service.EssayService;
+<<<<<<< HEAD
 import com.whu.checky.util.MyConstants;
+=======
+>>>>>>> e6b0da8bd1a7a087f07027969ed1183606b33320
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -121,6 +124,7 @@ public class EssayServiceImpl implements EssayService {
                 .le("essay_time", endTime)
                 .orderBy("essay_time", false));
     }
+<<<<<<< HEAD
 
     @Override
     public List<Essay> sortByComment(){
@@ -162,4 +166,6 @@ public class EssayServiceImpl implements EssayService {
     public int getLikeSum(String userId) {
         return essayMapper.getLikeSum(userId);
     }
+=======
+>>>>>>> e6b0da8bd1a7a087f07027969ed1183606b33320
 }

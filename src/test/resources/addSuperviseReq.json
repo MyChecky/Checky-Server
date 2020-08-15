@@ -1,7 +1,16 @@
+<<<<<<< HEAD
 {
     "checkId": "e824c90633fe4c3e8e257d06aec1cdec",
     "supervisorId": "ow-ZO5S3yk22gBmaQI0cJuGsdSfI",
     "superviseTime": "2020-06-25",
     "superviseContent": "abc",
     "superviseState": "pass"
+=======
+{
+    "checkId": "e824c90633fe4c3e8e257d06aec1cdec",
+    "supervisorId": "ow-ZO5S3yk22gBmaQI0cJuGsdSfI",
+    "superviseTime": "2020-06-25",
+    "superviseContent": "abc",
+    "superviseState": "pass"
+>>>>>>> e6b0da8bd1a7a087f07027969ed1183606b33320
 }

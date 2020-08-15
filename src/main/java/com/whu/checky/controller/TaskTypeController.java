@@ -21,7 +21,11 @@ public class TaskTypeController {
     @Autowired
     private TaskTypeService taskTypeService;
 
+<<<<<<< HEAD
     //用于新添任务类型的
+=======
+    //管理端用于新添类型的
+>>>>>>> e6b0da8bd1a7a087f07027969ed1183606b33320
     @PostMapping("/addType")
     public String addType(@RequestBody String jsonstr){
         TaskType taskType= JSON.parseObject(jsonstr,new TypeReference<TaskType>(){});
@@ -56,7 +60,10 @@ public class TaskTypeController {
         return  taskTypeService.ListAllTaskType();
     }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> e6b0da8bd1a7a087f07027969ed1183606b33320
     @RequestMapping("/udpateType")
     public String udpateType(@RequestBody String jsonstr) {
         TaskType taskType= JSON.parseObject(jsonstr,new TypeReference<TaskType>(){});

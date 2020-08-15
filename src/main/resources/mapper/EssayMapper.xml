@@ -8,6 +8,7 @@
                 (select user_id from user where  user_name LIKE "%"#{username}"%") ORDER BY essay_time DESC
     </select>
 
+<<<<<<< HEAD
 <!--    <select id="sortByLike" resultType="com.whu.checky.domain.Essay">-->
 <!--                SELECT essay_id AS essayId,user_id AS userId,essay_content AS essayContent,essay_time AS essayTime,like_num-->
 <!--                AS likeNum,comment_num AS commentNum,version,longtitude,latitude-->
@@ -33,4 +34,7 @@
                 from essay
                 where user_id= #{userId}
     </select>
+=======
+
+>>>>>>> e6b0da8bd1a7a087f07027969ed1183606b33320
 </mapper>

@@ -2,7 +2,10 @@ package com.whu.checky.service;
 
 import com.baomidou.mybatisplus.plugins.Page;
 import com.whu.checky.domain.Essay;
+<<<<<<< HEAD
 import org.apache.ibatis.annotations.Param;
+=======
+>>>>>>> e6b0da8bd1a7a087f07027969ed1183606b33320
 
 import java.util.List;
 
@@ -35,6 +38,7 @@ public interface EssayService {
     List<Essay> queryEssaysLikeNickname(Page<Essay> p, String startTime, String endTime, String keyword);
 
     List<Essay> queryEssaysLikeContent(Page<Essay> p, String startTime, String endTime, String keyword);
+<<<<<<< HEAD
 
     //根据评论数排序
     List<Essay> sortByComment();
@@ -49,4 +53,6 @@ public interface EssayService {
     int getLikeSum(String userId);
 
 
+=======
+>>>>>>> e6b0da8bd1a7a087f07027969ed1183606b33320
 }

@@ -13,6 +13,7 @@ import java.util.List;
 @Component("essayMapper")
 public interface EssayMapper extends BaseMapper<Essay> {
     List<Essay> queryEssaysByUserName(@Param("username") String username);
+<<<<<<< HEAD
     //根据最近3天各个用户所有打卡的点赞数进行排序
 //    List<Essay> sortByLike();
     //根据最近3天各个用户所有打卡的评论数进行排序
@@ -21,4 +22,6 @@ public interface EssayMapper extends BaseMapper<Essay> {
     int getCommentSum(@Param("userId") String userId);
     //获取最近三天某个用户的所有打卡点赞总数
     int getLikeSum(@Param("userId") String userId);
+=======
+>>>>>>> e6b0da8bd1a7a087f07027969ed1183606b33320
 }

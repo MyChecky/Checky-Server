@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
     "checkInfo": {
         "userId": "ow-ZO5VYaELkUFeD_IC0qN02NsCw",
@@ -6,4 +7,14 @@
     },
     "content": "abc",
     "essayId": "noEssay"
+=======
+{
+    "checkInfo": {
+        "userId": "ow-ZO5VYaELkUFeD_IC0qN02NsCw",
+        "taskId": "fafd9390-8426-4ba9-92cb-4e543eef616a",
+        "checkTime": "2020-06-25"
+    },
+    "content": "abc",
+    "essayId": "noEssay"
+>>>>>>> e6b0da8bd1a7a087f07027969ed1183606b33320
 }
