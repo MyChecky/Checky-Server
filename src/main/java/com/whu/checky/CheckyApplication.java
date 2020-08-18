@@ -59,7 +59,7 @@ public class CheckyApplication{
     **/
 
     /*added by lhw on 2020.6.18
-    同时支持http 和 https
+    同时支持http 和 https*/
     @Bean
     public ServletWebServerFactory servletContainer() {
         TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory();
@@ -69,10 +69,10 @@ public class CheckyApplication{
 
     private Connector createStandardConnector() {
         Connector connector = new Connector("org.apache.coyote.http11.Http11NioProtocol");
-        connector.setPort(8090);
+        connector.setPort(8099);
         return connector;
     }
-    */
+
 
 
     /*
