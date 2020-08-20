@@ -28,7 +28,7 @@ public interface CheckService {
 
     List<Check> getTaskChecks(String taskId);
 
-    public int[] queryUserCheckNumTimely(String userId);
+    public int[] queryUserCheckNumTimely(String userId);//查询用户在四个季度的打卡打卡数目
 
 //    void updatePassSuperviseCheck(String checkId);
 //

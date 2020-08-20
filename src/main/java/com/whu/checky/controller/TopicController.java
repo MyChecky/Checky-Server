@@ -60,12 +60,13 @@ public class TopicController {
         return object;
     }
 
-//    @RequestMapping("/test")
-//    public JSONObject test(@RequestBody String jsonstr)
-//    {
-//        List<Topic> topicList = topicService.orderByTopicCount();
-//        JSONObject object = new JSONObject();
-//        object.put("result", topicList);
-//        return object;
-//    }
+    //话题排序（用于统计）
+    @RequestMapping("/sort")
+    public JSONObject sort(@RequestBody String jsonstr)
+    {
+        List<Topic> topicList = topicService.orderByTopicCount();
+        JSONObject object = new JSONObject();
+        object.put("sortedTopicList", topicList);
+        return object;
+    }
 }

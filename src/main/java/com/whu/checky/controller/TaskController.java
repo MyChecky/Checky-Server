@@ -27,6 +27,8 @@ public class TaskController {
     @Autowired
     private TaskService taskService;
     @Autowired
+    private TagService tagService;
+    @Autowired
     private UserService userService;
     @Autowired
     private ParameterService parameterService;
@@ -67,6 +69,14 @@ public class TaskController {
         ret.put("actualTimes", task.getCheckNum());
         ret.put("passTimes", task.getCheckPass());
         ret.put("checkFrec", task.getCheckFrec());
+        //tags信息
+
+        ret.put("tag1", tagService.queryTagById(task.getTag1()));
+        ret.put("tag2", tagService.queryTagById(task.getTag2()));
+        ret.put("tag3", tagService.queryTagById(task.getTag3()));
+        ret.put("tag4", tagService.queryTagById(task.getTag4()));
+        ret.put("tag5", tagService.queryTagById(task.getTag5()));
+
         if (task.getIfTest() == MyConstants.IF_TEST_TRUE) {
             ret.put("taskMoneyType", "测试金额");
         } else {

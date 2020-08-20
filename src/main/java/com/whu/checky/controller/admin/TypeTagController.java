@@ -62,7 +62,7 @@ public class TypeTagController {
 
 //    查询所有关系
     @RequestMapping("/all")
-    public HashMap<String, Object> queryAll(@RequestBody String jsonstr) {
+    public HashMap<String, Object> queryAll() {
         HashMap<String, Object> ret = new HashMap<>(); // 返回值
         List<TypeTag> typeTagList = typeTagService.getAllTypeTags();
 //        String addResult = result == 1 ? MyConstants.RESULT_OK : MyConstants.RESULT_FAIL;

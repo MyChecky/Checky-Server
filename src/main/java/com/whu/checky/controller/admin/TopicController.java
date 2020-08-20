@@ -57,4 +57,14 @@ public class TopicController {
         object.put("state", addResult);
         return object;
     }
+
+    //话题排序（用于统计）
+    @RequestMapping("/sort")
+    public JSONObject sort()
+    {
+        List<Topic> topicList = topicService.orderByTopicCount();
+        JSONObject object = new JSONObject();
+        object.put("sortedTopicList", topicList);
+        return object;
+    }
 }

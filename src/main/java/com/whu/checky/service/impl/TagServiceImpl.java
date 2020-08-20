@@ -38,7 +38,8 @@ public class TagServiceImpl implements TagService {
     @Override
     public List<Tag> rank() {
         return tagMapper.selectList(new EntityWrapper<Tag>()
-        .orderBy("tag_count",false)
+                .gt("tag_count",0)
+                .orderBy("tag_count",false)
         );
     }
 }

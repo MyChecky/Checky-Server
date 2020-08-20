@@ -30,7 +30,7 @@ public class TopicRankController {
 
     //根据评论数排序
     @RequestMapping("/rank")
-    public List<TopicAndNum> topicRank(@RequestBody String jsonstr) {
+    public List<TopicAndNum> topicRank() {
         //返回值
         List<TopicAndNum> RankList = new ArrayList<>();
         //获取根据话题中动态数为依据的排列结果

@@ -22,7 +22,7 @@ public class UserRankController {
 
     //根据评论数排序
     @RequestMapping("/rankByComment")
-    public List<UserAndNum> sortByComment(@RequestBody String jsonstr) {
+    public List<UserAndNum> sortByComment() {
         List<Essay> essayRankList = essayService.sortByComment();
         //返回值
         List<UserAndNum> RankList = new ArrayList<>();
@@ -35,7 +35,7 @@ public class UserRankController {
 
     //根据点赞数排序
     @RequestMapping("/rankByLike")
-    public List<UserAndNum> sortByLike(@RequestBody String jsonstr) {
+    public List<UserAndNum> sortByLike() {
         List<Essay> essayRankList = essayService.sortByLike();
         List<UserAndNum> RankList = new ArrayList<>();
         for(int i=0; i<essayRankList.size(); i++) {

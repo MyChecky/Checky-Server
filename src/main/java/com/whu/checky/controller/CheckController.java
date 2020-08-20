@@ -56,7 +56,7 @@ public class CheckController {
         String userId = JSONObject.parseObject(body).getString("userId");
 
         int[] numTimely = checkService.queryUserCheckNumTimely(userId);
-        List<MySeries> seriesTime = new ArrayList<>();
+        List<MySeries> seriesTime = new ArrayList<>();//MySeries:{name:"",data:""}
         seriesTime.add(new MySeries("第一季度", numTimely[0]));
         seriesTime.add(new MySeries("第二季度", numTimely[1]));
         seriesTime.add(new MySeries("第三季度", numTimely[2]));
