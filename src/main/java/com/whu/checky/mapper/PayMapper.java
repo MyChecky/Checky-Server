@@ -5,6 +5,7 @@ import com.whu.checky.domain.Pay;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -23,4 +24,6 @@ public interface PayMapper extends BaseMapper<Pay> {
 
     @Select("SELECT SUM(PAY_MONEY) FROM pay WHERE PAY_TYPE = #{payType}")
     Double selectSum(@Param("payType")String payType);
+
+    Integer updatePaytoSuccess(@Param("nonceStr") String nonceStr);
 }

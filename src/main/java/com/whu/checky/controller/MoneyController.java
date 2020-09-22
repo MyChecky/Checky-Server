@@ -10,7 +10,9 @@ import com.whu.checky.domain.User;
 import com.whu.checky.service.MoneyService;
 import com.whu.checky.service.TaskService;
 import com.whu.checky.service.UserService;
+import com.whu.checky.util.HttpUtils;
 import com.whu.checky.util.MyConstants;
+import com.whu.checky.util.WXPayConstants;
 import com.whu.checky.util.WXPayUtil;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +60,7 @@ public class MoneyController {
         return ret;
     }
 
-    @RequestMapping("/pay")
+    @RequestMapping("/pay")//暂时不用
     public void pay(@RequestBody String jsonstr) {
         //微信支付相关
 
@@ -267,7 +269,7 @@ public class MoneyController {
         return ans;
     }
 
-    @RequestMapping("/createOrder")
+    @RequestMapping("/createOrder")//生成订单、获取预支付信息、再次签名
     public HashMap<String, Object> createOrder(@RequestBody String jsonstr) {    // 创建订单
         JSONObject object = (JSONObject) JSON.parse(jsonstr);
         String openId = (String) object.get("openId");  // 用户的openId
@@ -280,7 +282,6 @@ public class MoneyController {
         pay.setPayState(MyConstants.PAY_STATE_SUBMIT);
         pay.setPayType(MyConstants.PAY_TYPE_PAY);
         pay.setPayTime(payTime);
-        pay.setPayOrderinfo("test-without-wechat-order-info"); // 这个应该微信返回的微信编号
 
         User user = userService.queryUser(openId);
 
@@ -297,41 +298,73 @@ public class MoneyController {
             total_fee = (int) (amount * 100);
         }
         userService.updateUser(user);
-        int recordResult = moneyService.addTrueMoneyRecord(pay);
 
         HashMap<String, Object> ans = new HashMap<>();  // 返回值
-//        String formData = moneyService.commitData(openId, payId, total_fee);
-//        String httpResult = HttpUtils.httpXMLPost(WxPayConfig.createOrderUrl, formData);
-//        try {
-//            Map<String, String> resultMap = WXPayUtil.xmlToMap(httpResult);
+        String formData = moneyService.commitData(openId, payId, total_fee);  //构建数据包
+        String httpResult = HttpUtils.httpXMLPost(WxPayConfig.unifiedOrderUrl, formData);  //发送到统一支付url
+        try {
+            Map<String, String> resultMap = WXPayUtil.xmlToMap(httpResult);//返回值
+
+            pay.setPayOrderinfo(resultMap.get("nonce_str")); //以随机生成的字符串作为每次支付的唯一标志
+            int recordResult = moneyService.addTrueMoneyRecord(pay);//添加支付信息到数据库
+
 //            ans.put("package", "prepay_id=" + resultMap.get("prepay_id"));
-//            ans.put("prepay_id", resultMap.get("prepay_id")); // 这条数据/weixinPay要用
-//            ans.put("nonceStr", resultMap.get("nonce_str")); // 这条数据/weixinPay要用
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        String times = WXPayUtil.getCurrentTimestamp() + "";
-//        Map<String, String> packageParams = new HashMap<String, String>();
-//        packageParams.put("appId", WxPayConfig.appId);
-//        packageParams.put("signType", WxPayConfig.signType);
-//        packageParams.put("nonceStr", ans.get("nonceStr") + "");
-//        packageParams.put("timeStamp", times);
-//        packageParams.put("package", ans.get("package") + "");//商户订单号
-//        String sign = "";
-//        try {
-//            sign = WXPayUtil.generateSignature(packageParams, WxPayConfig.sandBoxKey);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        ans.put("payId", payId);
-//
-//        ans.put("timeStamp", times);
-//        ans.put("paySign", sign);
+            String returnCode = resultMap.get("return_code");//返回状态码
+            if (returnCode.equals(WXPayConstants.FAIL))//如果返回FAIL
+            {
+                String errmsg = resultMap.get("return_msg");
+                switch (errmsg) {
+                    case "":ans.put("return_msg","签名失败");
+                    case WXPayConstants.INVALID_REQUEST:ans.put("return_msg","参数格式有误或者未按规则上传\t订单重入时，要求参数值与原请求一致，请确认参数问题");
+                    case WXPayConstants.NOAUTH:ans.put("return_msg","商户未开通此接口权限\t请商户前往申请此接口权限");
+                    case WXPayConstants.NOTENOUGH:ans.put("return_msg","用户帐号余额不足\t用户帐号余额不足，请用户充值或更换支付卡后再支付");
+                    case WXPayConstants.ORDERPAID:ans.put("return_msg","商户订单已支付，无需重复操作\t商户订单已支付，无需更多操作");
+                    case WXPayConstants.ORDERCLOSED:ans.put("return_msg","当前订单已关闭，无法支付\t当前订单已关闭，请重新下单");
+                    case WXPayConstants.SYSTEMERROR:ans.put("return_msg","系统超时\t系统异常，请用相同参数重新调用");
+                    case WXPayConstants.APPID_NOT_EXIST:ans.put("return_msg","参数中缺少APPID\t请检查APPID是否正确");
+                    case WXPayConstants.MCHID_NOT_EXIST:ans.put("return_msg","参数中缺少MCHID\t请检查MCHID是否正确");
+                    case WXPayConstants.APPID_MCHID_NOT_MATCH:ans.put("return_msg","appid和mch_id不匹配\t请确认appid和mch_id是否匹配");
+                    case WXPayConstants.LACK_PARAMS:ans.put("return_msg","缺少必要的请求参数\t请检查参数是否齐全");
+                    case WXPayConstants.OUT_TRADE_NO_USED:ans.put("return_msg","同一笔交易不能多次提交\t请核实商户订单号是否重复提交");
+                    case WXPayConstants.SIGNERROR:ans.put("return_msg","\t参数签名结果不正确\t请检查签名参数和方法是否都符合签名算法要求");
+                    case WXPayConstants.XML_FORMAT_ERROR:ans.put("return_msg","XML格式错误\t请检查XML参数格式是否正确");
+                    case WXPayConstants.REQUIRE_POST_METHOD:ans.put("return_msg","未使用post传递参数 \t请检查请求参数是否通过post方法");
+                    case WXPayConstants.POST_DATA_EMPTY:ans.put("return_msg","post数据不能为空\t请检查post数据是否为空");
+                    case WXPayConstants.NOT_UTF8:ans.put("return_msg","未使用指定编码格式\t请使用UTF-8编码格式");
+                    }
+            }
+            else if(returnCode.equals(WXPayConstants.SUCCESS)) {
+                ans.put("prepay_id", resultMap.get("prepay_id")); // 这条数据/weixinPay要用
+                ans.put("nonceStr", resultMap.get("nonce_str")); // 这条数据/weixinPay要用
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        String times = WXPayUtil.getCurrentTimestamp() + "";
+        Map<String, String> packageParams = new HashMap<String, String>();//准备再次签名
+        packageParams.put("appId", WxPayConfig.appId);
+        packageParams.put("timeStamp", times);
+        packageParams.put("nonceStr", ans.get("nonceStr") + "");
+        packageParams.put("package", "prepay_id="+ans.get("prepay_id"));
+        packageParams.put("signType", WxPayConfig.signType);
+
+        String sign = "";
+        try {
+            sign = WXPayUtil.generateSignature(packageParams, WxPayConfig.sandBoxKey);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        ans.put("payId", payId);//数据库种的Id
+
+        ans.put("timeStamp", times);
+        ans.put("paySign", sign);
         ans.put("state", MyConstants.RESULT_OK);
+        ans.put("package",packageParams.get("package"));
+        ans.put("signType",WxPayConfig.signType);
         return ans;
     }
 
-    @RequestMapping("/weixinPay")
+    @RequestMapping("/weixinPay")//暂时没用上
     public HashMap<String, Object> weixinPay(@RequestBody String jsonstr) {    // 支付
         JSONObject object = (JSONObject) JSON.parse(jsonstr);
 //        String openId = (String) object.get("openId");    // 检测用
@@ -370,7 +403,7 @@ public class MoneyController {
         }
         //sb为微信返回的xml
         String notityXml = sb.toString();
-        String resXml = "";
+        String resXml = "";//返回给微信的参数
         System.out.println("接收到的报文：" + notityXml);
         Map map = WXPayUtil.xmlToMap(notityXml);
         String returnCode = (String) map.get("return_code");
@@ -379,7 +412,9 @@ public class MoneyController {
             if (WXPayUtil.verify(WXPayUtil.createLinkString(map), (String) map.get("sign"), WxPayConfig.sandBoxKey, "utf-8")) {
                 /**此处添加自己的业务逻辑代码start**/
                 /**亦即更新pay的微信订单编号和状态**/
-
+                //每个pay的唯一字符用随机字符串
+                String nonceStr = (String) map.get("nonce_str");
+                moneyService.updateMoneyPayByPayOrderInfo(nonceStr);//更新pay的状态为成功
                 /**此处添加自己的业务逻辑代码end**/
                 //通知微信服务器已经支付成功
                 resXml = "<xml>" + "<return_code><![CDATA[SUCCESS]]></return_code>"

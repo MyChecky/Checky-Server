@@ -33,7 +33,8 @@ public interface MoneyService {
     int updateTrueMoneyPay(Pay pay);
     // 微信支付用
     String commitData(String openId, String payId, int total_fee);
-
+    //根据PAY_ORDERINFO更新
+    int updateMoneyPayByPayOrderInfo(String payOrderinfo);
     // 这是admin用的
 //    List<MoneyFlow> queryAllMoneyFlow();
 //    List<MoneyFlow> queryAllMoneyFlow(Page page);

@@ -8,5 +8,8 @@
         WHERE (pay_time between date (#{startDate}) and date (#{endDate}))
         AND (pay_userid=#{userId})
     </select>
-
+    <update id="updatePaytoSuccess">
+        UPDATE `pay` SET PAY_STATE = success
+        WHERE PAY_ORDERINFO=#{nonceStr}
+    </update>
 </mapper>

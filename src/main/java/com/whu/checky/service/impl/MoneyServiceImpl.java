@@ -442,23 +442,23 @@ public class MoneyServiceImpl implements MoneyService {
         String body = "JSAPI支付测试";
         Map<String, String> packageParams = new HashMap<String, String>();
         packageParams.put("appid", WxPayConfig.appId);
-        packageParams.put("body", body);
         packageParams.put("mch_id", WxPayConfig.mchId);
         packageParams.put("nonce_str", nonceStr);
-        packageParams.put("notify_url", WxPayConfig.notifyUrl);//支付成功后的回调地址
-        packageParams.put("openid", openId + "");//支付方式
-        packageParams.put("out_trade_no", payId);//商户订单号
         packageParams.put("sign_type", WxPayConfig.signType);
-        packageParams.put("spbill_create_ip", "127.0.0.1");
+        packageParams.put("body", body);
+        packageParams.put("out_trade_no", payId);//商户订单号
         packageParams.put("total_fee", Integer.toString(total_fee));//支付金额，这边需要转成字符串类型，否则后面的签名会失败
+        packageParams.put("spbill_create_ip", "127.0.0.1");//调用微信支付API的机器IP
+        packageParams.put("notify_url", WxPayConfig.notifyUrl);//支付成功后的回调地址
         packageParams.put("trade_type", WxPayConfig.tradeType);//支付方式
+        packageParams.put("openid", openId + "");//trade_type=JSAPI，此参数必传，用户在商户appid下的唯一标识。
         String sign = "";
         try {
-            sign = WXPayUtil.generateSignature(packageParams, WxPayConfig.sandBoxKey);
+            sign = WXPayUtil.generateSignature(packageParams, WxPayConfig.sandBoxKey);//生成签名
         } catch (Exception e) {
             e.printStackTrace();
         }
-        String formData = "<xml>";
+        String formData = "<xml>";//带发送的数据
         formData += "<appid>" + WxPayConfig.appId + "</appid>"; //appid
         formData += "<body>" + body + "</body>";
         formData += "<mch_id>" + WxPayConfig.mchId + "</mch_id>"; //商户号
@@ -473,6 +473,12 @@ public class MoneyServiceImpl implements MoneyService {
         formData += "<sign>" + sign + "</sign>";
         formData += "</xml>";
         return formData;
+    }
+    //根据payOrderinfo更新至成功
+    @Override
+    public int updateMoneyPayByPayOrderInfo(String payOrderinfo) {
+        payMapper.updatePaytoSuccess(payOrderinfo);
+        return 0;
     }
 
 }
