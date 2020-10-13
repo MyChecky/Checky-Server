@@ -22,4 +22,6 @@ public interface TaskTypeService {
     void incTotalNum(String typeId);
     //自增passNum
     void incPassNum(String typeId);
+    //根据TypeId返回Type内容
+    String getTypeContentByTypeId(String typeId);
 }

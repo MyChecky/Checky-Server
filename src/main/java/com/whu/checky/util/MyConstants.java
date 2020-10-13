@@ -138,4 +138,28 @@ public  class MyConstants {
 
     public static final int IF_DELETE_TRUE = 1;
     public static final int IF_DELETE_FALSE = 0;
+
+    //勋章类型
+    /*等级勋章分以下五类
+    * 专注勋章一类
+    * 达人勋章类型根据任务类型给定
+    * */
+    public static final String RANK1 = "青铜";
+    public static final String RANK2 = "白银";
+    public static final String RANK3 = "黄金";
+    public static final String RANK4 = "黑金";
+    public static final String RANK5 = "砖石";
+    public static final String CONCENTRATE = "CONCENTRATE";
+
+    //勋章图片
+    public static final String TALENT_URL="https://s1.ax1x.com/2020/09/30/0mjsER.png";
+    public static final String CONCENTRATE_URL="https://s1.ax1x.com/2020/10/11/0cy9G8.png";
+    public static final String RANK1_URL="https://s1.ax1x.com/2020/10/11/0cypPf.png";
+    public static final String RANK2_URL="https://s1.ax1x.com/2020/10/11/0cyPxg.png";
+    public static final String RANK3_URL="https://s1.ax1x.com/2020/10/11/0cszIP.png";
+    public static final String RANK4_URL="https://s1.ax1x.com/2020/10/11/0cyCRS.png";
+    public static final String RANK5_URL="https://s1.ax1x.com/2020/10/11/0cyFMQ.png";
+    //达人勋章获取标准
+    public static final int TALENT_STANDART=30;
+
 }

@@ -7,16 +7,15 @@ import java.util.*;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
+import com.whu.checky.domain.Check;
 import com.whu.checky.domain.Task;
 import com.whu.checky.domain.TaskSupervisor;
 import com.whu.checky.domain.User;
-import com.whu.checky.mapper.TaskMapper;
-import com.whu.checky.mapper.TaskSupervisorMapper;
-import com.whu.checky.mapper.TaskTypeMapper;
-import com.whu.checky.mapper.UserMapper;
+import com.whu.checky.mapper.*;
 import com.whu.checky.service.TaskService;
 
 import com.whu.checky.util.MyConstants;
+import com.whu.checky.util.MyStringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +25,8 @@ public class TaskServiceImpl implements TaskService {
     private TaskMapper taskMapper;
     @Autowired
     private UserMapper userMapper;
-
+    @Autowired
+    private CheckMapper checkMapper;
     @Autowired
     private TaskSupervisorMapper taskSupervisorMapper;
     @Autowired
@@ -266,5 +266,61 @@ public class TaskServiceImpl implements TaskService {
             task.setUserName(userMapper.getUsernameById(task.getUserId()));
         }
         return tasks;
+    }
+
+    @Override
+    public List<Task> queryTaskByUser(String userId) {
+        return taskMapper.selectList(new EntityWrapper<Task>()
+                .eq("user_id", userId));
+    }
+
+    @Override
+    public boolean checkFailTaskWeekly(String userId) {
+        List<Task> taskList = taskMapper.selectList(new EntityWrapper<Task>()
+                .eq("task_state", "fail")
+                .and()
+                .eq("user_id", userId)
+        );
+        for(int i = 0;i<taskList.size();i++)
+        {
+            if(!MyStringUtil.checkIsBeforeWeek(taskList.get(i).getTaskEndTime()))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean checkFreWeekly(String userId) {
+        List<Task> taskList = taskMapper.selectList(new EntityWrapper<Task>()
+        .eq("user_id",userId)
+                        .andNew()
+                .eq("task_state","during")
+        );
+        //遍历正在进行的每一个任务
+        for(int i =0 ;i<taskList.size();i++)
+        {
+            int checkNumSupposed = MyStringUtil.transferCheckFre(taskList.get(i).getCheckFrec());
+            //查找该任务的每一次打卡
+            List<Check> checkList = checkMapper.selectList(new EntityWrapper<Check>()
+            .eq("task_id",taskList.get(i).getTaskId())
+            );
+            //判断本周内打卡次数是否符合check_fre
+            int checkNum = 0;
+            for(int j = 0;j<checkList.size();j++)
+            {
+                if(MyStringUtil.checkIsBeforeWeek(checkList.get(j).getCheckTime()))
+                {
+                    checkNum++;
+                }
+            }
+            //如果某个任务的打卡次数小于应该的次数，返回false
+            if(checkNum<checkNumSupposed)
+            {
+                return false;
+            }
+        }
+        return true;
     }
 }

@@ -60,19 +60,20 @@ public class MoneyController {
         return ret;
     }
 
-    @RequestMapping("/pay")//暂时不用
-    public void pay(@RequestBody String jsonstr) {
-        //微信支付相关
+    @RequestMapping("/pay")//记录流水
+    public HashMap<String,Object> pay(@RequestBody String jsonstr) {
 
         //成功之后在服务器数据库记录流水
         MoneyFlow moneyFlow = JSON.parseObject(jsonstr, new TypeReference<MoneyFlow>() {
         });
         int result = moneyService.addTestMoneyRecord(moneyFlow);
+        HashMap<String,Object> ans = new HashMap<>();
         if (result == 1) {
-            //记录成功
+        ans.put("state","记录流水成功");
         } else {
-            //记录失败
+            ans.put("state","记录流水失败");
         }
+        return ans;
     }
 
     @RequestMapping("/payback")

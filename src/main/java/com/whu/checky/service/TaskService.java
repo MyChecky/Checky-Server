@@ -42,4 +42,10 @@ public interface TaskService {
     List<Task> queryTaskLikeTitle(Page<Task> p, String startTime, String endTime, String keyword);
 
     List<Task> queryTaskAll(Page<Task> p, String startTime, String endTime);
+
+    List<Task> queryTaskByUser(String userId);
+    //筛选一周内是否有失败任务
+    boolean checkFailTaskWeekly(String userId);
+    //判断该用户所有任务的一周内打卡是否全都按照check_fre连续打卡
+    boolean checkFreWeekly(String userId);
 }

@@ -14,6 +14,17 @@ public class Medal {
 
     private String ifExpired;
 
+    private String medalType;
+
+
+    public String getMedalType() {
+        return medalType;
+    }
+
+    public void setMedalType(String medalType) {
+        this.medalType = medalType;
+    }
+
     public String getMedalId() {
         return medalId;
     }

@@ -50,4 +50,9 @@ public class TaskTypeServiceImpl implements TaskTypeService {
     public void incPassNum(String typeId) {
         taskTypeMapper.incPassNum(typeId);
     }
+
+    @Override
+    public String getTypeContentByTypeId(String typeId) {
+        return taskTypeMapper.selectById(typeId).getTypeContent();
+    }
 }
