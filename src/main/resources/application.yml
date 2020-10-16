@@ -40,8 +40,8 @@ mybatis-plus:
 
 
 xcloud:
-#  uploadPath: D:\My_Checky\checky_server\attach_files
-  uploadPath: E:\attach_file
+  uploadPath: D:\My_Checky\checky_server\attach_files
+#  uploadPath: E:\attach_file
   staticPath: resources
 
 ports:

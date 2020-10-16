@@ -12,8 +12,8 @@
     <springProperty scope="context" name="logger.path" source="logging.path" defaultValue="./logs/Checky"/>
     -->
     <!-- 设置日志的目录制-->
-<!--    <property name="logger.path" value="D:\My_Checky\checky_server\logs" />-->
-    <property name="logger.path" value="E:\logs" />
+    <property name="logger.path" value="D:\My_Checky\checky_server\logs" />
+<!--    <property name="logger.path" value="E:\logs" />-->
 
 
     <!-- 彩色日志 -->

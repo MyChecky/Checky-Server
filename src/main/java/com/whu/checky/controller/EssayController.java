@@ -45,6 +45,9 @@ public class EssayController {
     @Autowired
     private ParameterService parameterService;
 
+    @Autowired
+    private TopicService topicService;
+
     private static final Logger log = LoggerFactory.getLogger(EssayController.class);
 
     //根据评论数排序
@@ -70,7 +73,7 @@ public class EssayController {
 //        String checkId = (String) object.get("checkId");
         String longitude = (String) object.get("longitude");
         String latitude = (String) object.get("latitude");
-
+        String topic = object.getString("topicId");
         // 在Essay表添加记录
         Essay essay = new Essay();
         String essayId = UUID.randomUUID().toString();
@@ -80,6 +83,7 @@ public class EssayController {
         essay.setLongtitude(longitude);
         essay.setUserId(userId);
         essay.setEssayContent(essayContent);
+        essay.setTopic(topic);
         int result = essayService.addEssay(essay);
         // 在record表相关记录添加essayId信息
         // 似乎因为上传时间过慢导致此时查询record时，找不到文件类型的记录，在文件上传里做了补充
@@ -92,6 +96,8 @@ public class EssayController {
         if (result == 1) {
             ans.put("state", MyConstants.RESULT_OK);
             ans.put("essayId", essay.getEssayId());  // 插入成功
+            //动态发布成功后将其对应的话题topic_count属性加1
+
         } else {
             ans.put("state", MyConstants.RESULT_FAIL); // 插入失败
         }

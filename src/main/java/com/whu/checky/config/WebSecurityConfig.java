@@ -52,7 +52,7 @@ public class WebSecurityConfig {
                     .antMatchers("/wechat/login","/admin/login","/resources/**","/socket/**",
                             "/userAndHobby/getServiceTerms", "/essay/queryEssayById", "/essay/displayEssay",
                             "/essay/**", "/task/taskDetail","/topic/**","/topicRank/**",
-                            "/addApiTest/**","/admin/**","/tag/**","/typeTag/**","/userRank/**","/medal/**","").permitAll()
+                            "/addApiTest/**","/admin/**","/tag/**","/typeTag/**","/userRank/**","/medal/**","/taskType/**").permitAll()
                     .antMatchers("/admin","/**/admin/**").hasRole("ADMIN")
                     .antMatchers("/**").hasRole("USER")
                     .and()

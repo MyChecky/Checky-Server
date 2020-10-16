@@ -15,4 +15,7 @@ public interface TagMapper extends BaseMapper<Tag> {
 
     @Select("SELECT tag_id AS tagId,tag_content AS tagContent,tag_count AS tagCount FROM tag")
     List<Tag> getAllTag();
+
+    void incTagCount(String tagId);
+    void incPassNum(String tagId);
 }

@@ -162,4 +162,12 @@ public class EssayServiceImpl implements EssayService {
     public int getLikeSum(String userId) {
         return essayMapper.getLikeSum(userId);
     }
+
+    @Override
+    public String deleteEssayByTopicId(String topicId) {
+        essayMapper.delete(new EntityWrapper<Essay>()
+        .eq("topic",topicId)
+        );
+        return MyConstants.RESULT_OK;
+    }
 }

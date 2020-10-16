@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -49,15 +50,27 @@ public class TopicController {
     @RequestMapping("/add")
     public JSONObject add(@RequestBody String jsonstr)
     {
-        Topic topic = JSON.parseObject(jsonstr, new TypeReference<Topic>() {
-        });
-        topic.setTopicId(UUID.randomUUID().toString());
-        topic.setTopicCount(1);
-        int result = topicService.addTopic(topic);
-        String addResult = result == 1 ? MyConstants.RESULT_OK : MyConstants.RESULT_FAIL;
-        JSONObject object = new JSONObject();
-        object.put("state", addResult);
-        return object;
+        JSONObject res = new JSONObject();
+        JSONObject jsonObject = (JSONObject) JSON.parse(jsonstr);
+        String topicContent = jsonObject.getString("topicContent");
+        //重复性检查
+        if(topicService.isSameContent(topicContent)){
+            res.put("state","该话题已存在");
+            res.put("topic",topicContent);
+            return res;
+        }
+        else {
+            Topic topic = new Topic();
+            topic.setUserId(jsonObject.getString("userId"));
+            topic.setLaunchTime(MyConstants.DATETIME_FORMAT.format(new Date()));
+            topic.setTopicContent(topicContent);
+            topic.setTopicId(UUID.randomUUID().toString());
+            topic.setTopicCount(0);
+            int result = topicService.addTopic(topic);
+            String addResult = result == 1 ? MyConstants.RESULT_OK : MyConstants.RESULT_FAIL;
+            res.put("state", addResult);
+            return res;
+        }
     }
 
     //话题排序（用于统计）

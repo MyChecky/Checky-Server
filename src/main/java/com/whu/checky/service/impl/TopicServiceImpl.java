@@ -1,9 +1,12 @@
 package com.whu.checky.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.plugins.Page;
+import com.whu.checky.domain.TaskType;
 import com.whu.checky.domain.Topic;
 import com.whu.checky.mapper.TopicMapper;
 import com.whu.checky.service.TopicService;
+import net.sf.jsqlparser.statement.select.Top;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +21,12 @@ public class TopicServiceImpl implements TopicService {
 
     @Override
     public List<Topic> queryAllTopics() {
-        return topicMapper.getAllTopic();
+        return topicMapper.selectList(new EntityWrapper<Topic>());
+    }
+
+    @Override
+    public List<Topic> queryAllTopicInPage(Page<TaskType> p) {
+        return topicMapper.selectPage(p,new EntityWrapper<Topic>());
     }
 
     @Override
@@ -40,6 +48,19 @@ public class TopicServiceImpl implements TopicService {
                 .orderBy("topic_count")
                 .last("desc")
         );
+    }
+
+    @Override
+    public Boolean isSameContent(String topicContent) {
+        List<Topic> topics = topicMapper.selectList(new EntityWrapper<Topic>()
+        .eq("topic_content",topicContent)
+        );
+        return topics.size()==0?false:true;
+    }
+
+    @Override
+    public void incTopicCount(String topicId) {
+        topicMapper.incTopicCount(topicId);
     }
 
 }

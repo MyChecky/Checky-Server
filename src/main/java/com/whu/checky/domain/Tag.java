@@ -10,6 +10,27 @@ public class Tag {
 
     private int TagCount;
 
+    private String typeId;
+
+    public int getPassCount() {
+        return passCount;
+    }
+
+    public void setPassCount(int passCount) {
+        this.passCount = passCount;
+    }
+
+    private int passCount;
+
+    public String getTypeId() {
+        return typeId;
+    }
+
+    public void setTypeId(String typeId) {
+        this.typeId = typeId;
+    }
+
+
     public String getTagId() {
         return tagId;
     }

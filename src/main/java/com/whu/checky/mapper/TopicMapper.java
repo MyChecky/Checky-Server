@@ -14,4 +14,5 @@ public interface TopicMapper extends BaseMapper<Topic> {
 
     @Select("SELECT topic_id AS topicId,topic_content AS topicContent,topic_count AS topicCount FROM topic")
     List<Topic> getAllTopic();
+    void incTopicCount(String topicId);
 }

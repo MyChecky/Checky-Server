@@ -47,6 +47,7 @@ public interface EssayService {
 
     //根据用户Id获取总点赞数
     int getLikeSum(String userId);
-
+    //根据话题Id删除所有对应动态
+    String deleteEssayByTopicId(String topicId);
 
 }

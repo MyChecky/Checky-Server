@@ -33,7 +33,7 @@ public class TagController {
     public HashMap<String, Object> getAllTag()
     {
         HashMap<String, Object> ret = new HashMap<>();
-        List<Tag> tagList = tagService.queryAllTag();
+        List<Tag> tagList = tagService.queryAll();
         ret.put("TagList", tagList);
         return ret;
     }
@@ -88,6 +88,17 @@ public class TagController {
         List<Tag> tagList = tagService.rank();
         JSONObject object = new JSONObject();
         object.put("rankList", tagList);
+        return object;
+    }
+
+    @RequestMapping("/incCount")
+    public JSONObject incCount(@RequestBody String jsonstr)
+    {
+        String tagId = JSON.parseObject(jsonstr).getString("tagId");
+        tagService.incPassNum(tagId);
+        tagService.incTagCount(tagId);
+        JSONObject object = new JSONObject();
+        object.put("request",MyConstants.RESULT_OK);
         return object;
     }
 }

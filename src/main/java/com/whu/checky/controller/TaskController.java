@@ -143,6 +143,13 @@ public class TaskController {
                 return ret;
             } else {
                 //添加成功
+                //将对应任务类型和任务标签下的TOTAL_NUM TAG_COUNT 进行自增
+                taskTypeService.incTotalNum(task.getTypeId());
+                tagService.incTagCount(task.getTag1());
+                tagService.incTagCount(task.getTag2());
+                tagService.incTagCount(task.getTag3());
+                tagService.incTagCount(task.getTag4());
+                tagService.incTagCount(task.getTag5());
                 return matchTask(task);
             }
         } else {  // update exiting task
