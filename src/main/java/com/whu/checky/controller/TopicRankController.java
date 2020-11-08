@@ -2,13 +2,10 @@ package com.whu.checky.controller;
 
 import com.whu.checky.domain.Essay;
 import com.whu.checky.domain.Topic;
-import com.whu.checky.domain.TopicEssay;
 import com.whu.checky.service.EssayService;
-import com.whu.checky.service.TopicEssayService;
 import com.whu.checky.service.TopicService;
 import com.whu.checky.util.MyConstants;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,8 +18,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/topicRank")
 public class TopicRankController {
-    @Autowired
-    TopicEssayService topicEssayService;
+//    @Autowired
+//    TopicEssayService topicEssayService;
     @Autowired
     TopicService topicService;
     @Autowired
@@ -40,24 +37,24 @@ public class TopicRankController {
         //同时把每个话题对应的所有动态检索出来 计算点赞和评论总和
         for(int i=0; i<topicList.size(); i++) {
             Topic topic = topicList.get(i);
-            //存放当前topic对应的所有话题动态关系
-            List<TopicEssay> topicEssays = topicEssayService.queryEssayIdByTopicId(topic.getTopicId());
-            int commentSum = 0;
-            int likeSum = 0;
-            int recentTopicCount=0;
-            for(int j=0; j<topicEssays.size(); j++) {
-                TopicEssay topicEssay = topicEssays.get(j);
-                Essay essay = essayService.queryEssayById(topicEssay.getEssayId());
-                //判断 如果时间在一天之内 则可以被计算进去
-                if(isYesterday(essay.getEssayTime())) {
-                    commentSum += essay.getCommentNum();
-                    likeSum += essay.getLikeNum();
-                    recentTopicCount++;
-                }
-            }
-            topic.setTopicCount(recentTopicCount);
-
-            RankList.add(new TopicAndNum(topic,commentSum,likeSum));
+//            //存放当前topic对应的所有话题动态关系
+//            List<TopicEssay> topicEssays = topicEssayService.queryEssayIdByTopicId(topic.getTopicId());
+//            int commentSum = 0;
+//            int likeSum = 0;
+//            int recentTopicCount=0;
+//            for(int j=0; j<topicEssays.size(); j++) {
+//                TopicEssay topicEssay = topicEssays.get(j);
+//                Essay essay = essayService.queryEssayById(topicEssay.getEssayId());
+//                //判断 如果时间在一天之内 则可以被计算进去
+//                if(isYesterday(essay.getEssayTime())) {
+//                    commentSum += essay.getCommentNum();
+//                    likeSum += essay.getLikeNum();
+//                    recentTopicCount++;
+//                }
+//            }
+//            topic.setTopicCount(recentTopicCount);
+//
+//            RankList.add(new TopicAndNum(topic,commentSum,likeSum));
         }
 
         Collections.sort(RankList);

@@ -5,13 +5,16 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.whu.checky.domain.Tag;
 import com.whu.checky.domain.Task;
 import com.whu.checky.domain.TaskType;
+import com.whu.checky.domain.TypeTag;
 import com.whu.checky.mapper.TagMapper;
 import com.whu.checky.mapper.TaskMapper;
 import com.whu.checky.mapper.TopicMapper;
+import com.whu.checky.mapper.TypeTagMapper;
 import com.whu.checky.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service("TagService")
@@ -20,10 +23,12 @@ public class TagServiceImpl implements TagService {
     private TagMapper tagMapper;
     @Autowired
     private TaskMapper taskMapper;
+    @Autowired
+    private TypeTagMapper typeTagMapper;
 
     @Override
     public List<Tag> queryAllTag(Page<Tag> p) {
-        return tagMapper.selectPage(p,new EntityWrapper<Tag>());
+        return tagMapper.selectPage(p, new EntityWrapper<Tag>());
     }
 
     @Override
@@ -35,15 +40,15 @@ public class TagServiceImpl implements TagService {
     public void deleteTagById(String id) {
         //还要删除该标签下所有的任务
         taskMapper.delete(new EntityWrapper<Task>()
-                .eq("tag1",id)
+                .eq("tag1", id)
                 .or()
-                .eq("tag2",id)
+                .eq("tag2", id)
                 .or()
-                .eq("tag3",id)
+                .eq("tag3", id)
                 .or()
-                .eq("tag4",id)
+                .eq("tag4", id)
                 .or()
-                .eq("tag5",id)
+                .eq("tag5", id)
         );
         tagMapper.deleteById(id);
     }
@@ -61,8 +66,8 @@ public class TagServiceImpl implements TagService {
     @Override
     public List<Tag> rank() {
         return tagMapper.selectList(new EntityWrapper<Tag>()
-                .gt("tag_count",0)
-                .orderBy("tag_count",false)
+                .gt("tag_count", 0)
+                .orderBy("tag_count", false)
         );
     }
 
@@ -74,5 +79,16 @@ public class TagServiceImpl implements TagService {
     @Override
     public void incPassNum(String tagId) {
         tagMapper.incPassNum(tagId);
+    }
+
+    @Override
+    public List<Tag> getTagsByTypeId(String typeId) {
+//        return tagMapper.getTagsByTypeId(typeId);
+        List<TypeTag> typeTags = typeTagMapper.selectList(new EntityWrapper<TypeTag>().eq("type_id", typeId));
+        List<Tag> tagsRes = new ArrayList<Tag>();
+        for(TypeTag typeTag:typeTags){
+            tagsRes.add(tagMapper.selectById(typeTag.getTagId()));
+        }
+        return tagsRes;
     }
 }

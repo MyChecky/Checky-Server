@@ -69,7 +69,6 @@ public class TagController {
         String tagId = UUID.randomUUID().toString();
         tag.setTagId(tagId);
         tag.setTagCount(0);
-        tag.setTypeId(typeId);
         int result = tagService.addTag(tag);
         String addResult = result == 1 ? MyConstants.RESULT_OK : MyConstants.RESULT_FAIL;
 //        String addTypeTag = MyConstants.RESULT_FAIL;

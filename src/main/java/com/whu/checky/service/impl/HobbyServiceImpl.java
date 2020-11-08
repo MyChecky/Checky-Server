@@ -73,7 +73,7 @@ public class HobbyServiceImpl implements HobbyService {
                     .eq("hobby_id", hobby.get(0).getHobbyId()).and().eq("user_id", userId));
             if (userHobbies.size() == 0) {
                 UserHobby userHobby = new UserHobby();
-                userHobby.setHobbyId(hobby.get(0).getHobbyValue());
+                userHobby.setHobbyId(String.valueOf(hobby.get(0).getHobbyId()));
                 userHobby.setUserId(userId);
                 userHobby.setAddTime(dateFormat.format(new Date()));
                 userHobbyMapper.insert(userHobby);

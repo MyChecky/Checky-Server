@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.whu.checky.domain.Suggestion;
 import com.whu.checky.domain.TaskType;
+import com.whu.checky.service.TagService;
 import com.whu.checky.service.TaskTypeService;
 import com.whu.checky.util.MyConstants;
 import com.whu.checky.util.MyStringUtil;
@@ -23,16 +24,17 @@ public class TaskTypeController {
     @Autowired
     private TaskTypeService taskTypeService;
 
+    @Autowired
+    private TagService tagService;
+
     //用于新添任务类型的
     @PostMapping("/addType")
     public String addType(@RequestBody String jsonstr) throws Exception {
         JSONObject object = (JSONObject) JSON.parse(jsonstr);
         String typeContent = (String) object.get("typeContent");
-        if(taskTypeService.alreadyExist(typeContent))
-        {
+        if (taskTypeService.alreadyExist(typeContent)) {
             return "该任务类型已经存在，无需新增";
-        }
-        else {
+        } else {
             TaskType taskType = new TaskType();
             taskType.setTypeContent(typeContent);
             taskType.setPassNum((long) 0);
@@ -51,12 +53,12 @@ public class TaskTypeController {
 
     @PostMapping("/delType")
     public String delType(@RequestBody String jsonstr) {
-        String taskTypeid=(String)JSON.parse(jsonstr);
-        int result=taskTypeService.DeleteTaskType(taskTypeid);
-        if (result==0){
+        String taskTypeid = (String) JSON.parse(jsonstr);
+        int result = taskTypeService.DeleteTaskType(taskTypeid);
+        if (result == 0) {
             //删除失败
             return MyConstants.RESULT_DELETE_FAIL;
-        }else {
+        } else {
             //删除成功
             return MyConstants.RESULT_OK;
         }
@@ -65,17 +67,22 @@ public class TaskTypeController {
 
     @RequestMapping("/allType")
     public List<TaskType> allType() {
-        return  taskTypeService.AllTaskType();
+        List<TaskType> taskTypes = taskTypeService.AllTaskType();
+        for(TaskType taskType: taskTypes){
+            taskType.setTags(tagService.getTagsByTypeId(taskType.getTypeId()));
+        }
+        return taskTypes;
     }
 
 
     @RequestMapping("/udpateType")
     public String udpateType(@RequestBody String jsonstr) {
-        TaskType taskType= JSON.parseObject(jsonstr,new TypeReference<TaskType>(){});
-        int res=taskTypeService.updataTaskType(taskType);
-        if(res==0){
+        TaskType taskType = JSON.parseObject(jsonstr, new TypeReference<TaskType>() {
+        });
+        int res = taskTypeService.updataTaskType(taskType);
+        if (res == 0) {
             return MyConstants.RESULT_UPDATE_FAIL;
-        }else {
+        } else {
             return MyConstants.RESULT_OK;
         }
     }

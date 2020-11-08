@@ -6,24 +6,11 @@ public class Medal {
     @TableId
     private String medalId;
 
-    private String userId;
-
     private String medalUrl;
-
-    private String expireTime;
-
-    private String ifExpired;
 
     private String medalType;
 
-
-    public String getMedalType() {
-        return medalType;
-    }
-
-    public void setMedalType(String medalType) {
-        this.medalType = medalType;
-    }
+    private String medalName;
 
     public String getMedalId() {
         return medalId;
@@ -31,14 +18,6 @@ public class Medal {
 
     public void setMedalId(String medalId) {
         this.medalId = medalId;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
     }
 
     public String getMedalUrl() {
@@ -49,19 +28,19 @@ public class Medal {
         this.medalUrl = medalUrl;
     }
 
-    public String getExpireTime() {
-        return expireTime;
+    public String getMedalType() {
+        return medalType;
     }
 
-    public void setExpireTime(String expireTime) {
-        this.expireTime = expireTime;
+    public void setMedalType(String medalType) {
+        this.medalType = medalType;
     }
 
-    public String getIfExpired() {
-        return ifExpired;
+    public String getMedalName() {
+        return medalName;
     }
 
-    public void setIfExpired(String ifExpired) {
-        this.ifExpired = ifExpired;
+    public void setMedalName(String medalName) {
+        this.medalName = medalName;
     }
 }

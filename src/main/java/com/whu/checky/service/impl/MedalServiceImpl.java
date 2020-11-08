@@ -48,8 +48,8 @@ public class MedalServiceImpl implements MedalService {
 
     @Override
     public String updateTalentMedal(Medal medal) {
-        medal.setIfExpired("0");
-        medal.setExpireTime(MyStringUtil.nextMonth());
+//        medal.setIfExpired("0");
+//        medal.setExpireTime(MyStringUtil.nextMonth());
         if (medalMapper.updateById(medal) == 1) {
             return "勋章状态更新成功";
         } else {
@@ -84,8 +84,8 @@ public class MedalServiceImpl implements MedalService {
                 newTalentMedal.setMedalId(MyStringUtil.getUUID());
                 newTalentMedal.setMedalType(taskType);
                 newTalentMedal.setMedalUrl(MyConstants.TALENT_URL);
-                newTalentMedal.setExpireTime(MyStringUtil.nextMonth());
-                newTalentMedal.setIfExpired("0");
+//                newTalentMedal.setExpireTime(MyStringUtil.nextMonth());
+//                newTalentMedal.setIfExpired("0");
                 if (medalMapper.insert(newTalentMedal) == 1) {
                     return "符合" + taskType + "达人勋章标准并以授予";
                 } else {
@@ -113,8 +113,8 @@ public class MedalServiceImpl implements MedalService {
              */
             else
             {
-                ownTalentMedal.setIfExpired("0");
-                ownTalentMedal.setExpireTime(MyStringUtil.nextMonth());
+//                ownTalentMedal.setIfExpired("0");
+//                ownTalentMedal.setExpireTime(MyStringUtil.nextMonth());
                 if (medalMapper.updateById(ownTalentMedal) == 1) {
                     return "勋章状态更新成功";
                 } else {
@@ -163,10 +163,10 @@ public class MedalServiceImpl implements MedalService {
         //如果不存在就考虑新增
         if(ownRankMedal==null) {
                 Medal newRankMedal = new Medal();
-                newRankMedal.setUserId(userId);
+//                newRankMedal.setUserId(userId);
                 newRankMedal.setMedalId(MyStringUtil.getUUID());
-                newRankMedal.setExpireTime(MyStringUtil.nextMonth());
-                newRankMedal.setIfExpired("0");
+//                newRankMedal.setExpireTime(MyStringUtil.nextMonth());
+//                newRankMedal.setIfExpired("0");
                 if (sum >= 100) {
                     newRankMedal.setMedalType(MyConstants.RANK5);
                     newRankMedal.setMedalUrl(MyConstants.RANK5_URL);
@@ -205,8 +205,8 @@ public class MedalServiceImpl implements MedalService {
         //如果存在则进行更新或删除
         else
         {
-            ownRankMedal.setIfExpired("0");
-            ownRankMedal.setExpireTime(MyStringUtil.nextMonth());
+//            ownRankMedal.setIfExpired("0");
+//            ownRankMedal.setExpireTime(MyStringUtil.nextMonth());
             if(sum>=100){
                 ownRankMedal.setMedalType(MyConstants.RANK5);
                 ownRankMedal.setMedalUrl(MyConstants.RANK5_URL);
@@ -259,34 +259,36 @@ public class MedalServiceImpl implements MedalService {
     public String addConcentrateMedal(String userId) throws Exception {
         Medal newConcentrateMedal = new Medal();
         newConcentrateMedal.setMedalId(MyStringUtil.getUUID());
-        newConcentrateMedal.setUserId(userId);
+//        newConcentrateMedal.setUserId(userId);
         newConcentrateMedal.setMedalType(MyConstants.CONCENTRATE);
         newConcentrateMedal.setMedalUrl(MyConstants.TALENT_URL);
-        newConcentrateMedal.setExpireTime(MyStringUtil.nextMonth());
-        newConcentrateMedal.setIfExpired("0");
+//        newConcentrateMedal.setExpireTime(MyStringUtil.nextMonth());
+//        newConcentrateMedal.setIfExpired("0");
         medalMapper.insert(newConcentrateMedal);
         return "新增专注勋章";
     }
 
     @Override
     public String updateConcentrateMedal(Medal medal, String check_fre) {
+        /// todo
         //要求一周内没有失败任务&&本周内打卡次数符合要求
-        if (!taskService.checkFailTaskWeekly(medal.getUserId())&&taskService.checkFreWeekly(medal.getUserId()))
-        {
-            medal.setIfExpired("0");
-            medal.setExpireTime(MyStringUtil.nextMonth());
-            if (medalMapper.updateById(medal) == 1) {
-                return "勋章状态更新成功";
-            } else {
-                return "勋章状态更新失败";
-            }
-        }
+//        if (!taskService.checkFailTaskWeekly(medal.getUserId())&&taskService.checkFreWeekly(medal.getUserId()))
+//        {
+//            medal.setIfExpired("0");
+//            medal.setExpireTime(MyStringUtil.nextMonth());
+//            if (medalMapper.updateById(medal) == 1) {
+//                return "勋章状态更新成功";
+//            } else {
+//                return "勋章状态更新失败";
+//            }
+//        }
         //否则删除勋章
-        else
-        {
-            medalMapper.deleteById(medal.getMedalId());
-            return "条件不满足，已删除专注勋章";
-        }
+//        else
+//        {
+//            medalMapper.deleteById(medal.getMedalId());
+//            return "条件不满足，已删除专注勋章";
+//        }
+        return null;
     }
 
     @Override
@@ -306,11 +308,11 @@ public class MedalServiceImpl implements MedalService {
                     {
                         Medal newConcentrateMedal = new Medal();
                         newConcentrateMedal.setMedalId(MyStringUtil.getUUID());
-                        newConcentrateMedal.setUserId(userId);
-                        newConcentrateMedal.setMedalType(MyConstants.CONCENTRATE);
-                        newConcentrateMedal.setMedalUrl(MyConstants.TALENT_URL);
-                        newConcentrateMedal.setExpireTime(MyStringUtil.nextMonth());
-                        newConcentrateMedal.setIfExpired("0");
+//                        newConcentrateMedal.setUserId(userId);
+//                        newConcentrateMedal.setMedalType(MyConstants.CONCENTRATE);
+//                        newConcentrateMedal.setMedalUrl(MyConstants.TALENT_URL);
+//                        newConcentrateMedal.setExpireTime(MyStringUtil.nextMonth());
+//                        newConcentrateMedal.setIfExpired("0");
                         medalMapper.insert(newConcentrateMedal);
                         return "新增专注勋章";
                     }
@@ -319,19 +321,20 @@ public class MedalServiceImpl implements MedalService {
         else
         {
             //要求一周内没有失败任务&&本周内打卡次数符合要求
-            if (!taskService.checkFailTaskWeekly(ownConcentrateMedal.getUserId())&&taskService.checkFreWeekly(ownConcentrateMedal.getUserId()))
-            {
-                ownConcentrateMedal.setIfExpired("0");
-                ownConcentrateMedal.setExpireTime(MyStringUtil.nextMonth());
-                medalMapper.updateById(ownConcentrateMedal);
-                    return "勋章状态更新成功";
-            }
-            //否则删除勋章
-            else
-            {
-                medalMapper.deleteById(ownConcentrateMedal.getMedalId());
-                return "条件不满足，已删除专注勋章";
-            }
+//            if (!taskService.checkFailTaskWeekly(ownConcentrateMedal.getUserId())&&taskService.checkFreWeekly(ownConcentrateMedal.getUserId()))
+//            {
+//                ownConcentrateMedal.setIfExpired("0");
+//                ownConcentrateMedal.setExpireTime(MyStringUtil.nextMonth());
+//                medalMapper.updateById(ownConcentrateMedal);
+//                    return "勋章状态更新成功";
+//            }
+//            //否则删除勋章
+//            else
+//            {
+//                medalMapper.deleteById(ownConcentrateMedal.getMedalId());
+//                return "条件不满足，已删除专注勋章";
+//            }
         }
+        return null;
     }
 }

@@ -2,13 +2,9 @@ package com.whu.checky.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.TypeReference;
-import com.whu.checky.domain.AddApiTest;
-import com.whu.checky.domain.AddApiTestAux;
 import com.whu.checky.domain.Topic;
 import com.whu.checky.service.TopicService;
 import com.whu.checky.util.MyConstants;
-import net.sf.jsqlparser.statement.select.Top;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

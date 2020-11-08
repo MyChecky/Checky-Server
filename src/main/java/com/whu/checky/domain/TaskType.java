@@ -1,6 +1,9 @@
 package com.whu.checky.domain;
 
+import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
+
+import java.util.List;
 
 public class TaskType {
     @TableId
@@ -11,6 +14,25 @@ public class TaskType {
     private Long totalNum;
 
     private Long passNum;
+
+    @TableField(exist = false)
+    private List<Tag> tags;
+
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
+    }
+
+    public void appendTag(List<Tag> tags) {
+        this.tags.addAll(tags);
+    }
+
+    public void appendTag(Tag tag) {
+        this.tags.add(tag);
+    }
 
     public Long getTotalNum() {
         return totalNum;

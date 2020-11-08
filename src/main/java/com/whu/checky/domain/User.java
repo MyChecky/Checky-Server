@@ -16,21 +16,25 @@ public class User implements Serializable {
      */
     private String userName;
     /**
-     * 用户头像
-     */
-    private String userAvatar;
-    /**
      * 用户性别
      */
     private Integer userGender;
     /**
+     * 用户头像
+     */
+    private String userAvatar;
+
+    private String userTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+
+    /**
+     * 用户信用.默认100
+     */
+    private int userCredit = 100;
+
+    /**
      * 用户余额
      */
     private Double userMoney;
-    /**
-     * 试玩余额，默认值存储余parameter表test_money
-     */
-    private Double testMoney;
     /**
      * 用户发布的任务数
      */
@@ -47,6 +51,7 @@ public class User implements Serializable {
      * 用户用户最少需要监督的次数
      */
     private Integer superviseNumMin;
+
     /**
      * 用户是否需要推送通知 0：不需要 1：需要
      */
@@ -61,10 +66,13 @@ public class User implements Serializable {
     private double latitude = 0.0;
 
     private String sessionId;
+
+
     /**
-     * 用户信用.默认100
+     * 试玩余额，默认值存储余parameter表test_money
      */
-    private int userCredit = 100;
+    private Double testMoney;
+
     /**
      * 被举报总次数
      */
@@ -82,6 +90,16 @@ public class User implements Serializable {
      */
     private int reportPassed = 0;
 
+    private String userLevel = "白银";
+
+    public String getUserLevel() {
+        return userLevel;
+    }
+
+    public void setUserLevel(String userLevel) {
+        this.userLevel = userLevel;
+    }
+
     public void setLongtitude(double longtitude) {
         this.longtitude = longtitude;
     }
@@ -97,8 +115,6 @@ public class User implements Serializable {
     public void setUserCredit(int userCredit) {
         this.userCredit = userCredit;
     }
-
-    private String userTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
 
     public String getUserTime() {
         return userTime;

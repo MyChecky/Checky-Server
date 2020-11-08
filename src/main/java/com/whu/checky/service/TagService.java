@@ -23,4 +23,7 @@ public interface TagService {
     void incTagCount(String tagId);
     //自增passCount
     void incPassNum(String tagId);
+
+    // get tags by typeId
+    List<Tag> getTagsByTypeId(String typeId);
 }

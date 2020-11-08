@@ -1,12 +1,8 @@
 package com.whu.checky.controller.admin;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
-import com.whu.checky.domain.AddApiTest;
 import com.whu.checky.domain.TypeTag;
-import com.whu.checky.mapper.HobbyMapper;
-import com.whu.checky.mapper.TypeTagMapper;
 import com.whu.checky.service.TypeTagService;
 import com.whu.checky.util.MyConstants;
 import org.springframework.beans.factory.annotation.Autowired;

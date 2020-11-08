@@ -83,7 +83,7 @@ public class EssayController {
         essay.setLongtitude(longitude);
         essay.setUserId(userId);
         essay.setEssayContent(essayContent);
-        essay.setTopic(topic);
+        essay.setTopicId(topic);
         int result = essayService.addEssay(essay);
         // 在record表相关记录添加essayId信息
         // 似乎因为上传时间过慢导致此时查询record时，找不到文件类型的记录，在文件上传里做了补充

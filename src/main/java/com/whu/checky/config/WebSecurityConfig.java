@@ -52,6 +52,7 @@ public class WebSecurityConfig {
                     .antMatchers("/wechat/login","/admin/login","/resources/**","/socket/**",
                             "/userAndHobby/getServiceTerms", "/essay/queryEssayById", "/essay/displayEssay",
                             "/essay/**", "/task/taskDetail","/topic/**","/topicRank/**",
+                            "/task/**","/taskType/**",
                             "/addApiTest/**","/admin/**","/tag/**","/typeTag/**","/userRank/**","/medal/**","/taskType/**").permitAll()
                     .antMatchers("/admin","/**/admin/**").hasRole("ADMIN")
                     .antMatchers("/**").hasRole("USER")

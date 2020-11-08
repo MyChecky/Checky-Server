@@ -70,12 +70,7 @@ public class TaskController {
         ret.put("passTimes", task.getCheckPass());
         ret.put("checkFrec", task.getCheckFrec());
         //tags信息
-
-        ret.put("tag1", tagService.queryTagById(task.getTag1()));
-        ret.put("tag2", tagService.queryTagById(task.getTag2()));
-        ret.put("tag3", tagService.queryTagById(task.getTag3()));
-        ret.put("tag4", tagService.queryTagById(task.getTag4()));
-        ret.put("tag5", tagService.queryTagById(task.getTag5()));
+        // TODO
 
         if (task.getIfTest() == MyConstants.IF_TEST_TRUE) {
             ret.put("taskMoneyType", "测试金额");
@@ -145,11 +140,11 @@ public class TaskController {
                 //添加成功
                 //将对应任务类型和任务标签下的TOTAL_NUM TAG_COUNT 进行自增
                 taskTypeService.incTotalNum(task.getTypeId());
-                tagService.incTagCount(task.getTag1());
-                tagService.incTagCount(task.getTag2());
-                tagService.incTagCount(task.getTag3());
-                tagService.incTagCount(task.getTag4());
-                tagService.incTagCount(task.getTag5());
+
+                // Already Done with Try
+                for (String tagId : task.getTagsId())
+                    tagService.incTagCount(tagId);
+
                 return matchTask(task);
             }
         } else {  // update exiting task

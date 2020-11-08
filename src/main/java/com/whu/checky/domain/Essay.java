@@ -43,29 +43,15 @@ public class Essay {
     /**
      * 所属话题
      */
-    private String topic;
-    /**
-     * 所属标签
-     */
-    private String tag;
+    private String topicId;
 
-    public String getTopic() {
-        return topic;
+    public String getTopicId() {
+        return topicId;
     }
 
-    public void setTopic(String topic) {
-        this.topic = topic;
+    public void setTopicId(String topicId) {
+        this.topicId = topicId;
     }
-
-    public String getTag() {
-        return tag;
-    }
-
-    public void setTag(String tag) {
-        this.tag = tag;
-    }
-
-
 
     public int getIfDelete() {
         return ifDelete;
