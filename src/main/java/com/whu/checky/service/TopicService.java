@@ -21,4 +21,10 @@ public interface TopicService {
     Boolean isSameContent(String topicContent);
     //话题下 动态数自增
     void incTopicCount(String topicId);
+
+    List<Topic> queryByKeyword(String keyword);
+
+    Topic getTopicById(String topicId);
+
+    String getTopicNameById(String topicId);
 }

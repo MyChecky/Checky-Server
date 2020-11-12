@@ -2,14 +2,8 @@ package com.whu.checky.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
-import com.whu.checky.domain.Tag;
-import com.whu.checky.domain.Task;
-import com.whu.checky.domain.TaskType;
-import com.whu.checky.domain.TypeTag;
-import com.whu.checky.mapper.TagMapper;
-import com.whu.checky.mapper.TaskMapper;
-import com.whu.checky.mapper.TopicMapper;
-import com.whu.checky.mapper.TypeTagMapper;
+import com.whu.checky.domain.*;
+import com.whu.checky.mapper.*;
 import com.whu.checky.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +19,8 @@ public class TagServiceImpl implements TagService {
     private TaskMapper taskMapper;
     @Autowired
     private TypeTagMapper typeTagMapper;
+    @Autowired
+    private TaskTagMapper taskTagMapper;
 
     @Override
     public List<Tag> queryAllTag(Page<Tag> p) {
@@ -90,5 +86,13 @@ public class TagServiceImpl implements TagService {
             tagsRes.add(tagMapper.selectById(typeTag.getTagId()));
         }
         return tagsRes;
+    }
+
+    @Override
+    public int addTaskTag(String taskId, String tagId){
+        TaskTag taskTag = new TaskTag();
+        taskTag.setTagId(tagId);
+        taskTag.setTaskId(taskId);
+        return taskTagMapper.insert(taskTag);
     }
 }

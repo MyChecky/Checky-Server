@@ -141,9 +141,12 @@ public class TaskController {
                 //将对应任务类型和任务标签下的TOTAL_NUM TAG_COUNT 进行自增
                 taskTypeService.incTotalNum(task.getTypeId());
 
-                // Already Done with Try
-                for (String tagId : task.getTagsId())
+                for (String tagId : task.getTagsId()){
+                    // 更新 task_tag 表
+                    tagService.addTaskTag(task.getTaskId(), tagId);
+                    // 增加 tag 下任务数量
                     tagService.incTagCount(tagId);
+                }
 
                 return matchTask(task);
             }

@@ -37,6 +37,9 @@ public class FriendController {
     @Autowired
     private ParameterService parameterService;
 
+    @Autowired
+    private TopicService topicService;
+
 
     @GetMapping("/hello")
     public String hello() {
@@ -138,6 +141,8 @@ public class FriendController {
         List<EssayAndRecord> res = new ArrayList<EssayAndRecord>();
         List<Essay> essays = essayService.displayEssay(targetUserId, page);
         for (Essay essay : essays) {
+            if (essay.getTopicId() != null && !essay.getTopicId().equals(""))
+                essay.setTopicName(topicService.getTopicNameById(essay.getTopicId()));
             EssayAndRecord essayAndRecord = getEssayAndRecord(essay);
             res.add(essayAndRecord);
         }

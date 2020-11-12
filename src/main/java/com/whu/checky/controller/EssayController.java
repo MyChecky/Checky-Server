@@ -73,7 +73,8 @@ public class EssayController {
 //        String checkId = (String) object.get("checkId");
         String longitude = (String) object.get("longitude");
         String latitude = (String) object.get("latitude");
-        String topic = object.getString("topicId");
+        String topicId = object.getString("topicId");
+
         // 在Essay表添加记录
         Essay essay = new Essay();
         String essayId = UUID.randomUUID().toString();
@@ -83,7 +84,7 @@ public class EssayController {
         essay.setLongtitude(longitude);
         essay.setUserId(userId);
         essay.setEssayContent(essayContent);
-        essay.setTopicId(topic);
+        essay.setTopicId(topicId);
         int result = essayService.addEssay(essay);
         // 在record表相关记录添加essayId信息
         // 似乎因为上传时间过慢导致此时查询record时，找不到文件类型的记录，在文件上传里做了补充
@@ -97,7 +98,7 @@ public class EssayController {
             ans.put("state", MyConstants.RESULT_OK);
             ans.put("essayId", essay.getEssayId());  // 插入成功
             //动态发布成功后将其对应的话题topic_count属性加1
-
+            topicService.incTopicCount(essay.getTopicId());
         } else {
             ans.put("state", MyConstants.RESULT_FAIL); // 插入失败
         }
@@ -149,6 +150,8 @@ public class EssayController {
         List<EssayAndRecord> res = new ArrayList<>();
         List<Essay> essays = essayService.queryUserEssays(userId);
         for (Essay essay : essays) {
+            if (essay.getTopicId() != null && !essay.getTopicId().equals(""))
+                essay.setTopicName(topicService.getTopicNameById(essay.getTopicId()));
             EssayAndRecord essayAndRecord = getEssayAndRecord(essay, userId);
             res.add(essayAndRecord);
         }
@@ -162,6 +165,8 @@ public class EssayController {
         String essayId = (String) object.get("essayId");
         String userId = (String) object.get("userId");
         Essay essay = essayService.queryEssayById(essayId);
+        if (essay.getTopicId() != null && !essay.getTopicId().equals(""))
+            essay.setTopicName(topicService.getTopicNameById(essay.getTopicId()));
         EssayAndRecord essayAndRecord = getEssayAndRecord(essay, userId);
         return essayAndRecord;
     }
@@ -177,6 +182,26 @@ public class EssayController {
         List<EssayAndRecord> res = new ArrayList<EssayAndRecord>();
         List<Essay> essays = essayService.displayEssay(page);
         for (Essay essay : essays) {
+            if (essay.getTopicId() != null && !essay.getTopicId().equals(""))
+                essay.setTopicName(topicService.getTopicNameById(essay.getTopicId()));
+            EssayAndRecord essayAndRecord = getEssayAndRecord(essay, userId);
+            res.add(essayAndRecord);
+        }
+        return res;
+    }
+
+    @RequestMapping("/displayEssayByTopic")
+    public List<EssayAndRecord> displayEssayByTopic(@RequestBody String jsonstr) {
+        JSONObject object = (JSONObject) JSON.parse(jsonstr);
+        String userId = (String) object.get("userId");
+        int currentPage = (Integer) object.get("cPage");
+        String topicId = (String) object.get("topicId");
+        Page<Essay> page = new Page<>(currentPage, MyConstants.PAGE_LENGTH_MINI);
+        List<EssayAndRecord> res = new ArrayList<EssayAndRecord>();
+        List<Essay> essays = essayService.displayEssayByTopicId(page, topicId);
+        for (Essay essay : essays) {
+            if (essay.getTopicId() != null && !essay.getTopicId().equals(""))
+                essay.setTopicName(topicService.getTopicNameById(essay.getTopicId()));
             EssayAndRecord essayAndRecord = getEssayAndRecord(essay, userId);
             res.add(essayAndRecord);
         }
@@ -197,14 +222,14 @@ public class EssayController {
         User publisher = userService.queryUser(essay.getUserId());
         EssayAndRecord essayAndRecord = new EssayAndRecord();
         essayAndRecord.setUserId(publisher.getUserId());
-        if(!MyStringUtil.isEmpty(publisher.getUserAvatar()) && publisher.getUserAvatar().length()>11){
+        if (!MyStringUtil.isEmpty(publisher.getUserAvatar()) && publisher.getUserAvatar().length() > 11) {
             if (publisher.getUserAvatar().substring(0, 11).equals("/" + uploadConfig.getStaticPath() + "/")) { // 说明用户修改过头像
                 String baseIp = parameterService.getValueByParam("baseIp").getParamValue();
                 essayAndRecord.setUserAvatar(baseIp + publisher.getUserAvatar());
             } else {
                 essayAndRecord.setUserAvatar(publisher.getUserAvatar());
             }
-        }else {
+        } else {
             essayAndRecord.setUserAvatar("");
         }
 

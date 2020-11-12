@@ -52,6 +52,15 @@ public class EssayServiceImpl implements EssayService {
     }
 
     @Override
+    public List<Essay> displayEssayByTopicId(Page<Essay> page, String topicId) {
+        return essayMapper.selectPage(page, new EntityWrapper<Essay>()
+                .eq("topic_id", topicId)
+                .eq("if_delete", 0)
+                .orderBy("essay_time", false)
+                .orderBy("like_num"));
+    }
+
+    @Override
     public List<Essay> displayEssay(String targetUserId, Page<Essay> page) {
         return essayMapper.selectPage(
                 page,

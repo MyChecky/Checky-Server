@@ -26,4 +26,6 @@ public interface TagService {
 
     // get tags by typeId
     List<Tag> getTagsByTypeId(String typeId);
+    // add record for task_tag
+    int addTaskTag(String taskId, String tagId);
 }

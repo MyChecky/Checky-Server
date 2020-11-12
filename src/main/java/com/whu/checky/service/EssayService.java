@@ -50,4 +50,5 @@ public interface EssayService {
     //根据话题Id删除所有对应动态
     String deleteEssayByTopicId(String topicId);
 
+    List<Essay> displayEssayByTopicId(Page<Essay> page, String topicId);
 }

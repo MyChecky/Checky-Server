@@ -1,5 +1,6 @@
 package com.whu.checky.domain;
 
+import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 
 public class Essay {
@@ -44,6 +45,17 @@ public class Essay {
      * 所属话题
      */
     private String topicId;
+
+    @TableField(exist = false)
+    private String topicName;
+
+    public String getTopicName() {
+        return topicName;
+    }
+
+    public void setTopicName(String topicName) {
+        this.topicName = topicName;
+    }
 
     public String getTopicId() {
         return topicId;
