@@ -3,6 +3,7 @@ package com.whu.checky.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.whu.checky.domain.Topic;
+import com.whu.checky.domain.TopicCount;
 import com.whu.checky.service.TopicService;
 import com.whu.checky.util.MyConstants;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,10 +84,11 @@ public class TopicController {
      *
      * @return
      */
-    @RequestMapping("/getHotFiveTopics")
-    public HashMap<String, Object> getHotFiveTopics(@RequestBody String jsonstr) {
+    @RequestMapping("/hotFive")
+    public HashMap<String, Object> hotFive(@RequestBody String jsonstr) {
         HashMap<String, Object> ret = new HashMap<>();
-        // TODO
+        List<TopicCount> topicCountList = topicService.getHotFiveTopics();
+        ret.put("topicCountList", topicCountList);
         return ret;
     }
 

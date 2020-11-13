@@ -1,5 +1,6 @@
 package com.whu.checky.domain;
 
+import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 
 public class TopicCount {
@@ -22,6 +23,17 @@ public class TopicCount {
     private String countDate;
 
     private int countNumber = 0;
+
+    @TableField(exist = false)
+    private Topic topic;
+
+    public Topic getTopic() {
+        return topic;
+    }
+
+    public void setTopic(Topic topic) {
+        this.topic = topic;
+    }
 
     public String getTopicId() {
         return topicId;

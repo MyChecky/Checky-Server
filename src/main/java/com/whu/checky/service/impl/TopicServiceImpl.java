@@ -13,6 +13,7 @@ import net.sf.jsqlparser.statement.select.Top;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -105,5 +106,42 @@ public class TopicServiceImpl implements TopicService {
     @Override
     public String getTopicNameById(String topicId) {
         return topicMapper.selectById(topicId).getTopicContent();
+    }
+
+    @Override
+    public List<TopicCount> getHotFiveTopics() {
+        Date dayNow = new Date();
+        String dateNow = MyConstants.DATE_FORMAT.format(dayNow);
+
+        Page<TopicCount> topicCountPage = new Page<>(0, 5);
+        List<TopicCount> topicCounts = topicCountMapper.selectPage(topicCountPage, new EntityWrapper<TopicCount>()
+                .eq("count_date", dateNow)
+                .orderBy("count_number", false));
+
+        // 今日个数小于五个,尽量在过去一周找当日热度，找不到就散了
+        for (int i = 0; i < 7 && topicCounts.size() < 5; ++i) {
+            dayNow = new Date(dayNow.getTime() - MyConstants.SECONDS_A_DAY);
+            dateNow = MyConstants.DATE_FORMAT.format(dayNow);
+            List<TopicCount> topicCountsTmp = topicCountMapper.selectPage(topicCountPage, new EntityWrapper<TopicCount>()
+                    .eq("count_date", dateNow)
+                    .orderBy("count_number", false));
+            for (TopicCount topicCountOld : topicCountsTmp) {
+                boolean isRepeat = false;
+                for (TopicCount topicCountRes : topicCounts) {
+                    if (topicCountRes.getTopicId().equals(topicCountOld.getTopicId())) {
+                        isRepeat = true;
+                        break;
+                    }
+                }
+                if (!isRepeat) {
+                    topicCounts.add(topicCountOld);
+                    if (topicCounts.size() == 5) break;
+                }
+            }
+        }
+
+        for (TopicCount topicCount : topicCounts)
+            topicCount.setTopic(topicMapper.selectById(topicCount.getTopicId()));
+        return topicCounts;
     }
 }

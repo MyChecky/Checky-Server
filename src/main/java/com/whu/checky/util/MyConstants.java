@@ -14,6 +14,8 @@ public  class MyConstants {
     public static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat(MyConstants.FORMAT_TIME);
     public static final SimpleDateFormat DATETIME_FORMAT = new SimpleDateFormat(MyConstants.FORMAT_DATETIME);
 
+    public static final long SECONDS_A_DAY = 86400000L;
+
     public static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("00%");
 
     // 主要用于管理端搜索，但不提供时间范围时

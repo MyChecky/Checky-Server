@@ -3,6 +3,7 @@ package com.whu.checky.service;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.whu.checky.domain.TaskType;
 import com.whu.checky.domain.Topic;
+import com.whu.checky.domain.TopicCount;
 
 import java.util.List;
 
@@ -27,4 +28,6 @@ public interface TopicService {
     Topic getTopicById(String topicId);
 
     String getTopicNameById(String topicId);
+
+    List<TopicCount> getHotFiveTopics();
 }
