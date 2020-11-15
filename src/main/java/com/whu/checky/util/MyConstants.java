@@ -3,14 +3,14 @@ package com.whu.checky.util;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 
-public  class MyConstants {
+public class MyConstants {
 
     //时间格式
     public static final String FORMAT_DATETIME = "yyyy-MM-dd HH:mm:ss";
     public static final String FORMAT_DATE = "yyyy-MM-dd";
     public static final String FORMAT_TIME = "HH:mm:ss";
 
-    public static final SimpleDateFormat DATE_FORMAT      = new SimpleDateFormat(MyConstants.FORMAT_DATE);
+    public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(MyConstants.FORMAT_DATE);
     public static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat(MyConstants.FORMAT_TIME);
     public static final SimpleDateFormat DATETIME_FORMAT = new SimpleDateFormat(MyConstants.FORMAT_DATETIME);
 
@@ -63,7 +63,7 @@ public  class MyConstants {
     //任务匹配成功/失败
     public static final String TASK_MATCH_SUCCESS = "ok";
     public static final String TASK_MATCH_FAIL = "fail";
-   //任务匹配失败原因
+    //任务匹配失败原因
 
 
     //打卡认证方式（按比例或按数量来判断某一次打卡是否认证通过
@@ -143,9 +143,9 @@ public  class MyConstants {
 
     //勋章类型
     /*等级勋章分以下五类
-    * 专注勋章一类
-    * 达人勋章类型根据任务类型给定
-    * */
+     * 专注勋章一类
+     * 达人勋章类型根据任务类型给定
+     * */
     public static final String RANK1 = "青铜";
     public static final String RANK2 = "白银";
     public static final String RANK3 = "黄金";
@@ -154,17 +154,40 @@ public  class MyConstants {
     public static final String CONCENTRATE = "CONCENTRATE";
 
     //勋章图片
-    public static final String TALENT_URL="https://s1.ax1x.com/2020/09/30/0mjsER.png";
-    public static final String CONCENTRATE_URL="https://s1.ax1x.com/2020/10/11/0cy9G8.png";
-    public static final String RANK1_URL="https://s1.ax1x.com/2020/10/11/0cypPf.png";
-    public static final String RANK2_URL="https://s1.ax1x.com/2020/10/11/0cyPxg.png";
-    public static final String RANK3_URL="https://s1.ax1x.com/2020/10/11/0cszIP.png";
-    public static final String RANK4_URL="https://s1.ax1x.com/2020/10/11/0cyCRS.png";
-    public static final String RANK5_URL="https://s1.ax1x.com/2020/10/11/0cyFMQ.png";
+    public static final String TALENT_URL = "https://s1.ax1x.com/2020/09/30/0mjsER.png";
+    public static final String CONCENTRATE_URL = "https://s1.ax1x.com/2020/10/11/0cy9G8.png";
+    public static final String RANK1_URL = "https://s1.ax1x.com/2020/10/11/0cypPf.png";
+    public static final String RANK2_URL = "https://s1.ax1x.com/2020/10/11/0cyPxg.png";
+    public static final String RANK3_URL = "https://s1.ax1x.com/2020/10/11/0cszIP.png";
+    public static final String RANK4_URL = "https://s1.ax1x.com/2020/10/11/0cyCRS.png";
+    public static final String RANK5_URL = "https://s1.ax1x.com/2020/10/11/0cyFMQ.png";
     //达人勋章获取标准
-    public static final int TALENT_STANDART=30;
+    public static final int TALENT_STANDART = 30;
 
     // Hot number
     public static final int HOT_NUMBER = 5;
+
+    // Medal
+    public static final String MEDAL_SPECIAL_TYPE_NAME = "达人勋章";
+    public static final String MEDAL_CONCENTRATE_TYPE_NAME = "专注勋章";
+    public static final String MEDAL_LEVEL_TYPE_NAME = "等级勋章";
+
+    public static final int LEVEL_MEDAL_1 = 4;
+    public static final int LEVEL_MEDAL_2 = 16;
+    public static final int LEVEL_MEDAL_3 = 64;
+    public static final int LEVEL_MEDAL_4 = 256;
+    public static final int LEVEL_MEDAL_5 = 1024;
+
+    public static final String LEVEL_MEDAL_Name_1 = "白银等级";
+    public static final String LEVEL_MEDAL_Name_2 = "黄金等级";
+    public static final String LEVEL_MEDAL_Name_3 = "铂金等级";
+    public static final String LEVEL_MEDAL_Name_4 = "黑金等级";
+    public static final String LEVEL_MEDAL_Name_5 = "砖石等级";
+
+    public static final int CONCENTRATE_MEDAL_TIMES = 16;
+    public static final int AREA_SPECIAL_MEDAL_TIMES = 128;
+
+    public static final double CONCENTRATE_MEDAL_LOSE_RATE = 0.70;
+    public static final double AREA_SPECIAL_MEDAL_LOSE_RATE = 0.70;
 
 }

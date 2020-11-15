@@ -73,6 +73,10 @@ jobs:
         cron: 0 5 0 * * ?
     appeal:
         cron: 0 0 0 * * ?
+    medal:
+      cron: 0 0 1 * * ?
+
+
 spring:
     servlet:
         multipart:
