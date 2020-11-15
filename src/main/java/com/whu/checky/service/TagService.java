@@ -35,4 +35,6 @@ public interface TagService {
     String getTagNameById(String tagId);
 
     void deleteTaskTagsByTaskId(String taskId);
+
+    List<Tag> queryByKeyword(String keyword);
 }

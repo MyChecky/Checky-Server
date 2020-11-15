@@ -114,4 +114,11 @@ public class TagServiceImpl implements TagService {
         taskTagMapper.delete(new EntityWrapper<TaskTag>()
                 .eq("task_id", taskId));
     }
+
+    @Override
+    public List<Tag> queryByKeyword(String keyword) {
+        return tagMapper.selectList(new EntityWrapper<Tag>()
+                .like("tag_content", keyword)
+                .orderBy("tag_count", false));
+    }
 }

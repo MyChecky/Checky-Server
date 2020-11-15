@@ -30,8 +30,7 @@ public class TagController {
 
     //返回所有标签
     @RequestMapping("/queryAll")
-    public HashMap<String, Object> getAllTag()
-    {
+    public HashMap<String, Object> getAllTag() {
         HashMap<String, Object> ret = new HashMap<>();
         List<Tag> tagList = tagService.queryAll();
         ret.put("TagList", tagList);
@@ -52,8 +51,7 @@ public class TagController {
 
     //发布标签
     @RequestMapping("/add")
-    public JSONObject add(@RequestBody String jsonstr)
-    {
+    public JSONObject add(@RequestBody String jsonstr) {
         //获取传入的tag和type信息
         String tagContent = JSON.parseObject(jsonstr).getString("tagContent");
         String typeId = JSON.parseObject(jsonstr).getString("typeId");
@@ -67,8 +65,7 @@ public class TagController {
         String addResult = result == 1 ? MyConstants.RESULT_OK : MyConstants.RESULT_FAIL;
         String addTypeTag = MyConstants.RESULT_FAIL;
         //若传入了typeId，则新增关系
-        if(typeId!=null)
-        {
+        if (typeId != null) {
             TypeTag typeTag = new TypeTag();
             typeTag.setTagId(tagId);
             typeTag.setTypeId(typeId);
@@ -83,8 +80,7 @@ public class TagController {
 
     //返回标签排行榜
     @RequestMapping("/rank")
-    public JSONObject rank()
-    {
+    public JSONObject rank() {
         List<Tag> tagList = tagService.rank();
         JSONObject object = new JSONObject();
         object.put("rankList", tagList);
@@ -92,13 +88,22 @@ public class TagController {
     }
 
     @RequestMapping("/incCount")
-    public JSONObject incCount(@RequestBody String jsonstr)
-    {
+    public JSONObject incCount(@RequestBody String jsonstr) {
         String tagId = JSON.parseObject(jsonstr).getString("tagId");
         tagService.incPassNum(tagId);
         tagService.incTagCount(tagId);
         JSONObject object = new JSONObject();
-        object.put("request",MyConstants.RESULT_OK);
+        object.put("request", MyConstants.RESULT_OK);
         return object;
+    }
+
+    @RequestMapping("/queryByKeyword")
+    public HashMap<String, Object> queryByKeyword(@RequestBody String jsonstr) {
+        HashMap<String, Object> ret = new HashMap<>();
+        JSONObject object = (JSONObject) JSON.parse(jsonstr);
+        String keyword = (String) object.get("keyword");
+        List<Tag> tagList = tagService.queryByKeyword(keyword);
+        ret.put("tagList", tagList);
+        return ret;
     }
 }
