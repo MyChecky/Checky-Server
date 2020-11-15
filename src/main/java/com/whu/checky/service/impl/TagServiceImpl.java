@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.whu.checky.domain.*;
 import com.whu.checky.mapper.*;
 import com.whu.checky.service.TagService;
+import com.whu.checky.util.MyConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -61,7 +62,8 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public List<Tag> rank() {
-        return tagMapper.selectList(new EntityWrapper<Tag>()
+        Page<Tag> tagPage = new Page<>(0, MyConstants.HOT_NUMBER);
+        return tagMapper.selectPage(tagPage, new EntityWrapper<Tag>()
                 .gt("tag_count", 0)
                 .orderBy("tag_count", false)
         );
@@ -82,17 +84,34 @@ public class TagServiceImpl implements TagService {
 //        return tagMapper.getTagsByTypeId(typeId);
         List<TypeTag> typeTags = typeTagMapper.selectList(new EntityWrapper<TypeTag>().eq("type_id", typeId));
         List<Tag> tagsRes = new ArrayList<Tag>();
-        for(TypeTag typeTag:typeTags){
+        for (TypeTag typeTag : typeTags) {
             tagsRes.add(tagMapper.selectById(typeTag.getTagId()));
         }
         return tagsRes;
     }
 
     @Override
-    public int addTaskTag(String taskId, String tagId){
+    public int addTaskTag(String taskId, String tagId) {
         TaskTag taskTag = new TaskTag();
         taskTag.setTagId(tagId);
         taskTag.setTaskId(taskId);
         return taskTagMapper.insert(taskTag);
+    }
+
+    @Override
+    public List<TaskTag> getTaskTagsByTaskId(String taskId) {
+        return taskTagMapper.selectList(new EntityWrapper<TaskTag>()
+                .eq("task_id", taskId));
+    }
+
+    @Override
+    public String getTagNameById(String tagId) {
+        return tagMapper.selectById(tagId).getTagContent();
+    }
+
+    @Override
+    public void deleteTaskTagsByTaskId(String taskId) {
+        taskTagMapper.delete(new EntityWrapper<TaskTag>()
+                .eq("task_id", taskId));
     }
 }

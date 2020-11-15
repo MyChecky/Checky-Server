@@ -208,6 +208,25 @@ public class EssayController {
         return res;
     }
 
+    @RequestMapping("/displayEssayByTag")
+    public List<EssayAndRecord> displayEssayByTag(@RequestBody String jsonstr) {
+        JSONObject object = (JSONObject) JSON.parse(jsonstr);
+        String userId = (String) object.get("userId");
+        int currentPage = (Integer) object.get("cPage");
+        String tagId = (String) object.get("tagId");
+        Page<Essay> page = new Page<>(currentPage, MyConstants.PAGE_LENGTH_MINI);
+
+        List<EssayAndRecord> res = new ArrayList<EssayAndRecord>();
+        List<Essay> essays = essayService.displayEssayByTagId(page, tagId);
+        for (Essay essay : essays) {
+            if (essay.getTopicId() != null && !essay.getTopicId().equals(""))
+                essay.setTopicName(topicService.getTopicNameById(essay.getTopicId()));
+            EssayAndRecord essayAndRecord = getEssayAndRecord(essay, userId);
+            res.add(essayAndRecord);
+        }
+        return res;
+    }
+
     // 要返回给前端的动态列表，多处调用
     private EssayAndRecord getEssayAndRecord(Essay essay, String userId) {
         List<Record> records = recordService.getRecordsByEssayId(essay.getEssayId());

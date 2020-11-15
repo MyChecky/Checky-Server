@@ -3,10 +3,8 @@ package com.whu.checky.service.impl;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.plugins.pagination.Pagination;
-import com.whu.checky.domain.Essay;
-import com.whu.checky.domain.User;
-import com.whu.checky.mapper.EssayMapper;
-import com.whu.checky.mapper.UserMapper;
+import com.whu.checky.domain.*;
+import com.whu.checky.mapper.*;
 import com.whu.checky.service.EssayService;
 import com.whu.checky.util.MyConstants;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +20,15 @@ public class EssayServiceImpl implements EssayService {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private TaskTagMapper taskTagMapper;
+
+    @Autowired
+    private CheckMapper checkMapper;
+
+    @Autowired
+    private RecordMapper recordMapper;
 
     @Override
     public int addEssay(Essay essay) {
@@ -58,6 +65,40 @@ public class EssayServiceImpl implements EssayService {
                 .eq("if_delete", 0)
                 .orderBy("essay_time", false)
                 .orderBy("like_num"));
+    }
+
+    @Override
+    public List<Essay> displayEssayByTagId(Page<Essay> page, String tagId) {
+        List<Essay> essayListRes = new ArrayList<>();
+        // get task_id by tag_id
+        List<TaskTag> taskTagList = taskTagMapper.selectList(new EntityWrapper<TaskTag>()
+                .eq("tag_id", tagId));
+        if(taskTagList.isEmpty()) return essayListRes;
+        List<String> taskIdList = new ArrayList<>();
+        for (TaskTag taskTag : taskTagList)
+            taskIdList.add(taskTag.getTaskId());
+
+        // get check_id by task_id
+        List<Check> checkList = checkMapper.selectList(new EntityWrapper<Check>()
+                .in("task_id", taskIdList));
+        if(checkList.isEmpty()) return essayListRes;
+        List<String> checkIdList = new ArrayList<>();
+        for (Check check : checkList)
+            checkIdList.add(check.getCheckId());
+
+        // get essay_id by check_id
+        List<Record> recordList = recordMapper.selectList(new EntityWrapper<Record>()
+                .in("check_id", checkIdList)
+                .isNotNull("essay_id"));
+        if(recordList.isEmpty()) return essayListRes;
+        List<String> essayIdList = new ArrayList<>();
+        for (Record record : recordList)
+            essayIdList.add(record.getEssayId());
+
+        // get essay by essay_id
+        return essayMapper.selectPage(page, new EntityWrapper<Essay>()
+                .in("essay_id", essayIdList)
+                .orderBy("essay_time", false));
     }
 
     @Override
@@ -132,11 +173,11 @@ public class EssayServiceImpl implements EssayService {
     }
 
     @Override
-    public List<Essay> sortByComment(){
+    public List<Essay> sortByComment() {
         return essayMapper.selectList(
                 new EntityWrapper<Essay>()
                         .setSqlSelect("user_id AS userId ")
-                        .where("DATE_SUB(CURDATE(), INTERVAL 3 DAY) <= essay_time" )
+                        .where("DATE_SUB(CURDATE(), INTERVAL 3 DAY) <= essay_time")
                         .and()
                         .eq("if_delete", 0)
                         .groupBy("user_id")
@@ -146,14 +187,12 @@ public class EssayServiceImpl implements EssayService {
     }
 
 
-
-
     @Override
     public List<Essay> sortByLike() {
         return essayMapper.selectList(
                 new EntityWrapper<Essay>()
                         .setSqlSelect("user_id AS userId ")
-                        .where("DATE_SUB(CURDATE(), INTERVAL 3 DAY) <= essay_time" )
+                        .where("DATE_SUB(CURDATE(), INTERVAL 3 DAY) <= essay_time")
                         .and()
                         .eq("if_delete", 0)
                         .groupBy("user_id")
@@ -175,7 +214,7 @@ public class EssayServiceImpl implements EssayService {
     @Override
     public String deleteEssayByTopicId(String topicId) {
         essayMapper.delete(new EntityWrapper<Essay>()
-        .eq("topic",topicId)
+                .eq("topic", topicId)
         );
         return MyConstants.RESULT_OK;
     }

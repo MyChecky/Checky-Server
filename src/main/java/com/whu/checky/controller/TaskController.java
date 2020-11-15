@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.whu.checky.config.UploadConfig;
 import com.whu.checky.domain.*;
+import com.whu.checky.mapper.TaskTagMapper;
 import com.whu.checky.service.*;
 import com.whu.checky.util.Match;
 import com.whu.checky.util.MyConstants;
@@ -138,16 +139,6 @@ public class TaskController {
                 return ret;
             } else {
                 //添加成功
-                //将对应任务类型和任务标签下的TOTAL_NUM TAG_COUNT 进行自增
-                taskTypeService.incTotalNum(task.getTypeId());
-
-                for (String tagId : task.getTagsId()){
-                    // 更新 task_tag 表
-                    tagService.addTaskTag(task.getTaskId(), tagId);
-                    // 增加 tag 下任务数量
-                    tagService.incTagCount(tagId);
-                }
-
                 return matchTask(task);
             }
         } else {  // update exiting task
@@ -230,6 +221,17 @@ public class TaskController {
                         .format(taskType.getPassNum() / (double) taskType.getTotalNum()));
             else
                 res.put("taskTypePassRate", "暂无数据");
+
+            // tag 相关
+            List<TaskTag> taskTagList = tagService.getTaskTagsByTaskId(task.getTaskId());
+            List<String> selectedTagsId = new ArrayList<>();
+            String selectedTagsNameStr = "";
+            for (TaskTag taskTag : taskTagList) {
+                selectedTagsId.add(taskTag.getTagId());
+                selectedTagsNameStr = selectedTagsNameStr + "  " + tagService.getTagNameById(taskTag.getTagId());
+            }
+            res.put("selectedTagsId", selectedTagsId);
+            res.put("selectedTagsNameStr", selectedTagsNameStr);
         } else {
             res.put("state", MyConstants.RESULT_FAIL);
         }
@@ -276,6 +278,16 @@ public class TaskController {
         if (task.getCheckTimes().equals(0)) { // 在匹配监督者前检测总打卡次数
             ret.put("state", MyConstants.RESULT_ZERO_CHECK_TIMES);
         } else if (match.matchSupervisorForOneTask(task, null, -1)) {
+            //将对应任务类型和任务标签下的TOTAL_NUM TAG_COUNT 进行自增
+            taskTypeService.incTotalNum(task.getTypeId());
+
+            // tagService.deleteTaskTagsByTaskId(task.getTaskId());
+            for (String tagId : task.getTagsId()) {
+                // 更新 task_tag 表
+                tagService.addTaskTag(task.getTaskId(), tagId);
+                // 增加 tag 下任务数量
+                tagService.incTagCount(tagId);
+            }
             ret.put("state", MyConstants.RESULT_OK);
         } else {
             ret.put("state", MyConstants.RESULT_NO_ENOUGH_SUP);

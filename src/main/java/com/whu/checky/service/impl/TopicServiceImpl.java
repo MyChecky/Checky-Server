@@ -64,7 +64,7 @@ public class TopicServiceImpl implements TopicService {
         List<Topic> topics = topicMapper.selectList(new EntityWrapper<Topic>()
                 .eq("topic_content", topicContent)
         );
-        return topics.size() == 0 ? false : true;
+        return topics.size() != 0;
     }
 
     @Override
@@ -113,13 +113,13 @@ public class TopicServiceImpl implements TopicService {
         Date dayNow = new Date();
         String dateNow = MyConstants.DATE_FORMAT.format(dayNow);
 
-        Page<TopicCount> topicCountPage = new Page<>(0, 5);
+        Page<TopicCount> topicCountPage = new Page<>(0, MyConstants.HOT_NUMBER);
         List<TopicCount> topicCounts = topicCountMapper.selectPage(topicCountPage, new EntityWrapper<TopicCount>()
                 .eq("count_date", dateNow)
                 .orderBy("count_number", false));
 
         // 今日个数小于五个,尽量在过去一周找当日热度，找不到就散了
-        for (int i = 0; i < 7 && topicCounts.size() < 5; ++i) {
+        for (int i = 0; i < 7 && topicCounts.size() < MyConstants.HOT_NUMBER; ++i) {
             dayNow = new Date(dayNow.getTime() - MyConstants.SECONDS_A_DAY);
             dateNow = MyConstants.DATE_FORMAT.format(dayNow);
             List<TopicCount> topicCountsTmp = topicCountMapper.selectPage(topicCountPage, new EntityWrapper<TopicCount>()
@@ -135,7 +135,7 @@ public class TopicServiceImpl implements TopicService {
                 }
                 if (!isRepeat) {
                     topicCounts.add(topicCountOld);
-                    if (topicCounts.size() == 5) break;
+                    if (topicCounts.size() == MyConstants.HOT_NUMBER) break;
                 }
             }
         }

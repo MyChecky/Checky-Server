@@ -164,4 +164,7 @@ public  class MyConstants {
     //达人勋章获取标准
     public static final int TALENT_STANDART=30;
 
+    // Hot number
+    public static final int HOT_NUMBER = 5;
+
 }

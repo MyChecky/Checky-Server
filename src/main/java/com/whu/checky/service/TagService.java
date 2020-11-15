@@ -2,6 +2,7 @@ package com.whu.checky.service;
 
 import com.baomidou.mybatisplus.plugins.Page;
 import com.whu.checky.domain.Tag;
+import com.whu.checky.domain.TaskTag;
 import com.whu.checky.domain.TaskType;
 
 import java.util.List;
@@ -28,4 +29,10 @@ public interface TagService {
     List<Tag> getTagsByTypeId(String typeId);
     // add record for task_tag
     int addTaskTag(String taskId, String tagId);
+
+    List<TaskTag> getTaskTagsByTaskId(String taskId);
+
+    String getTagNameById(String tagId);
+
+    void deleteTaskTagsByTaskId(String taskId);
 }

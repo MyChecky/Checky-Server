@@ -51,4 +51,6 @@ public interface EssayService {
     String deleteEssayByTopicId(String topicId);
 
     List<Essay> displayEssayByTopicId(Page<Essay> page, String topicId);
+
+    List<Essay> displayEssayByTagId(Page<Essay> page, String tagId);
 }
