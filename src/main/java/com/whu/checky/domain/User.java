@@ -90,16 +90,6 @@ public class User implements Serializable {
      */
     private int reportPassed = 0;
 
-    private String userLevel = "白银";
-
-    public String getUserLevel() {
-        return userLevel;
-    }
-
-    public void setUserLevel(String userLevel) {
-        this.userLevel = userLevel;
-    }
-
     public void setLongtitude(double longtitude) {
         this.longtitude = longtitude;
     }

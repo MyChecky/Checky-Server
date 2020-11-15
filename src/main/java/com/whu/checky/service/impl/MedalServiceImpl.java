@@ -3,8 +3,10 @@ package com.whu.checky.service.impl;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.whu.checky.domain.Medal;
 import com.whu.checky.domain.Task;
+import com.whu.checky.domain.UserMedal;
 import com.whu.checky.mapper.MedalMapper;
 import com.whu.checky.mapper.TaskMapper;
+import com.whu.checky.mapper.UserMedalMapper;
 import com.whu.checky.service.MedalService;
 import com.whu.checky.service.TaskService;
 import com.whu.checky.util.MyConstants;
@@ -12,6 +14,7 @@ import com.whu.checky.util.MyStringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +27,9 @@ public class MedalServiceImpl implements MedalService {
     private TaskMapper taskMapper;
     @Autowired
     private TaskService taskService;
+
+    @Autowired
+    private UserMedalMapper userMedalMapper;
 
     @Override
     public Map<String, Medal> getMedalsByUserId(String userId) {
@@ -58,26 +64,24 @@ public class MedalServiceImpl implements MedalService {
     }
 
 
-
     @Override
-    public String addOrUpdateTalenMedal(String userId, String typeId, String taskType,Medal ownTalentMedal) throws Exception {
+    public String addOrUpdateTalenMedal(String userId, String typeId, String taskType, Medal ownTalentMedal) throws Exception {
         /**
-        * 任务筛选条件：1.用户2.类型3.非失败4.开始时间在一年以内
-        * */
+         * 任务筛选条件：1.用户2.类型3.非失败4.开始时间在一年以内
+         * */
         List<Task> taskList = taskMapper.selectList(new EntityWrapper<Task>()
                 .eq("user_id", userId)
                 .eq("type_id", typeId)
-                .ne("task_state",MyConstants.TASK_STATE_FAIL)
+                .ne("task_state", MyConstants.TASK_STATE_FAIL)
         );
         int sum = 0;
         for (int i = 0; i < taskList.size(); i++) {
-            if(MyStringUtil.checkIsInOneYear(taskList.get(i).getTaskStartTime())) {
+            if (MyStringUtil.checkIsInOneYear(taskList.get(i).getTaskStartTime())) {
                 sum += taskList.get(i).getCheckNum();
             }
         }
         //如果目前不存在则考虑新增
-        if(ownTalentMedal==null)
-        {
+        if (ownTalentMedal == null) {
             //如果符合标准，则添加任务类型对应的达人勋章
             if (sum >= MyConstants.TALENT_STANDART) {
                 Medal newTalentMedal = new Medal();
@@ -93,17 +97,14 @@ public class MedalServiceImpl implements MedalService {
                 }
             }
             //不符合标准
-            else
-            {
+            else {
                 return "不符合标准，不予授予达人勋章";
             }
         }
         //如果已经存在，考虑更新或者删除
-        else
-        {
+        else {
             //如果不符合了，就删除
-            if(sum<MyConstants.TALENT_STANDART)
-            {
+            if (sum < MyConstants.TALENT_STANDART) {
                 medalMapper.deleteById(ownTalentMedal.getMedalId());
                 return "不符合达人勋章标准，已删除";
             }
@@ -111,8 +112,7 @@ public class MedalServiceImpl implements MedalService {
             /**
              * 更新就是将过期时间延后一个月
              */
-            else
-            {
+            else {
 //                ownTalentMedal.setIfExpired("0");
 //                ownTalentMedal.setExpireTime(MyStringUtil.nextMonth());
                 if (medalMapper.updateById(ownTalentMedal) == 1) {
@@ -147,7 +147,7 @@ public class MedalServiceImpl implements MedalService {
     }
 
     @Override
-    public String addOrUpdateRankMedal(String userId,Medal ownRankMedal) throws Exception {
+    public String addOrUpdateRankMedal(String userId, Medal ownRankMedal) throws Exception {
         /**
          * 查找一年内该用户所有的打卡数
          */
@@ -155,89 +155,77 @@ public class MedalServiceImpl implements MedalService {
                 .eq("user_id", userId));
         int sum = 0;
         for (int i = 0; i < taskList.size(); i++) {
-            if(MyStringUtil.checkIsInOneYear(taskList.get(i).getTaskStartTime()))
-            {
+            if (MyStringUtil.checkIsInOneYear(taskList.get(i).getTaskStartTime())) {
                 sum += taskList.get(i).getCheckNum();
             }
         }
         //如果不存在就考虑新增
-        if(ownRankMedal==null) {
-                Medal newRankMedal = new Medal();
+        if (ownRankMedal == null) {
+            Medal newRankMedal = new Medal();
 //                newRankMedal.setUserId(userId);
-                newRankMedal.setMedalId(MyStringUtil.getUUID());
+            newRankMedal.setMedalId(MyStringUtil.getUUID());
 //                newRankMedal.setExpireTime(MyStringUtil.nextMonth());
 //                newRankMedal.setIfExpired("0");
-                if (sum >= 100) {
-                    newRankMedal.setMedalType(MyConstants.RANK5);
-                    newRankMedal.setMedalUrl(MyConstants.RANK5_URL);
-                    medalMapper.insert(newRankMedal);
-                    return "获得砖石等级勋章";
-                }
-                else if (sum >= 80) {
-                    newRankMedal.setMedalType(MyConstants.RANK4);
-                    newRankMedal.setMedalUrl(MyConstants.RANK4_URL);
-                    medalMapper.insert(newRankMedal);
-                    return "获得黑金等级勋章";
-                }
-                else if (sum >= 60) {
-                    newRankMedal.setMedalType(MyConstants.RANK3);
-                    newRankMedal.setMedalUrl(MyConstants.RANK3_URL);
-                    medalMapper.insert(newRankMedal);
-                    return "获得黄金等级勋章";
-                }
-                else if (sum >= 40) {
-                    newRankMedal.setMedalType(MyConstants.RANK2);
-                    newRankMedal.setMedalUrl(MyConstants.RANK2_URL);
-                    medalMapper.insert(newRankMedal);
-                    return "获得白银等级勋章";
-                }
-                else if (sum >= 20) {
-                    newRankMedal.setMedalType(MyConstants.RANK1);
-                    newRankMedal.setMedalUrl(MyConstants.RANK1_URL);
-                    medalMapper.insert(newRankMedal);
-                    return "获得黄铜等级勋章";
-                }
-                else{
-                    return "不符合标准，暂无法授予等级勋章";
-                }
+            if (sum >= 100) {
+                newRankMedal.setMedalType(MyConstants.RANK5);
+                newRankMedal.setMedalUrl(MyConstants.RANK5_URL);
+                medalMapper.insert(newRankMedal);
+                return "获得砖石等级勋章";
+            } else if (sum >= 80) {
+                newRankMedal.setMedalType(MyConstants.RANK4);
+                newRankMedal.setMedalUrl(MyConstants.RANK4_URL);
+                medalMapper.insert(newRankMedal);
+                return "获得黑金等级勋章";
+            } else if (sum >= 60) {
+                newRankMedal.setMedalType(MyConstants.RANK3);
+                newRankMedal.setMedalUrl(MyConstants.RANK3_URL);
+                medalMapper.insert(newRankMedal);
+                return "获得黄金等级勋章";
+            } else if (sum >= 40) {
+                newRankMedal.setMedalType(MyConstants.RANK2);
+                newRankMedal.setMedalUrl(MyConstants.RANK2_URL);
+                medalMapper.insert(newRankMedal);
+                return "获得白银等级勋章";
+            } else if (sum >= 20) {
+                newRankMedal.setMedalType(MyConstants.RANK1);
+                newRankMedal.setMedalUrl(MyConstants.RANK1_URL);
+                medalMapper.insert(newRankMedal);
+                return "获得黄铜等级勋章";
+            } else {
+                return "不符合标准，暂无法授予等级勋章";
+            }
 
         }
         //如果存在则进行更新或删除
-        else
-        {
+        else {
 //            ownRankMedal.setIfExpired("0");
 //            ownRankMedal.setExpireTime(MyStringUtil.nextMonth());
-            if(sum>=100){
+            if (sum >= 100) {
                 ownRankMedal.setMedalType(MyConstants.RANK5);
                 ownRankMedal.setMedalUrl(MyConstants.RANK5_URL);
                 medalMapper.updateById(ownRankMedal);
                 return "等级勋章更新为黄铜勋章";
-            }
-            else if (sum >= 80) {
+            } else if (sum >= 80) {
                 ownRankMedal.setMedalType(MyConstants.RANK4);
                 ownRankMedal.setMedalUrl(MyConstants.RANK4_URL);
                 medalMapper.updateById(ownRankMedal);
                 return "等级勋章更新为砖石勋章";
-            }
-            else if (sum >= 60) {
+            } else if (sum >= 60) {
                 ownRankMedal.setMedalType(MyConstants.RANK3);
                 ownRankMedal.setMedalUrl(MyConstants.RANK3_URL);
                 medalMapper.updateById(ownRankMedal);
                 return "等级勋章更新为砖石勋章";
-            }
-            else if (sum >= 40) {
+            } else if (sum >= 40) {
                 ownRankMedal.setMedalType(MyConstants.RANK2);
                 ownRankMedal.setMedalUrl(MyConstants.RANK2_URL);
                 medalMapper.updateById(ownRankMedal);
                 return "等级勋章更新为砖石勋章";
-            }
-            else if (sum >= 20) {
+            } else if (sum >= 20) {
                 ownRankMedal.setMedalType(MyConstants.RANK1);
                 ownRankMedal.setMedalUrl(MyConstants.RANK1_URL);
                 medalMapper.updateById(ownRankMedal);
                 return "等级勋章更新为砖石勋章";
-            }
-            else{
+            } else {
                 medalMapper.deleteById(ownRankMedal.getMedalId());
                 return "不符合获得等级勋章的要求";
             }
@@ -293,33 +281,26 @@ public class MedalServiceImpl implements MedalService {
 
     @Override
     public String addOrUpdateConcentrateMedal(String userId, Medal ownConcentrateMedal) throws Exception {
-        if(ownConcentrateMedal==null)
-        {
+        if (ownConcentrateMedal == null) {
             if (taskService.checkFailTaskWeekly(userId)) {
                 return "近一周有失败任务，无法获取专注勋章";
-            }
-            else{
+            } else {
                 //如果原本没有专注勋章且近一周没有失败任务，则进行新增
-                if(!taskService.checkFreWeekly(userId))
-                {
+                if (!taskService.checkFreWeekly(userId)) {
                     return "本周内有任务没有连续打卡，不予授予";
-                }
-                else
-                    {
-                        Medal newConcentrateMedal = new Medal();
-                        newConcentrateMedal.setMedalId(MyStringUtil.getUUID());
+                } else {
+                    Medal newConcentrateMedal = new Medal();
+                    newConcentrateMedal.setMedalId(MyStringUtil.getUUID());
 //                        newConcentrateMedal.setUserId(userId);
 //                        newConcentrateMedal.setMedalType(MyConstants.CONCENTRATE);
 //                        newConcentrateMedal.setMedalUrl(MyConstants.TALENT_URL);
 //                        newConcentrateMedal.setExpireTime(MyStringUtil.nextMonth());
 //                        newConcentrateMedal.setIfExpired("0");
-                        medalMapper.insert(newConcentrateMedal);
-                        return "新增专注勋章";
-                    }
+                    medalMapper.insert(newConcentrateMedal);
+                    return "新增专注勋章";
                 }
-        }
-        else
-        {
+            }
+        } else {
             //要求一周内没有失败任务&&本周内打卡次数符合要求
 //            if (!taskService.checkFailTaskWeekly(ownConcentrateMedal.getUserId())&&taskService.checkFreWeekly(ownConcentrateMedal.getUserId()))
 //            {
@@ -336,5 +317,20 @@ public class MedalServiceImpl implements MedalService {
 //            }
         }
         return null;
+    }
+
+    @Override
+    public List<Medal> getMedalListByUserId(String userId) {
+        List<Medal> medalListRes = new ArrayList<>();
+
+        List<UserMedal> userMedalList = userMedalMapper.selectList(new EntityWrapper<UserMedal>()
+                .eq("user_id", userId));
+        if (userMedalList.isEmpty()) return medalListRes;
+
+        List<String> medalIdList = new ArrayList<>();
+        for (UserMedal userMedal : userMedalList)
+            medalIdList.add(userMedal.getMedalId());
+        return medalMapper.selectList(new EntityWrapper<Medal>()
+                .in("medal_id", medalIdList));
     }
 }

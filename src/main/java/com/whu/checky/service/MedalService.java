@@ -26,4 +26,6 @@ public interface MedalService {
     String addConcentrateMedal(String userId) throws Exception;
     //
     String addOrUpdateConcentrateMedal(String userId,Medal ownConcentrateMedal) throws Exception;
+
+    List<Medal> getMedalListByUserId(String userId);
 }

@@ -40,6 +40,9 @@ public class FriendController {
     @Autowired
     private TopicService topicService;
 
+    @Autowired
+    private MedalService medalService;
+
 
     @GetMapping("/hello")
     public String hello() {
@@ -179,6 +182,7 @@ public class FriendController {
         EssayLike essayLike = likeService.queryLike(essay.getUserId(), essay.getEssayId());
         boolean like = essayLike != null;
         essayAndRecord.setLike(like);
+        essayAndRecord.setMedalList(medalService.getMedalListByUserId(essayAndRecord.getUserId()));
         return essayAndRecord;
     }
 

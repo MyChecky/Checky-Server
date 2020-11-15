@@ -48,6 +48,9 @@ public class EssayController {
     @Autowired
     private TopicService topicService;
 
+    @Autowired
+    private MedalService medalService;
+
     private static final Logger log = LoggerFactory.getLogger(EssayController.class);
 
     //根据评论数排序
@@ -258,6 +261,7 @@ public class EssayController {
         EssayLike essayLike = likeService.queryLike(userId, essay.getEssayId());
         boolean like = essayLike != null;
         essayAndRecord.setLike(like);
+        essayAndRecord.setMedalList(medalService.getMedalListByUserId(essayAndRecord.getUserId()));
         return essayAndRecord;
     }
 
@@ -400,6 +404,20 @@ class EssayAndRecord {
     private Essay essay;
     private List<Record> fileRecord;
     private boolean Like;
+
+    private List<Medal> medalList;
+
+    public List<Medal> getMedalList() {
+        return medalList;
+    }
+
+    public void setMedalList(List<Medal> medalList) {
+        this.medalList = medalList;
+    }
+
+    public void addOneMedal(Medal medal) {
+        this.medalList.add(medal);
+    }
 
     public String getUserId() {
         return userId;
