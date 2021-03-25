@@ -9,6 +9,7 @@ import com.whu.checky.util.MyConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +23,8 @@ public class TagServiceImpl implements TagService {
     private TypeTagMapper typeTagMapper;
     @Autowired
     private TaskTagMapper taskTagMapper;
+    @Autowired
+    private TaskTypeMapper taskTypeMapper;
 
     @Override
     public List<Tag> queryAllTag(Page<Tag> p) {
@@ -35,18 +38,25 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public void deleteTagById(String id) {
-        //还要删除该标签下所有的任务
-        taskMapper.delete(new EntityWrapper<Task>()
-                .eq("tag1", id)
-                .or()
-                .eq("tag2", id)
-                .or()
-                .eq("tag3", id)
-                .or()
-                .eq("tag4", id)
-                .or()
-                .eq("tag5", id)
-        );
+        // 删除与task与tag的关联
+        taskTagMapper.delete(new EntityWrapper<TaskTag>()
+                .eq("tag_id", id));
+
+        Tag tag = tagMapper.selectById(id);
+        List<TypeTag> typeTags = typeTagMapper.selectList(new EntityWrapper<TypeTag>()
+                .eq("tag_id", id));
+        // 更新taskType表中的总数、通过数
+        for (TypeTag typeTag : typeTags) {
+            TaskType taskType = taskTypeMapper.selectById(typeTag.getTypeId());
+            taskType.setTotalNum(taskType.getTotalNum() - tag.getTagCount());
+            taskType.setPassNum(taskType.getPassNum() - tag.getPassCount());
+            taskTypeMapper.updateById(taskType);
+        }
+
+        // 删除type 与 tag 的关联
+        typeTagMapper.delete(new EntityWrapper<TypeTag>()
+                .eq("tag_id", id));
+
         tagMapper.deleteById(id);
     }
 
@@ -63,10 +73,24 @@ public class TagServiceImpl implements TagService {
     @Override
     public List<Tag> rank() {
         Page<Tag> tagPage = new Page<>(0, MyConstants.HOT_NUMBER);
-        return tagMapper.selectPage(tagPage, new EntityWrapper<Tag>()
-                .gt("tag_count", 0)
-                .orderBy("tag_count", false)
+        List<Tag> tagList = tagMapper.selectPage(tagPage, new EntityWrapper<Tag>()
+//                .gt("tag_count", 0)
+                        .orderBy("tag_count", false)
         );
+
+        for (Tag tag : tagList) {
+            List<TypeTag> typeTagList = typeTagMapper.selectList(new EntityWrapper<TypeTag>()
+                    .eq("tag_id", tag.getTagId()));
+            for(TypeTag typeTag: typeTagList){
+                TaskType taskType = taskTypeMapper.selectById(typeTag.getTypeId());
+                if(tag.getTagBelongedTypes() == null){
+                    tag.setTagBelongedTypes(taskType.getTypeContent()+" ");
+                }else{
+                    tag.setTagBelongedTypes(tag.getTagBelongedTypes()+taskType.getTypeContent()+" ");
+                }
+            }
+        }
+        return tagList;
     }
 
     @Override
@@ -120,5 +144,11 @@ public class TagServiceImpl implements TagService {
         return tagMapper.selectList(new EntityWrapper<Tag>()
                 .like("tag_content", keyword)
                 .orderBy("tag_count", false));
+    }
+
+    @Override
+    public List<Tag> getTagByTagName(String tagName) {
+        return tagMapper.selectList(new EntityWrapper<Tag>()
+                .eq("tag_content", tagName));
     }
 }

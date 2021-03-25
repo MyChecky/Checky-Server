@@ -60,7 +60,14 @@ public class TaskTypeController {
         JSONObject res=new JSONObject();
         List<TaskType> taskTypes = taskTypeService.ListAllTaskType(p);
         res.put("page",page);
-        res.put("data",taskTypes);
+        res.put("taskTypes",taskTypes);
+        return res;
+    }
+    @RequestMapping("/getAllTypeWithoutPage")
+    public JSONObject getAllTypeWithoutPage(@RequestBody String jsonstr) {
+        JSONObject res=new JSONObject();
+        List<TaskType> taskTypes = taskTypeService.getAllTypeWithoutPage();
+        res.put("taskTypes",taskTypes);
         return res;
     }
     @PostMapping("/update")

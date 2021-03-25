@@ -49,6 +49,8 @@ public class TopicController {
     @RequestMapping("/delete")
     public JSONObject get(@RequestBody String jsonstr) {
         String topicId = JSON.parseObject(jsonstr).getString("topicId");
+
+        // 这里不真的删除用户的动态
         essayService.deleteEssayByTopicId(topicId);
         topicService.deleteTopicById(topicId);
         JSONObject object = new JSONObject();

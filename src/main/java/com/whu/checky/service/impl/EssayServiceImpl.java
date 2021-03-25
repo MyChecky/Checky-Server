@@ -73,7 +73,7 @@ public class EssayServiceImpl implements EssayService {
         // get task_id by tag_id
         List<TaskTag> taskTagList = taskTagMapper.selectList(new EntityWrapper<TaskTag>()
                 .eq("tag_id", tagId));
-        if(taskTagList.isEmpty()) return essayListRes;
+        if (taskTagList.isEmpty()) return essayListRes;
         List<String> taskIdList = new ArrayList<>();
         for (TaskTag taskTag : taskTagList)
             taskIdList.add(taskTag.getTaskId());
@@ -81,7 +81,7 @@ public class EssayServiceImpl implements EssayService {
         // get check_id by task_id
         List<Check> checkList = checkMapper.selectList(new EntityWrapper<Check>()
                 .in("task_id", taskIdList));
-        if(checkList.isEmpty()) return essayListRes;
+        if (checkList.isEmpty()) return essayListRes;
         List<String> checkIdList = new ArrayList<>();
         for (Check check : checkList)
             checkIdList.add(check.getCheckId());
@@ -90,7 +90,7 @@ public class EssayServiceImpl implements EssayService {
         List<Record> recordList = recordMapper.selectList(new EntityWrapper<Record>()
                 .in("check_id", checkIdList)
                 .isNotNull("essay_id"));
-        if(recordList.isEmpty()) return essayListRes;
+        if (recordList.isEmpty()) return essayListRes;
         List<String> essayIdList = new ArrayList<>();
         for (Record record : recordList)
             essayIdList.add(record.getEssayId());
@@ -213,9 +213,17 @@ public class EssayServiceImpl implements EssayService {
 
     @Override
     public String deleteEssayByTopicId(String topicId) {
-        essayMapper.delete(new EntityWrapper<Essay>()
-                .eq("topic", topicId)
-        );
+//        essayMapper.delete(new EntityWrapper<Essay>()
+//                .eq("topic", topicId)
+//        );
+
+        List<Essay> essayList = essayMapper.selectList(new EntityWrapper<Essay>()
+                .eq("topic_id", topicId));
+        for(Essay essay: essayList){
+            essay.setTopicId(null);
+            essayMapper.updateById(essay);
+        }
+
         return MyConstants.RESULT_OK;
     }
 }

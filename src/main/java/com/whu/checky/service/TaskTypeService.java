@@ -30,4 +30,6 @@ public interface TaskTypeService {
     String getTypeContentByTypeId(String typeId);
     //根据typeContent查找是否已经存在
     Boolean alreadyExist(String typeContent);
+
+    List<TaskType> getAllTypeWithoutPage();
 }

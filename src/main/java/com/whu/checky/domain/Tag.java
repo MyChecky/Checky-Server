@@ -1,5 +1,6 @@
 package com.whu.checky.domain;
 
+import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 
 public class Tag {
@@ -11,6 +12,17 @@ public class Tag {
     private int TagCount;
 
     private int passCount;
+
+    @TableField(exist = false)
+    private String tagBelongedTypes;
+
+    public String getTagBelongedTypes() {
+        return tagBelongedTypes;
+    }
+
+    public void setTagBelongedTypes(String tagBelongedTypes) {
+        this.tagBelongedTypes = tagBelongedTypes;
+    }
 
     public String getTagId() {
         return tagId;

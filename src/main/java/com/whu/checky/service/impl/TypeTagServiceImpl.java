@@ -35,16 +35,23 @@ public class TypeTagServiceImpl implements TypeTagService {
 
     @Override
     public int addTypeTag(TypeTag typeTag) {
-       return typeTagMapper.insert(typeTag);
+        return typeTagMapper.insert(typeTag);
     }
 
     @Override
     public int delTypeTag(TypeTag typeTag) {
-       return typeTagMapper.delete(new EntityWrapper<>(typeTag));
+        return typeTagMapper.delete(new EntityWrapper<>(typeTag));
     }
 
     @Override
-    public void updateTypeTag(String typeId,String tagId) {
-        typeTagMapper.updateTypeTag(typeId,tagId);
+    public void updateTypeTag(String typeId, String tagId) {
+        typeTagMapper.updateTypeTag(typeId, tagId);
+    }
+
+    @Override
+    public List<TypeTag> getTypeTagByTypeTag(String tagId, String typeId) {
+        return typeTagMapper.selectList(new EntityWrapper<TypeTag>()
+                .eq("tag_id", tagId)
+                .eq("type_id", typeId));
     }
 }

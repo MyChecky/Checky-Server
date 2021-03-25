@@ -12,4 +12,6 @@ public interface TypeTagService {
     int addTypeTag(TypeTag typeTag);
     int delTypeTag(TypeTag typeTag);
     void updateTypeTag(String typeId,String tagId);
+
+    List<TypeTag> getTypeTagByTypeTag(String tagId, String typeId);
 }

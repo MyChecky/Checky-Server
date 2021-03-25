@@ -53,7 +53,7 @@ public class TopicServiceImpl implements TopicService {
         return topicMapper.selectList(new EntityWrapper<Topic>()
 //                .where("DATE_SUB(CURDATE(), INTERVAL 1 DAY) <= topic_time" )
 //                .and()
-                        .gt("topic_count", 0)
+//                        .gt("topic_count", 0)
                         .orderBy("topic_count")
                         .last("desc")
         );
