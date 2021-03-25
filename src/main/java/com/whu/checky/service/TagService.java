@@ -39,4 +39,6 @@ public interface TagService {
     List<Tag> queryByKeyword(String keyword);
 
     List<Tag> getTagByTagName(String tagName);
+
+    List<Tag> getTagsByPage(Page<Tag> p);
 }

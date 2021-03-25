@@ -86,11 +86,18 @@ public class TopicController {
 
     //话题排序（用于统计）
     @RequestMapping("/sort")
-    public JSONObject sort()
+    public JSONObject sort(@RequestBody String body)
     {
-        List<Topic> topicList = topicService.orderByTopicCount();
+        int page = JSON.parseObject(body).getInteger("page");
+        Integer pageSize = JSON.parseObject(body).getInteger("pageSize");
+        if (pageSize == null) {
+            pageSize = 10;
+        }
+        Page<Topic> p = new Page<>(page, pageSize);
+        List<Topic> topicList = topicService.getTopicsByPage(p);
         JSONObject object = new JSONObject();
         object.put("sortedTopicList", topicList);
+        object.put("total", p.getTotal());
         return object;
     }
 }

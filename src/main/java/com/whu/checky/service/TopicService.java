@@ -30,4 +30,6 @@ public interface TopicService {
     String getTopicNameById(String topicId);
 
     List<TopicCount> getHotFiveTopics();
+
+    List<Topic> getTopicsByPage(Page<Topic> p);
 }

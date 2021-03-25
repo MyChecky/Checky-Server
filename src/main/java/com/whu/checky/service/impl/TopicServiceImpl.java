@@ -144,4 +144,12 @@ public class TopicServiceImpl implements TopicService {
             topicCount.setTopic(topicMapper.selectById(topicCount.getTopicId()));
         return topicCounts;
     }
+
+    @Override
+    public List<Topic> getTopicsByPage(Page<Topic> p) {
+        return topicMapper.selectPage(p, new EntityWrapper<Topic>()
+                        .orderBy("topic_count")
+        );
+
+    }
 }

@@ -14,6 +14,7 @@ import com.whu.checky.service.TaskTypeService;
 import com.whu.checky.service.TypeTagService;
 import com.whu.checky.util.MyConstants;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,8 +37,7 @@ public class TagController {
 
     //返回所有标签
     @RequestMapping("/queryAll")
-    public HashMap<String, Object> getAllTag(@RequestBody String jsonstr)
-    {
+    public HashMap<String, Object> getAllTag(@RequestBody String jsonstr) {
         JSONObject json = new JSONObject();
         JSONObject object = (JSONObject) JSON.parse(jsonstr);
         Integer page = object.getInteger("page");
@@ -45,7 +45,7 @@ public class TagController {
         Page<Tag> p = new Page<>(page, pageSize);
         HashMap<String, Object> ret = new HashMap<>();
         List<Tag> tagList = tagService.queryAllTag(p);
-        ret.put("page",page);
+        ret.put("page", page);
         ret.put("data", tagList);
         return ret;
     }
@@ -62,8 +62,7 @@ public class TagController {
 
     //发布标签
     @RequestMapping("/add")
-    public JSONObject add(@RequestBody String jsonstr)
-    {
+    public JSONObject add(@RequestBody String jsonstr) {
         JSONObject res = new JSONObject();
         // 传入 tagContent 与 typeId
         // 全靠后台判断
@@ -73,7 +72,7 @@ public class TagController {
         // 检查是不是有这个标签了
         List<Tag> tagList = tagService.getTagByTagName(tagName);
         Tag tag;
-        if(tagList.isEmpty()){
+        if (tagList.isEmpty()) {
             // 创建新标签
             tag = new Tag();
             tag.setTagContent(tagName);
@@ -88,12 +87,12 @@ public class TagController {
             typeTagService.addTypeTag(typeTagToAdd);
             // return
             res.put("addState", "新建标签，并新建关联");
-        }else{
-            tag=tagList.get(0);
+        } else {
+            tag = tagList.get(0);
 
             // 检查是不是已经有对应的标签和任务类型了
             List<TypeTag> typeTagList = typeTagService.getTypeTagByTypeTag(tag.getTagId(), typeId);
-            if(typeTagList.isEmpty()){
+            if (typeTagList.isEmpty()) {
                 // 新建关联前，增加任务类型的相应数据
                 TaskType taskType = taskTypeService.queryTaskType(typeId);
                 taskType.setTotalNum(taskType.getTotalNum() + tag.getTagCount());
@@ -108,7 +107,7 @@ public class TagController {
 
 
                 res.put("addState", "已有对应标签，并更新任务类型数据后新建关联");
-            }else{
+            } else {
                 res.put("addState", "已有对应标签与任务类型，且已经关联");
             }
         }
@@ -119,11 +118,17 @@ public class TagController {
 
     //标签排序（用于统计）
     @RequestMapping("/sort")
-    public JSONObject sort()
-    {
-        List<Tag> tagList = tagService.rank();
+    public JSONObject sort(@RequestBody String body) {
+        int page = JSON.parseObject(body).getInteger("page");
+        Integer pageSize = JSON.parseObject(body).getInteger("pageSize");
+        if (pageSize == null) {
+            pageSize = 10;
+        }
+        Page<Tag> p = new Page<Tag>(page, pageSize);
+        List<Tag> tagList = tagService.getTagsByPage(p);
         JSONObject object = new JSONObject();
         object.put("sortedTagList", tagList);
+        object.put("total", p.getTotal());
         return object;
     }
 }

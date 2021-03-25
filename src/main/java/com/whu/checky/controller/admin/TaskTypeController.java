@@ -52,7 +52,6 @@ public class TaskTypeController {
     }
     @RequestMapping("/allType")
     public JSONObject allType(@RequestBody String jsonstr) {
-        JSONObject json = new JSONObject();
         JSONObject object = (JSONObject) JSON.parse(jsonstr);
         Integer page = object.getInteger("page");
         Integer pageSize = object.getInteger("pageSize");
@@ -61,6 +60,7 @@ public class TaskTypeController {
         List<TaskType> taskTypes = taskTypeService.ListAllTaskType(p);
         res.put("page",page);
         res.put("taskTypes",taskTypes);
+        res.put("total", p.getTotal());
         return res;
     }
     @RequestMapping("/getAllTypeWithoutPage")

@@ -73,24 +73,7 @@ public class TagServiceImpl implements TagService {
     @Override
     public List<Tag> rank() {
         Page<Tag> tagPage = new Page<>(0, MyConstants.HOT_NUMBER);
-        List<Tag> tagList = tagMapper.selectPage(tagPage, new EntityWrapper<Tag>()
-//                .gt("tag_count", 0)
-                        .orderBy("tag_count", false)
-        );
-
-        for (Tag tag : tagList) {
-            List<TypeTag> typeTagList = typeTagMapper.selectList(new EntityWrapper<TypeTag>()
-                    .eq("tag_id", tag.getTagId()));
-            for(TypeTag typeTag: typeTagList){
-                TaskType taskType = taskTypeMapper.selectById(typeTag.getTypeId());
-                if(tag.getTagBelongedTypes() == null){
-                    tag.setTagBelongedTypes(taskType.getTypeContent()+" ");
-                }else{
-                    tag.setTagBelongedTypes(tag.getTagBelongedTypes()+taskType.getTypeContent()+" ");
-                }
-            }
-        }
-        return tagList;
+        return getTagsWithPage(tagPage);
     }
 
     @Override
@@ -150,5 +133,30 @@ public class TagServiceImpl implements TagService {
     public List<Tag> getTagByTagName(String tagName) {
         return tagMapper.selectList(new EntityWrapper<Tag>()
                 .eq("tag_content", tagName));
+    }
+
+    @Override
+    public List<Tag> getTagsByPage(Page<Tag> p) {
+        return getTagsWithPage(p);
+    }
+
+    private List<Tag> getTagsWithPage(Page<Tag> p) {
+        List<Tag> tagList = tagMapper.selectPage(p, new EntityWrapper<Tag>()
+                        .orderBy("tag_count", false)
+        );
+
+        for (Tag tag : tagList) {
+            List<TypeTag> typeTagList = typeTagMapper.selectList(new EntityWrapper<TypeTag>()
+                    .eq("tag_id", tag.getTagId()));
+            for(TypeTag typeTag: typeTagList){
+                TaskType taskType = taskTypeMapper.selectById(typeTag.getTypeId());
+                if(tag.getTagBelongedTypes() == null){
+                    tag.setTagBelongedTypes(taskType.getTypeContent()+" ");
+                }else{
+                    tag.setTagBelongedTypes(tag.getTagBelongedTypes()+taskType.getTypeContent()+" ");
+                }
+            }
+        }
+        return tagList;
     }
 }
