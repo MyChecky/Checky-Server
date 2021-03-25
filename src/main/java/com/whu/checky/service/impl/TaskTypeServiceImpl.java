@@ -1,7 +1,6 @@
 package com.whu.checky.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.whu.checky.domain.*;
 import com.whu.checky.mapper.*;
@@ -37,7 +36,15 @@ public class TaskTypeServiceImpl implements TaskTypeService {
 
     @Override
     public List<TaskType> ListAllTaskType(Page<TaskType> p) {
-        return taskTypeMapper.selectPage(p, new EntityWrapper<TaskType>());
+        List<TaskType> taskTypeList = taskTypeMapper.selectPage(p, new EntityWrapper<TaskType>());
+
+        for (TaskType taskType : taskTypeList) {
+            taskType.setSubTagsNum(typeTagMapper.selectList(new EntityWrapper<TypeTag>()
+                    .eq("type_id", taskType.getTypeId()))
+                    .size());
+        }
+
+        return taskTypeList;
     }
 
     @Override

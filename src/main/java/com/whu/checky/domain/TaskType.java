@@ -18,6 +18,17 @@ public class TaskType {
     @TableField(exist = false)
     private List<Tag> tags;
 
+    @TableField(exist = false)
+    private int subTagsNum;
+
+    public int getSubTagsNum() {
+        return subTagsNum;
+    }
+
+    public void setSubTagsNum(int subTagsNum) {
+        this.subTagsNum = subTagsNum;
+    }
+
     public List<Tag> getTags() {
         return tags;
     }
