@@ -7,10 +7,7 @@ import com.whu.checky.domain.Comment;
 import com.whu.checky.domain.Essay;
 import com.whu.checky.domain.Record;
 import com.whu.checky.domain.User;
-import com.whu.checky.service.CommentService;
-import com.whu.checky.service.EssayService;
-import com.whu.checky.service.RecordService;
-import com.whu.checky.service.UserService;
+import com.whu.checky.service.*;
 import com.whu.checky.util.MyConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -33,6 +30,8 @@ public class EssayController {
     private RecordService recordService;
     @Autowired
     private CommentService commentService;
+    @Autowired
+    private TopicService topicService;
 
     //假删除动态
     @RequestMapping("/delete")
@@ -58,48 +57,34 @@ public class EssayController {
         JSONObject object = (JSONObject) JSON.parse(jsonstr);
         int currentPage = (Integer) object.get("page");
         Integer pageSize = (Integer) object.get("pageSize");
-        if(pageSize == null){
+        if (pageSize == null) {
             pageSize = 5;
         }
         Page<Essay> page = new Page<Essay>(currentPage, pageSize);
-        List<AdminEssay> adminEssays = new ArrayList<AdminEssay>();
         List<Essay> essays = essayService.displayEssay(page);
-        for (Essay essay : essays) {
-            List<Record> records = recordService.getRecordsByEssayId(essay.getEssayId());
-            for (Record record : records) {
-                if (!record.getRecordType().equals("text"))
-                    record.setRecordType(record.getRecordType().substring(0, 5));
-            }
-            AdminEssay adminEssay = new AdminEssay();
-            User user = userService.queryUser(essay.getUserId());
-            adminEssay.setCommentNum(essay.getCommentNum());
-            adminEssay.setEssayContent(essay.getEssayContent());
-            adminEssay.setEssayId(essay.getEssayId());
-            adminEssay.setEssayTime(essay.getEssayTime());
-            adminEssay.setLikeNum(essay.getLikeNum());
-            adminEssay.setUserName(user.getUserName());
-            adminEssay.setImg(records);
-            adminEssays.add(adminEssay);
-        }
+        List<AdminEssay> adminEssays = essays2AdminEssays(essays);
         res.put("state", MyConstants.RESULT_OK);
         res.put("essays", adminEssays);
-        res.put("size", (int)Math.ceil(page.getTotal() / (double) pageSize));
+        res.put("size", (int) Math.ceil(page.getTotal() / (double) pageSize));
         res.put("total", page.getTotal());
         return res;
     }
 
-    @RequestMapping("/query")
-    public JSONObject query(@RequestBody String jsonstr){
-        JSONObject res = new JSONObject();
-        String essayId = JSON.parseObject(jsonstr).getString("essayId");
+    private List<AdminEssay> essays2AdminEssays(List<Essay> essays) {
+        List<AdminEssay> adminEssays = new ArrayList<>();
+        for (Essay essay : essays) {
+            adminEssays.add(essay2AdminEssay(essay));
+        }
+        return adminEssays;
+    }
 
-        Essay essay = essayService.queryEssayById(essayId);
-
+    private AdminEssay essay2AdminEssay(Essay essay) {
         List<Record> records = recordService.getRecordsByEssayId(essay.getEssayId());
         for (Record record : records) {
             if (!record.getRecordType().equals("text"))
                 record.setRecordType(record.getRecordType().substring(0, 5));
         }
+
         AdminEssay adminEssay = new AdminEssay();
         User user = userService.queryUser(essay.getUserId());
         adminEssay.setCommentNum(essay.getCommentNum());
@@ -109,6 +94,20 @@ public class EssayController {
         adminEssay.setLikeNum(essay.getLikeNum());
         adminEssay.setUserName(user.getUserName());
         adminEssay.setImg(records);
+
+        adminEssay.setTopicName(topicService.getTopicNameById(essay.getTopicId()));
+
+        return adminEssay;
+    }
+
+    @RequestMapping("/query")
+    public JSONObject query(@RequestBody String jsonstr) {
+        JSONObject res = new JSONObject();
+        String essayId = JSON.parseObject(jsonstr).getString("essayId");
+
+        Essay essay = essayService.queryEssayById(essayId);
+
+        AdminEssay adminEssay = essay2AdminEssay(essay);
 
         List<Comment> comments = commentService.queryCommentByEssayId(essayId);
 
@@ -136,38 +135,20 @@ public class EssayController {
         Page<Essay> p = new Page<>(page, pageSize);
         List<Essay> essays = new ArrayList<Essay>();
 
-        if(keyword == null || keyword.equals("")){
+        if (keyword == null || keyword.equals("")) {
             essays = essayService.queryEssaysAll(p, startTime, endTime);
-        }
-        else if(searchType.equals("nickname")){
+        } else if (searchType.equals("nickname")) {
             essays = essayService.queryEssaysLikeNickname(p, startTime, endTime, keyword);
-        }else if(searchType.equals("content")){
+        } else if (searchType.equals("content")) {
             essays = essayService.queryEssaysLikeContent(p, startTime, endTime, keyword);
-        }else{
+        } else {
             res.put("state", MyConstants.RESULT_FAIL);
             return res;
         }
 
-        List<AdminEssay> adminEssays = new ArrayList<>();
-        for (Essay essay : essays) {
-            List<Record> records = recordService.getRecordsByEssayId(essay.getEssayId());
-            for (Record record : records) {
-                if (!record.getRecordType().equals("text"))
-                    record.setRecordType(record.getRecordType().substring(0, 5));
-            }
-            AdminEssay adminEssay = new AdminEssay();
-            User user = userService.queryUser(essay.getUserId());
-            adminEssay.setCommentNum(essay.getCommentNum());
-            adminEssay.setEssayContent(essay.getEssayContent());
-            adminEssay.setEssayId(essay.getEssayId());
-            adminEssay.setEssayTime(essay.getEssayTime());
-            adminEssay.setLikeNum(essay.getLikeNum());
-            adminEssay.setUserName(user.getUserName());
-            adminEssay.setImg(records);
-            adminEssays.add(adminEssay);
-        }
-        res.put("total",p.getTotal());
-        res.put("size",(int)Math.ceil(p.getTotal() / (double)pageSize));
+        List<AdminEssay> adminEssays = essays2AdminEssays(essays);
+        res.put("total", p.getTotal());
+        res.put("size", (int) Math.ceil(p.getTotal() / (double) pageSize));
         res.put("state", MyConstants.RESULT_OK);
         res.put("essays", adminEssays);
 
@@ -183,6 +164,15 @@ public class EssayController {
         private int likeNum;
         private String userName;
         private List<Record> img;
+        private String topicName;
+
+        public String getTopicName() {
+            return topicName;
+        }
+
+        public void setTopicName(String topicName) {
+            this.topicName = topicName;
+        }
 
         public int getCommentNum() {
             return commentNum;

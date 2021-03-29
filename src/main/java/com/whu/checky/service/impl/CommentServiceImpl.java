@@ -42,7 +42,7 @@ public class CommentServiceImpl implements CommentService {
         for (Comment comment : comments) {
             User user = userMapper.selectById(comment.getUserId());
             comment.setUserName(user.getUserName());
-            if(MyStringUtil.isEmpty(user.getUserAvatar()) && user.getUserAvatar().length() > 11){
+            if(!MyStringUtil.isEmpty(user.getUserAvatar()) && user.getUserAvatar().length() > 11){
                 if (user.getUserAvatar().substring(0, 11).equals("/" + uploadConfig.getStaticPath() + "/")) {
                     String baseIp = parameterService.getValueByParam("baseIp").getParamValue();
                     comment.setUserAvatar(baseIp + user.getUserAvatar());
