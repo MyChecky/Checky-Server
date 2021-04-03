@@ -199,7 +199,7 @@ public class FriendController {
             friendListWithMessage.setUserId(user.getUserId());
             friendListWithMessage.setContent(user.getUserName());
             friendListWithMessage.setUserTime(user.getUserTime());
-            if(MyStringUtil.isEmpty(user.getUserAvatar()) && user.getUserAvatar().length() > 11){
+            if(!MyStringUtil.isEmpty(user.getUserAvatar()) && user.getUserAvatar().length() > 11){
                 if(user.getUserAvatar().substring(0, 11).equals("/resources/")) {
                     String baseIp = parameterService.getValueByParam("baseIp").getParamValue();
                     friendListWithMessage.setAvatarUrl(baseIp + user.getUserAvatar());

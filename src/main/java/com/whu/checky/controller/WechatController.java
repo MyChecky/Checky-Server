@@ -122,6 +122,7 @@ public class WechatController {
         ret.put("sessionKey", user.getSessionId());
         ret.put("userGender", user.getUserGender());
         ret.put("userNickname", user.getUserName());
+        ret.put("ifAdminSwitchUser", user.getIfAdminSwitchUser());
         String userAvatar = "";
         if (!MyStringUtil.isEmpty(user.getUserAvatar()) && user.getUserAvatar().length()>11) {
             userAvatar  =   user.getUserAvatar().substring(0, 11).equals("/" + uploadConfig.getStaticPath() + "/") ?

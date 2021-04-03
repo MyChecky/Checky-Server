@@ -90,6 +90,19 @@ public class User implements Serializable {
      */
     private int reportPassed = 0;
 
+    /**
+     * 能切换普通用户身份的管理员
+     */
+    private int ifAdminSwitchUser = 0;
+
+    public int getIfAdminSwitchUser() {
+        return ifAdminSwitchUser;
+    }
+
+    public void setIfAdminSwitchUser(int ifAdminSwitchUser) {
+        this.ifAdminSwitchUser = ifAdminSwitchUser;
+    }
+
     public void setLongtitude(double longtitude) {
         this.longtitude = longtitude;
     }

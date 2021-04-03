@@ -68,6 +68,9 @@ public class SuperviseController {
         HashMap<String, Object> ret = new HashMap<>();
         Supervise supervise = JSON.parseObject(jsonstr, new TypeReference<Supervise>() {
         });
+        String userId = ((JSONObject) JSON.parseObject(jsonstr)).getString("userId");
+        supervise.setSupervisorId(userId);
+
         int stateFlag = 0;
         supervise.setSuperviseId(UUID.randomUUID().toString());
         stateFlag += superviseService.addSupervise(supervise) == 1 ? 1 : 0;

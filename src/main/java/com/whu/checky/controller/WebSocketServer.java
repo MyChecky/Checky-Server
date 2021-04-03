@@ -127,7 +127,8 @@ public class WebSocketServer {
                 JSONObject jsonObject = JSON.parseObject(message);
                 //追加发送人(防止串改)
                 jsonObject.put("fromUserId", this.userId);
-                String fromUserId = jsonObject.getString("fromUserId");
+//                String fromUserId = jsonObject.getString("fromUserId");
+                String fromUserId = jsonObject.getString("userId");
                 String toUserId = jsonObject.getString("toUserId");
                 String content = jsonObject.getString("content");
                 String date = jsonObject.getString("date");
