@@ -7,4 +7,6 @@ import java.util.List;
 public interface MedalService {
 
     List<Medal> getMedalListByUserId(String userId);
+
+    int insertAreaSpecialMedal(String medalNameAux);
 }

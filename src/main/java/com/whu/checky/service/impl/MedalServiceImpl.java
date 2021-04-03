@@ -14,10 +14,7 @@ import com.whu.checky.util.MyStringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service("/medalService")
 public class MedalServiceImpl implements MedalService {
@@ -40,5 +37,15 @@ public class MedalServiceImpl implements MedalService {
             medalIdList.add(userMedal.getMedalId());
         return medalMapper.selectList(new EntityWrapper<Medal>()
                 .in("medal_id", medalIdList));
+    }
+
+    @Override
+    public int insertAreaSpecialMedal(String medalNameAux) {
+        Medal medal = new Medal();
+        medal.setMedalName(medalNameAux+"达人");
+        medal.setMedalId(UUID.randomUUID().toString());
+        medal.setMedalUrl(MyConstants.MEDAL_SPECIAL_TYPE_URL);
+        medal.setMedalType(MyConstants.MEDAL_SPECIAL_TYPE_NAME);
+        return medalMapper.insert(medal);
     }
 }

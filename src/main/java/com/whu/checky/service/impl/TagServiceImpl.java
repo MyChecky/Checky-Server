@@ -9,7 +9,6 @@ import com.whu.checky.util.MyConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -140,20 +139,46 @@ public class TagServiceImpl implements TagService {
         return getTagsWithPage(p);
     }
 
+    @Override
+    public List<Tag> getOneTypeTagsByPage(Page<TypeTag> p, String typeId) {
+        List<TypeTag> typeIdTagList = typeTagMapper.selectPage(p, new EntityWrapper<TypeTag>()
+                .eq("type_id", typeId));
+
+        List<Tag> tagList = new ArrayList<>();
+        for (TypeTag typeTag : typeIdTagList) {
+            tagList.add(tagMapper
+                    .selectById(typeTag.getTagId()));
+        }
+
+        for (Tag tag : tagList) {
+            List<TypeTag> typeTagList = typeTagMapper.selectList(new EntityWrapper<TypeTag>()
+                    .eq("tag_id", tag.getTagId()));
+            for (TypeTag typeTag : typeTagList) {
+                TaskType taskType = taskTypeMapper.selectById(typeTag.getTypeId());
+                if (tag.getTagBelongedTypes() == null) {
+                    tag.setTagBelongedTypes(taskType.getTypeContent() + " ");
+                } else {
+                    tag.setTagBelongedTypes(tag.getTagBelongedTypes() + taskType.getTypeContent() + " ");
+                }
+            }
+        }
+        return tagList;
+    }
+
     private List<Tag> getTagsWithPage(Page<Tag> p) {
         List<Tag> tagList = tagMapper.selectPage(p, new EntityWrapper<Tag>()
-                        .orderBy("tag_count", false)
+                .orderBy("tag_count", false)
         );
 
         for (Tag tag : tagList) {
             List<TypeTag> typeTagList = typeTagMapper.selectList(new EntityWrapper<TypeTag>()
                     .eq("tag_id", tag.getTagId()));
-            for(TypeTag typeTag: typeTagList){
+            for (TypeTag typeTag : typeTagList) {
                 TaskType taskType = taskTypeMapper.selectById(typeTag.getTypeId());
-                if(tag.getTagBelongedTypes() == null){
-                    tag.setTagBelongedTypes(taskType.getTypeContent()+" ");
-                }else{
-                    tag.setTagBelongedTypes(tag.getTagBelongedTypes()+taskType.getTypeContent()+" ");
+                if (tag.getTagBelongedTypes() == null) {
+                    tag.setTagBelongedTypes(taskType.getTypeContent() + " ");
+                } else {
+                    tag.setTagBelongedTypes(tag.getTagBelongedTypes() + taskType.getTypeContent() + " ");
                 }
             }
         }

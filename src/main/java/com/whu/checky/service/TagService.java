@@ -3,7 +3,7 @@ package com.whu.checky.service;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.whu.checky.domain.Tag;
 import com.whu.checky.domain.TaskTag;
-import com.whu.checky.domain.TaskType;
+import com.whu.checky.domain.TypeTag;
 
 import java.util.List;
 
@@ -41,4 +41,6 @@ public interface TagService {
     List<Tag> getTagByTagName(String tagName);
 
     List<Tag> getTagsByPage(Page<Tag> p);
+
+    List<Tag> getOneTypeTagsByPage(Page<TypeTag> p, String typeId);
 }

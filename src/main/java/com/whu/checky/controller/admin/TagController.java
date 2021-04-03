@@ -131,4 +131,20 @@ public class TagController {
         object.put("total", p.getTotal());
         return object;
     }
+
+    @RequestMapping("/getOneTypeTags")
+    public JSONObject getOneTypeTags(@RequestBody String body) {
+        int page = JSON.parseObject(body).getInteger("page");
+        Integer pageSize = JSON.parseObject(body).getInteger("pageSize");
+        String typeId = JSON.parseObject(body).getString("typeId");
+        if (pageSize == null) {
+            pageSize = 10;
+        }
+        Page<TypeTag> p = new Page<TypeTag>(page, pageSize);
+        List<Tag> tagList = tagService.getOneTypeTagsByPage(p, typeId);
+        JSONObject object = new JSONObject();
+        object.put("sortedTagList", tagList);
+        object.put("total", p.getTotal());
+        return object;
+    }
 }
