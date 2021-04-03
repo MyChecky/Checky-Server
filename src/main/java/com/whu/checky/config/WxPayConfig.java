@@ -24,4 +24,6 @@ public class WxPayConfig {
     public static final String createOrderUrl = "https://api.mch.weixin.qq.com/sandboxnew/pay/unifiedorder";
     //沙箱测试key
     public static final String getSandBoxSignKeyUrl = "https://api.mch.weixin.qq.com/sandboxnew/pay/getsignkey";
+    //统一订单接口url地址
+    public static final String unifiedOrderUrl="https://api.mch.weixin.qq.com/pay/unifiedorder";
 }

@@ -125,31 +125,6 @@ public class CheckController {
             }
             recordService.addRecord(record);
             ans.put("checkId", check.getCheckId());
-            /**
-             * 达人勋章相关操作
-             * 1.在本次打卡后，依据任务类别 进行相应勋章的更新或新增操作
-             * 2.如果当前用户有当前类别的达人medal 就更新
-             * 3.如果没有 就新增一个该类型的达人medal
-             */
-            String taskTypeContent = taskTypeService.getTypeContentByTypeId(task.getTypeId());
-            Medal ownTalentMedal =  medalService.getMedalByUserIdAndType(check.getUserId(),taskTypeContent);
-            ans.put("addTalentMedal",medalService.addOrUpdateTalenMedal(check.getUserId(),task.getTypeId(),taskTypeContent,ownTalentMedal));
-
-            /**
-             * 等级勋章相关操作
-             * 同一用户的所有打卡次数总和
-             */
-            Medal ownRankMedal = medalService.checkRankMedal(check.getUserId());
-            ans.put("RankMedal",medalService.addOrUpdateRankMedal(check.getUserId(),ownRankMedal));
-
-            /**
-             * 专注勋章相关操作
-             * 1.该用户近一周不能有失败任务
-             * 2.近一周内该用户的所有正在进行任务 按打卡频率来推算不能漏
-             */
-            Medal ownConcentrateMedal = medalService.checkConcentrateMedal(check.getUserId());
-            ans.put("ConcentrateMedal",medalService.addOrUpdateConcentrateMedal(check.getUserId(),ownConcentrateMedal));
-
         } catch (Exception ex) {
             ex.printStackTrace();
             ans.put("state", MyConstants.RESULT_FAIL);

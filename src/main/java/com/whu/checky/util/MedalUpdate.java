@@ -108,7 +108,7 @@ public class MedalUpdate {
         // init areaSpecialMedal id
         if (areaSpecialMedalIdList.isEmpty()) {
             List<Medal> medalList = medalMapper.selectList(new EntityWrapper<Medal>()
-                    .eq("medal_type", "达人勋章"));
+                    .eq("medal_type", MyConstants.MEDAL_SPECIAL_TYPE_NAME));
             for (Medal medal : medalList)
                 areaSpecialMedalIdList.add(medal.getMedalId());
         }
