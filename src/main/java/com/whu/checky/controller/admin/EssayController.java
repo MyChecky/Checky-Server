@@ -9,6 +9,7 @@ import com.whu.checky.domain.Record;
 import com.whu.checky.domain.User;
 import com.whu.checky.service.*;
 import com.whu.checky.util.MyConstants;
+import com.whu.checky.util.MyStringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -95,7 +96,8 @@ public class EssayController {
         adminEssay.setUserName(user.getUserName());
         adminEssay.setImg(records);
 
-        adminEssay.setTopicName(topicService.getTopicNameById(essay.getTopicId()));
+        if (!MyStringUtil.isEmpty(essay.getTopicId()))
+            adminEssay.setTopicName(topicService.getTopicNameById(essay.getTopicId()));
 
         return adminEssay;
     }

@@ -23,9 +23,10 @@ public class User implements Serializable {
      * 用户头像
      */
     private String userAvatar;
-
+    /**
+     * 用户注册时间
+     */
     private String userTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-
     /**
      * 用户信用.默认100
      */
