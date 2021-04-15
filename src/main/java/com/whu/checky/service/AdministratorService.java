@@ -1,9 +1,7 @@
 package com.whu.checky.service;
 
 import com.baomidou.mybatisplus.plugins.Page;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import com.whu.checky.domain.Administrator;
-import com.whu.checky.domain.User;
 
 import java.util.List;
 import java.util.Map;
